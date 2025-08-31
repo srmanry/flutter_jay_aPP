@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/common/widgets/save_botton.dart';
 import 'package:spotem/feature/report/controller/report_controller.dart';
 
 class ReportScreenView extends StatelessWidget {
@@ -41,6 +42,7 @@ class ReportScreenView extends StatelessWidget {
                   border: OutlineInputBorder(),
                   hintText: 'Title',
                 ),
+                textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 15),
               Text("Description", style: textStyle),
@@ -54,53 +56,54 @@ class ReportScreenView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Expanded(
-                child: Obx(
-                  () => ListView.builder(
-                    itemCount: controller.options.length,
-                    itemBuilder: (context, index) {
-                      final item = controller.options[index];
-                      final label = item["label"] as String;
-                      final color = item["color"] as Color;
+              ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: controller.options.length,
+                itemBuilder: (context, index) {
+                  final item = controller.options[index];
+                  final label = item["label"] as String;
+                  final color = item["color"] as Color;
 
-                      return RadioListTile<String>(
-                        value: label,
-                        groupValue: controller.selectedOption.value,
-                        onChanged: (String? value) {
-                          if (value != null) {
-                            controller.selectedOption.value = value;
-                          }
-                        },
-                        title: Row(
-                          children: [
-                            Text(label),
-                            const SizedBox(width: 8),
-                            Icon(Icons.location_on, color: color),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: () {},
-                  //  onPressed: controller.submitData,
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
+                  return Obx(
+                    () => RadioListTile<String>(
+                      value: label,
+                      groupValue: controller.selectedOption.value,
+                      contentPadding: EdgeInsets.zero,
+                      dense: false,
+                      visualDensity: VisualDensity.standard,
+                      onChanged: (String? value) {
+                        if (value != null) {
+                          controller.selectedOption.value = value;
+                        }
+                      },
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(label),
+                          const SizedBox(width: 8),
+                          Icon(Icons.location_on, color: color),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: buttonWidget(
+          text: "Report",
+          onTap: () async {
+            print(
+              "Selected Option:================ ${controller.selectedOption.value}",
+            );
+            print("Report Button Clicked");
+            // await controller.reportEvent();
+          },
         ),
       ),
     );
