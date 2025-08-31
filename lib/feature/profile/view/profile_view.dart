@@ -20,152 +20,188 @@ class ProfileScreenView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        title: Row(
-          children: [
-            CircleAvatar(radius: 30),
-            Expanded(
-              child: Row(
-                children: [
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("UserName", style: TextStyle(color: Colors.black)),
-                      Text("Address", style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.toggle_off_outlined),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          profileButtonWidget(
-            onTap: () {
-              Get.to(PersonalInfoScreenView());
-            },
-            bottomIcon: Icon(Icons.payment_rounded),
-            name: "Personal Info",
-          ),
-          profileButtonWidget(
-            onTap: () {
-              Get.to(ChangePasswordView());
-            },
-
-            bottomIcon: Icon(Icons.lock_outline_rounded),
-            name: "Change Password",
-          ),
-          profileButtonWidget(
-            onTap: () {
-              Get.to(NotificataionScreenView());
-            },
-            bottomIcon: Icon(Icons.notifications_outlined),
-            name: "Notification Settings",
-          ),
-          profileButtonWidget(
-            onTap: () {
-              Get.to(AboutAppScreen());
-            },
-            bottomIcon: Icon(Icons.help_outline_rounded),
-            name: "About",
-          ),
-          profileButtonWidget(
-            onTap: () {
-              Get.defaultDialog(
-                title: "",
-                content: Column(
-                  children: [
-                    Image.asset(
-                      "assets/icons/appIcon.png",
-                      height: 102,
-                      width: 102,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Are You Sure To Log Out?",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
+        title: Obx(
+          () => Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.black12,
+                child: authController.profileData.value?.profileImage == null
+                    ? Icon(
+                        Icons.photo_size_select_large_rounded,
+                        color: Colors.black,
+                      )
+                    : Image.network(
+                        "${authController.profileData.value?.profileImage.toString()}",
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InkWell(
-                          onTap: () {
-                            authController.logout();
-                          },
-                          child: Container(
-                            width: 100,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white,
-                              border: Border.all(
-                                color: AppColors.appColor,
-                                width: 1,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Yes",
-                                style: TextStyle(
-                                  color: AppColors.appColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
+                        Text(
+                          authController.profileData.value?.name ??
+                              'Loading...',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 24,
+                            color:
+                                authController.profileData.value?.name != null
+                                ? Colors.black
+                                : Colors.grey,
                           ),
                         ),
-
-                        InkWell(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Container(
-                            width: 100,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: AppColors.appColor,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "No",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
+                        Text(
+                          "${authController.profileData.value?.email != null ? authController.profileData.value?.name : 'Loading...'}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                            color:
+                                authController.profileData.value?.email != null
+                                ? Colors.black
+                                : Colors.grey,
                           ),
                         ),
                       ],
                     ),
+                    Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.toggle_off_outlined),
+                    ),
                   ],
                 ),
-              );
-            },
-            bottomIcon: Icon(Icons.logout_rounded, color: Colors.red),
-            name: "Log Out",
-            textColor: Colors.red,
+              ),
+            ],
           ),
-        ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            profileButtonWidget(
+              onTap: () {
+                Get.to(PersonalInfoScreenView());
+              },
+              bottomIcon: Icon(Icons.payment_rounded),
+              name: "Personal Info",
+            ),
+            profileButtonWidget(
+              onTap: () {
+                Get.to(ChangePasswordView());
+              },
+
+              bottomIcon: Icon(Icons.lock_outline_rounded),
+              name: "Change Password",
+            ),
+            profileButtonWidget(
+              onTap: () {
+                Get.to(NotificataionScreenView());
+              },
+              bottomIcon: Icon(Icons.notifications_outlined),
+              name: "Notification Settings",
+            ),
+            profileButtonWidget(
+              onTap: () {
+                Get.to(AboutAppScreen());
+              },
+              bottomIcon: Icon(Icons.help_outline_rounded),
+              name: "About",
+            ),
+            profileButtonWidget(
+              onTap: () {
+                Get.defaultDialog(
+                  title: "",
+                  content: Column(
+                    children: [
+                      Image.asset(
+                        "assets/icons/appIcon.png",
+                        height: 102,
+                        width: 102,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Are You Sure To Log Out?",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              authController.logout();
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: AppColors.appColor,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                    color: AppColors.appColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: AppColors.appColor,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+              bottomIcon: Icon(Icons.logout_rounded, color: Colors.red),
+              name: "Log Out",
+              textColor: Colors.red,
+            ),
+          ],
+        ),
       ),
     );
   }

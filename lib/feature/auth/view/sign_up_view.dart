@@ -105,7 +105,7 @@ class SignupScreen extends StatelessWidget {
             // fieldName("Password"),
             CustomTextField(
               controller: authController.confirmPasswordController,
-              hintText: "Create a Password",
+              hintText: "Confirm a Password",
               prefixIcon: Icons.lock,
               isPassword: true,
               validator: () {
@@ -131,7 +131,6 @@ class SignupScreen extends StatelessWidget {
                       text: "Sign Up",
                       onTap: () {
                         authController.signUp();
-                        
                       },
                     );
             }),

@@ -25,20 +25,22 @@ class PersonalInfoScreenView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            ProfileCardWidget(data: "John Doe", typeName: "First Name"),
-            ProfileCardWidget(data: "Foerer", typeName: "Last Name"),
-            ProfileCardWidget(data: "25", typeName: "Age"),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              ProfileCardWidget(data: "John Doe", typeName: "First Name"),
+              ProfileCardWidget(data: "Foerer", typeName: "Last Name"),
+              ProfileCardWidget(data: "25", typeName: "Age"),
 
-            ProfileCardWidget(
-              data: "Male",
-              typeName: "Gender",
-              widget: Icon(Icons.arrow_drop_down_circle_outlined),
-            ),
-            ProfileCardWidget(data: "uk", typeName: "Nationality"),
-          ],
+              ProfileCardWidget(
+                data: "Male",
+                typeName: "Gender",
+                widget: Icon(Icons.arrow_drop_down_circle_outlined),
+              ),
+              ProfileCardWidget(data: "uk", typeName: "Nationality"),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(

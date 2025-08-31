@@ -125,16 +125,17 @@ class AuthController extends GetxController {
       Get.snackbar("Error", "Name is required");
       return;
     }
-    if (address.text.isEmpty) {
-      Get.snackbar("Error", "Company Name is required");
-      return;
-    }
     if (!isValidEmail(email)) {
-      Get.snackbar("Error", "Please enter a valid email address");
+      Get.snackbar("Error", "required & valid email address");
       return;
     }
+
     if (phoneController.text.isEmpty) {
       Get.snackbar("Error", "Phone Number is required");
+      return;
+    }
+    if (address.text.isEmpty) {
+      Get.snackbar("Error", "Address is required");
       return;
     }
     if (password.length < 6) {
@@ -204,107 +205,6 @@ class AuthController extends GetxController {
     } catch (e) {
       print("Logout error: $e");
       Get.snackbar("Error", "Something went wrong");
-    }
-  }
-
-  Future<void> profileUpdate({
-    required String name,
-    required String email,
-    required String phone,
-    required String company,
-    File? imageFile,
-  }) async {
-    try {
-      isLoading.value = true;
-
-      final token = await TokenManager.getAccessToken();
-
-      dio.FormData formData = dio.FormData.fromMap({
-        "name": name,
-        "email": email,
-        "phoneNumber": phone,
-        "companyName": company,
-        if (imageFile != null)
-          "profileImage": await dio.MultipartFile.fromFile(imageFile.path),
-      });
-
-      final response = await dioClient.put(
-        "/api/user/profile",
-        data: formData,
-        options: dio.Options(
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "multipart/form-data",
-          },
-          validateStatus: (status) => status != null && status < 500,
-        ),
-      );
-
-      isLoading.value = false;
-
-      if (response.statusCode == 200) {
-        print("Profile updated successfully");
-
-        Get.snackbar("Success", "Profile updated successfully 🎉");
-
-        Get.to(() => AppGroundView());
-        // refresh profile data
-        await fetchProfile();
-      } else {
-        //Get.snackbar("Error", response.data["message"] ?? "Update failed");
-      }
-    } catch (e) {
-      print(
-        "Error: Profile not updated ->====================================== $e",
-      );
-
-      isLoading.value = false;
-      // Get.snackbar("not updated" );
-    }
-  }
-
-  // Fetch data function================================
-  Future<void> fetchProfile() async {
-    try {
-      isLoading.value = true;
-
-      final token = await TokenManager.getAccessToken();
-      if (token == null) {
-        profileData.value = null;
-        print("No token found");
-        return;
-      }
-
-      final response = await dioClient.get(
-        "/api/user/profile",
-        options: dio.Options(
-          headers: {"Authorization": "Bearer $token"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        final userData = response.data?["user"];
-        if (userData != null) {
-          profileData.value = ProfileModel.fromJson(userData);
-          print("Profile fetched successfully: ${profileData.value?.name}");
-        } else {
-          profileData.value = null;
-          print("User data not found in response");
-        }
-      } else {
-        profileData.value = null;
-        print(
-          "Failed to fetch profile: ${response.data?["message"] ?? "Unknown error"}",
-        );
-      }
-    } catch (e) {
-      profileData.value = null;
-      print("Exception fetching profile: $e");
-    } finally {
-      isLoading.value = false;
-      /*   final errorMessage = getErrorMessage(e);
-      Get.snackbar("Error", errorMessage); */
     }
   }
 
@@ -474,6 +374,107 @@ class AuthController extends GetxController {
       Get.snackbar("Error", errorMessage); */
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> profileUpdate({
+    required String name,
+    required String email,
+    required String phone,
+    required String company,
+    File? imageFile,
+  }) async {
+    try {
+      isLoading.value = true;
+
+      final token = await TokenManager.getAccessToken();
+
+      dio.FormData formData = dio.FormData.fromMap({
+        "name": name,
+        "email": email,
+        "phoneNumber": phone,
+        "companyName": company,
+        if (imageFile != null)
+          "profileImage": await dio.MultipartFile.fromFile(imageFile.path),
+      });
+
+      final response = await dioClient.put(
+        "/api/user/profile",
+        data: formData,
+        options: dio.Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "multipart/form-data",
+          },
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      isLoading.value = false;
+
+      if (response.statusCode == 200) {
+        print("Profile updated successfully");
+
+        Get.snackbar("Success", "Profile updated successfully 🎉");
+
+        Get.to(() => AppGroundView());
+        // refresh profile data
+        await fetchProfile();
+      } else {
+        //Get.snackbar("Error", response.data["message"] ?? "Update failed");
+      }
+    } catch (e) {
+      print(
+        "Error: Profile not updated ->====================================== $e",
+      );
+
+      isLoading.value = false;
+      // Get.snackbar("not updated" );
+    }
+  }
+
+  // Fetch data function================================
+  Future<void> fetchProfile() async {
+    try {
+      isLoading.value = true;
+
+      final token = await TokenManager.getAccessToken();
+      if (token == null) {
+        profileData.value = null;
+        print("No token found");
+        return;
+      }
+
+      final response = await dioClient.get(
+        "/api/user/profile",
+        options: dio.Options(
+          headers: {"Authorization": "Bearer $token"},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final userData = response.data?["user"];
+        if (userData != null) {
+          profileData.value = ProfileModel.fromJson(userData);
+          print("Profile fetched successfully: ${profileData.value?.name}");
+        } else {
+          profileData.value = null;
+          print("User data not found in response");
+        }
+      } else {
+        profileData.value = null;
+        print(
+          "Failed to fetch profile: ${response.data?["message"] ?? "Unknown error"}",
+        );
+      }
+    } catch (e) {
+      profileData.value = null;
+      print("Exception fetching profile: $e");
+    } finally {
+      isLoading.value = false;
+      /*   final errorMessage = getErrorMessage(e);
+      Get.snackbar("Error", errorMessage); */
     }
   }
 }

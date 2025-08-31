@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/home/view/home_view.dart';
 import 'package:spotem/feature/map/view/map_view.dart';
-import 'package:spotem/feature/occourreance/view/occourreeance_view.dart';
+import 'package:spotem/feature/report/view/report_view.dart';
 import 'package:spotem/feature/profile/view/profile_view.dart';
 
 class AppGroundView extends StatefulWidget {
@@ -21,7 +21,7 @@ class _AppGroundViewState extends State<AppGroundView> {
 
     MapScreenView(),
 
-    OccourreanceScreenView(),
+    ReportScreenView(),
 
     ProfileScreenView(),
   ];

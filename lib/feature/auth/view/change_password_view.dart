@@ -29,7 +29,9 @@ class ChangePasswordView extends StatelessWidget {
 
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth < 600) {
+          var shortestSide = MediaQuery.of(context).size.shortestSide;
+          bool isMobile = shortestSide < 600;
+          if (isMobile) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
