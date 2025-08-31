@@ -11,6 +11,7 @@ class ChangePasswordView extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +55,7 @@ class ChangePasswordView extends StatelessWidget {
                     ChangePasswordField(
                       fieldName: "Confirm Password",
                       hinText: "Confirm Password",
-                      controller: newPasswordController,
+                      controller: confirmPasswordController,
                     ),
                     SizedBox(height: 10),
                   ],
@@ -70,7 +71,7 @@ class ChangePasswordView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
         child: Obx(
           () => authController.isLoading.value
-              ? CircularProgressIndicator()
+              ? Center(child: CircularProgressIndicator())
               : ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.appColor,
@@ -83,6 +84,7 @@ class ChangePasswordView extends StatelessWidget {
                     authController.changePassword(
                       currentPasswordController.text.trim(),
                       newPasswordController.text.trim(),
+                      confirmPasswordController.text.trim(),
                     );
                   },
 

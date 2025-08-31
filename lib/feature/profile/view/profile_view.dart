@@ -5,6 +5,7 @@ import 'package:spotem/core/common/widgets/dialog_widget.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/auth/view/change_password_view.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 import 'package:spotem/feature/profile/view/notificataion_view.dart';
 import 'package:spotem/feature/profile/view/personal_info_view.dart';
@@ -15,26 +16,39 @@ class ProfileScreenView extends StatelessWidget {
   ProfileScreenView({super.key});
 
   AuthController authController = Get.put(AuthController());
+  final ThemeController themeController = Get.put(ThemeController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 80,
         title: Obx(
           () => Row(
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.black12,
-                child: authController.profileData.value?.profileImage == null
-                    ? Icon(
-                        Icons.photo_size_select_large_rounded,
-                        color: Colors.black,
-                      )
-                    : Image.network(
-                        "${authController.profileData.value?.profileImage.toString()}",
+              authController.profileData.value?.avatar.url != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(60),
+                      child: Image.network(
+                        "${authController.profileData.value?.avatar.url}",
+                        fit: BoxFit.cover,
+                        height: 60,
+                        width: 60,
                       ),
-              ),
+                    )
+                  : CircleAvatar(
+                      radius: 30,
+                      backgroundColor: themeController.isDarkMode.value
+                          ? Colors.white
+                          : Colors.grey[400],
+                      child: Icon(
+                        Icons.photo_size_select_large_rounded,
+                        color: themeController.isDarkMode.value
+                            ? Colors.black
+                            : Colors.black,
+                      ),
+                    ),
               Expanded(
                 child: Row(
                   children: [
@@ -42,9 +56,37 @@ class ProfileScreenView extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          authController.profileData.value?.name ??
-                              'Loading...',
+                        Obx(() {
+                          return Text(
+                            authController.profileData.value?.name != null
+                                ? authController.profileData.value!.name
+                                : 'Loading...',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: themeController.isDarkMode.value
+                                  ? Colors.white
+                                  : AppColors.appColor,
+                            ),
+                          );
+                        }),
+                        Obx(() {
+                          return Text(
+                            authController.profileData.value?.email != null
+                                ? authController.profileData.value!.email
+                                : 'Loading...',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: themeController.isDarkMode.value
+                                  ? Colors.white
+                                  : AppColors.appColor,
+                            ),
+                          );
+                        }),
+
+                        /*     Text(
+                         authController.profileData.value?.name != null? authController.profileData.value?.name :'Loading...',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 24,
@@ -53,8 +95,8 @@ class ProfileScreenView extends StatelessWidget {
                                 ? Colors.black
                                 : Colors.grey,
                           ),
-                        ),
-                        Text(
+                        ), */
+                        /*  Text(
                           "${authController.profileData.value?.email != null ? authController.profileData.value?.name : 'Loading...'}",
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
@@ -64,13 +106,16 @@ class ProfileScreenView extends StatelessWidget {
                                 ? Colors.black
                                 : Colors.grey,
                           ),
-                        ),
+                        ), */
                       ],
                     ),
                     Spacer(),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.toggle_off_outlined),
+                    Obx(
+                      () => Switch(
+                        value: themeController.isDarkMode.value,
+                        onChanged: (_) => themeController.toggleTheme(),
+                        activeColor: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -86,29 +131,51 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(PersonalInfoScreenView());
               },
-              bottomIcon: Icon(Icons.payment_rounded),
+              bottomIcon: Obx(
+                () => Icon(
+                  Icons.payment_rounded,
+                  color: themeController.isDarkMode.value
+                      ? Colors.black
+                      : Colors.black,
+                ),
+              ),
+
               name: "Personal Info",
             ),
             profileButtonWidget(
               onTap: () {
                 Get.to(ChangePasswordView());
               },
+              bottomIcon: Obx(
+                () => Icon(
+                  Icons.lock_outline_rounded,
+                  color: themeController.isDarkMode.value
+                      ? Colors.black
+                      : Colors.black,
+                ),
+              ),
 
-              bottomIcon: Icon(Icons.lock_outline_rounded),
               name: "Change Password",
             ),
             profileButtonWidget(
               onTap: () {
                 Get.to(NotificataionScreenView());
               },
-              bottomIcon: Icon(Icons.notifications_outlined),
+              bottomIcon: Obx(
+                () => Icon(
+                  Icons.notification_important_rounded,
+                  color: themeController.isDarkMode.value
+                      ? Colors.black
+                      : Colors.black,
+                ),
+              ),
               name: "Notification Settings",
             ),
             profileButtonWidget(
               onTap: () {
                 Get.to(AboutAppScreen());
               },
-              bottomIcon: Icon(Icons.help_outline_rounded),
+              bottomIcon: Icon(Icons.help_outline_rounded, color: Colors.black),
               name: "About",
             ),
             profileButtonWidget(

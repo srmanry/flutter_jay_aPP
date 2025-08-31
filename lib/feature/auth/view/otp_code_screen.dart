@@ -95,7 +95,10 @@ class OtpCodeScreenView extends StatelessWidget {
                                   otp: otp,
                                   onSuccess: () {
                                     Get.off(
-                                      () => SetResetPasswordView(email: email),
+                                      () => SetResetPasswordView(
+                                        email: email,
+                                        otp: otp,
+                                      ),
                                     );
                                   },
                                 );

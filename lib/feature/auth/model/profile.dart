@@ -1,69 +1,127 @@
-class ProfileModel {
-  final String id;
-  final String name;
-  final String companyName;
-  final String email;
-  final String phoneNumber;
-  final String? profileImage;
-  final String role;
-  final bool isActive;
-  final String? resetPasswordOTP;
-  final String? resetPasswordExpires;
-  final int totalOrders;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+class Avatar {
+  final String publicId;
+  final String url;
 
-  ProfileModel({
-    required this.id,
-    required this.name,
-    required this.companyName,
-    required this.email,
-    required this.phoneNumber,
-    this.profileImage,
-    required this.role,
-    required this.isActive,
-    this.resetPasswordOTP,
-    this.resetPasswordExpires,
-    required this.totalOrders,
-    required this.createdAt,
-    required this.updatedAt,
+  Avatar({
+    required this.publicId,
+    required this.url,
   });
 
-  factory ProfileModel.fromJson(Map<String, dynamic> json) {
-    return ProfileModel(
-      id: json["_id"],
-      name: json["name"],
-      companyName: json["companyName"],
-      email: json["email"],
-      phoneNumber: json["phoneNumber"],
-      profileImage: json["profileImage"],
-      role: json["role"],
-      isActive: json["isActive"] ?? true,
-      resetPasswordOTP: json["resetPasswordOTP"],
-      resetPasswordExpires: json["resetPasswordExpires"],
-      totalOrders: json["totalOrders"] ?? 0,
-      createdAt: DateTime.parse(json["createdAt"]),
-      updatedAt: DateTime.parse(json["updatedAt"]),
+  factory Avatar.fromJson(Map<String, dynamic> json) {
+    return Avatar(
+      publicId: json['public_id'] ?? '',
+      url: json['url'] ?? '',
     );
   }
 
-  
+  Map<String, dynamic> toJson() {
+    return {
+      'public_id': publicId,
+      'url': url,
+    };
+  }
+}
+
+class UserProfile {
+  final Avatar avatar;
+  final String id;
+  final String name;
+  final String email;
+  final String phone;
+  final dynamic credit;
+  final String role;
+  final bool enableNotifications;
+  final bool dnd;
+  final int totalPosts;
+  final String address;
+  final int fine;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int v;
+
+  UserProfile({
+    required this.avatar,
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    this.credit,
+    required this.role,
+    required this.enableNotifications,
+    required this.dnd,
+    required this.totalPosts,
+    required this.address,
+    required this.fine,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.v,
+  });
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      avatar: Avatar.fromJson(json['avatar'] ?? {}),
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      phone: json['phone'] ?? '',
+      credit: json['credit'],
+      role: json['role'] ?? '',
+      enableNotifications: json['enableNotifications'] ?? false,
+      dnd: json['dnd'] ?? false,
+      totalPosts: json['totalPosts'] ?? 0,
+      address: json['address'] ?? '',
+      fine: json['fine'] ?? 0,
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toString()),
+      v: json['__v'] ?? 0,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
-      "_id": id,
-      "name": name,
-      "companyName": companyName,
-      "email": email,
-      "phoneNumber": phoneNumber,
-      "profileImage": profileImage,
-      "role": role,
-      "isActive": isActive,
-      "resetPasswordOTP": resetPasswordOTP,
-      "resetPasswordExpires": resetPasswordExpires,
-      "totalOrders": totalOrders,
-      "createdAt": createdAt.toIso8601String(),
-      "updatedAt": updatedAt.toIso8601String(),
+      'avatar': avatar.toJson(),
+      '_id': id,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'credit': credit,
+      'role': role,
+      'enableNotifications': enableNotifications,
+      'dnd': dnd,
+      'totalPosts': totalPosts,
+      'address': address,
+      'fine': fine,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      '__v': v,
+    };
+  }
+}
+
+class ApiResponse {
+  final bool success;
+  final String message;
+  final UserProfile? data;
+
+  ApiResponse({
+    required this.success,
+    required this.message,
+    this.data,
+  });
+
+  factory ApiResponse.fromJson(Map<String, dynamic> json) {
+    return ApiResponse(
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: json['data'] != null ? UserProfile.fromJson(json['data']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'message': message,
+      'data': data?.toJson(),
     };
   }
 }

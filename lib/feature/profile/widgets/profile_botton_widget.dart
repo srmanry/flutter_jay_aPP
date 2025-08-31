@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 Widget profileButtonWidget({
   required Widget bottomIcon,
   required String name,
-   final VoidCallback? onTap,
+  final VoidCallback? onTap,
   Color textColor = Colors.black87,
 }) {
+  ThemeController themeController = Get.put(ThemeController());
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
     child: InkWell(
-       onTap: onTap,
+      onTap: onTap,
       child: Container(
         height: 48,
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
+          //  color: isDark ? Colors.white : AppColors.appColor,
           color: const Color(0xFFE8ECF1),
           borderRadius: BorderRadius.circular(8),
         ),

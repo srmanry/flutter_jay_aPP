@@ -16,7 +16,7 @@ import '../view/otp_code_screen.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
-  var profileData = Rxn<ProfileModel>();
+  var profileData = Rxn<UserProfile>();
 
   // Controllers
   final emailController = TextEditingController();
@@ -46,6 +46,13 @@ class AuthController extends GetxController {
   bool isValidEmail(String email) {
     final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
     return emailRegex.hasMatch(email);
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProfile();
+    print("fetchProfile called"); // debug print
   }
 
   //================================================== Dio
@@ -85,7 +92,7 @@ class AuthController extends GetxController {
         data: {"email": email, "password": password},
         options: dio.Options(
           headers: {"Content-Type": "application/json"},
-          validateStatus: (status) => true, // সব status code ধরে রাখবে
+          validateStatus: (status) => true, 
         ),
       );
 
@@ -255,7 +262,7 @@ class AuthController extends GetxController {
       isLoading.value = true;
 
       final response = await dioClient.post(
-        "/auth/reset-password",
+        "/auth/verify-otp",
         data: {"email": email, "otp": otp},
         options: dio.Options(
           headers: {"Content-Type": "application/json"},
@@ -292,18 +299,19 @@ class AuthController extends GetxController {
   // ResetPassword===================================
   Future<void> resetPassword({
     required String email,
+    required String otp,
     required String newPassword,
     required Function onSuccess,
   }) async {
     try {
-      if (passwordController.text.length < 6) {
+      /*  if (passwordController.text.length < 6) {
         Get.snackbar("Error", "Password must be at least 6 characters long");
         return;
-      }
+      } */
       isLoading.value = true;
       final response = await dioClient.post(
-        "/api/auth/reset-password",
-        data: {"email": email, "newPassword": newPassword},
+        "/auth/reset-password",
+        data: {"email": email, "password": newPassword, "otp": otp},
         options: dio.Options(
           headers: {"Content-Type": "application/json"},
           validateStatus: (status) => status != null && status < 500,
@@ -335,25 +343,53 @@ class AuthController extends GetxController {
   Future<void> changePassword(
     String currentPassword,
     String newPassword,
+    String confirmPassword,
   ) async {
     try {
-      if (passwordController.text.length < 6) {
-        Get.snackbar("Error", "Password must be at least 6 characters long");
+      // 🔹 Local validation
+      if (currentPassword.isEmpty) {
+        Get.snackbar("Error", "Current Password is required");
         return;
       }
+      if (newPassword.length < 6) {
+        Get.snackbar(
+          "Error",
+          "New Password must be at least 6 characters long",
+        );
+        return;
+      }
+      if (newPassword != confirmPassword) {
+        Get.snackbar("Error", "New Password and Confirm Password do not match");
+        return;
+      }
+
       isLoading.value = true;
+
+      // 🔹 Token
       final token = await TokenManager.getAccessToken();
-      final response = await dioClient.put(
-        "/api/user/change-password",
-        data: {"currentPassword": currentPassword, "newPassword": newPassword},
+      if (token == null) {
+        Get.snackbar("Error", "User not logged in");
+        return;
+      }
+
+      // 🔹 API call
+      final response = await dioClient.post(
+        "/user/change-password",
+        data: {
+          "currentPassword": currentPassword,
+          "newPassword": newPassword,
+          "confirmPassword": confirmPassword,
+        },
         options: dio.Options(
           headers: {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json",
           },
+          validateStatus: (status) => status != null && status < 500,
         ),
       );
 
+      // 🔹 Response handling
       if (response.statusCode == 200) {
         Get.snackbar("Success", "Password changed successfully");
         CustomDialog(
@@ -363,15 +399,16 @@ class AuthController extends GetxController {
         );
         Get.to(() => AppGroundView());
       } else {
-        Get.snackbar(
-          "Error",
-          response.data["message"] ?? "Something went wrong",
-        );
+        // 🔹 Show server error (like current password mismatch)
+        final message = response.data?["message"] ?? "Something went wrong";
+        Get.snackbar("Error", message);
+        print("Change Password Error: $message"); // debug log
       }
-    } catch (e) {
-      // print("======================= no Change Password === $e");
-      /*  final errorMessage = getErrorMessage(e);
-      Get.snackbar("Error", errorMessage); */
+    } catch (e, stacktrace) {
+      // 🔹 Show actual exception if API fails
+      print("Exception changing password: $e");
+      print(stacktrace);
+      Get.snackbar("Error", "An unexpected error occurred");
     } finally {
       isLoading.value = false;
     }
@@ -433,7 +470,6 @@ class AuthController extends GetxController {
     }
   }
 
-  // Fetch data function================================
   Future<void> fetchProfile() async {
     try {
       isLoading.value = true;
@@ -446,7 +482,7 @@ class AuthController extends GetxController {
       }
 
       final response = await dioClient.get(
-        "/api/user/profile",
+        "/user/profile",
         options: dio.Options(
           headers: {"Authorization": "Bearer $token"},
           validateStatus: (status) => status != null && status < 500,
@@ -454,9 +490,9 @@ class AuthController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        final userData = response.data?["user"];
+        final userData = response.data?["data"];
         if (userData != null) {
-          profileData.value = ProfileModel.fromJson(userData);
+          profileData.value = UserProfile.fromJson(userData);
           print("Profile fetched successfully: ${profileData.value?.name}");
         } else {
           profileData.value = null;
@@ -470,11 +506,10 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       profileData.value = null;
-      print("Exception fetching profile: $e");
+      print("==============================Exception fetching profile: $e");
     } finally {
       isLoading.value = false;
-      /*   final errorMessage = getErrorMessage(e);
-      Get.snackbar("Error", errorMessage); */
+      print("Profile data: ${profileData.value?.toJson()}");
     }
   }
 }

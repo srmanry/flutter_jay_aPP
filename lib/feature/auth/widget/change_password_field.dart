@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 class ChangePasswordField extends StatelessWidget {
   final TextEditingController? controller;
@@ -15,7 +17,7 @@ class ChangePasswordField extends StatelessWidget {
   final Widget? outLineBorder;
   final bool? isReadOnly;
 
-  const ChangePasswordField({
+  ChangePasswordField({
     super.key,
     this.textFieldName,
     this.hinText,
@@ -30,7 +32,7 @@ class ChangePasswordField extends StatelessWidget {
     this.obscureText,
     this.isReadOnly,
   });
-
+  ThemeController themeController = Get.put(ThemeController());
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -40,7 +42,9 @@ class ChangePasswordField extends StatelessWidget {
           "$fieldName",
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            color: Colors.black,
+            color: themeController.isDarkMode.value
+                ? Colors.white
+                : Colors.black,
             fontSize: 16,
           ),
         ),
@@ -53,8 +57,6 @@ class ChangePasswordField extends StatelessWidget {
             //color: AppColors.fieldColor,
             // border: Border.all(color: Colors.red),
             color: const Color(0xFFE8ECF1),
-
-       
           ),
           child: TextFormField(
             // obscureText: obscureText,
@@ -62,7 +64,7 @@ class ChangePasswordField extends StatelessWidget {
             keyboardType: textInputType,
             decoration: InputDecoration(
               focusColor: focusColor,
-         
+
               hintText: hinText,
               hintStyle: const TextStyle(
                 fontSize: 14,

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:spotem/core/common/widgets/save_botton.dart';
+import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
 import 'package:spotem/feature/report/controller/report_controller.dart';
 
 class ReportScreenView extends StatelessWidget {
   ReportScreenView({super.key});
 
   final ReportController controller = Get.put(ReportController());
-
-  final TextStyle textStyle = const TextStyle(
-    color: Colors.black,
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-  );
+  final ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +19,17 @@ class ReportScreenView extends StatelessWidget {
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text("Report"),
+          children: [
+            Text(
+              "Report",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: AppColors.appColor,
+              ),
+            ),
             SizedBox(width: 10),
-            Icon(Icons.report_outlined, size: 30),
+            Icon(Icons.report_outlined, size: 30, color: AppColors.appColor),
           ],
         ),
       ),
@@ -34,7 +39,16 @@ class ReportScreenView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Event", style: textStyle),
+              Text(
+                "Event",
+                style: TextStyle(
+                  color: themeController.isDarkMode.value
+                      ? Colors.white
+                      : Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
               const SizedBox(height: 10),
               TextField(
                 controller: controller.titleController,
@@ -45,7 +59,16 @@ class ReportScreenView extends StatelessWidget {
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 15),
-              Text("Description", style: textStyle),
+              Text(
+                "Description",
+                style: TextStyle(
+                  color: themeController.isDarkMode.value
+                      ? Colors.white
+                      : Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
               const SizedBox(height: 10),
               TextField(
                 controller: controller.descriptionController,

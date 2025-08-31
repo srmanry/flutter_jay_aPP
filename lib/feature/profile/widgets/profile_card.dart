@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 class ProfileCardWidget extends StatelessWidget {
   final String data;
   final String typeName;
   final Widget? widget;
 
-  const ProfileCardWidget({
-    
+  ProfileCardWidget({
     super.key,
     required this.data,
     required this.typeName,
     this.widget,
   });
-
+  final ThemeController themeController = Get.put(ThemeController());
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          typeName,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
+        Obx(
+          () => Text(
+            typeName,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: themeController.isDarkMode.value
+                  ? Colors.white
+                  : Colors.black,
+            ),
           ),
         ),
         const SizedBox(height: 8),
@@ -45,8 +51,7 @@ class ProfileCardWidget extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                    color: Color(0xff777d87),
-                  
+                  color: Color(0xff777d87),
                 ),
               ),
               widget ?? const SizedBox(),

@@ -10,7 +10,8 @@ import '../controller/auth_controller.dart';
 
 class SetResetPasswordView extends StatelessWidget {
   final String email;
-  SetResetPasswordView({super.key, required this.email});
+  final String otp;
+  SetResetPasswordView({super.key, required this.email, required this.otp});
 
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -46,7 +47,7 @@ class SetResetPasswordView extends StatelessWidget {
                 prefixIcon: Icons.lock_outline,
                 //obscureText: true,
               ),
-              Padding(
+              /*  Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 child: CustomTextField(
                   controller: confirmPasswordController,
@@ -54,7 +55,7 @@ class SetResetPasswordView extends StatelessWidget {
                   prefixIcon: Icons.lock_outline,
                   // obscureText: true,
                 ),
-              ),
+              ), */
 
               // Reset Password Button
               Obx(
@@ -71,13 +72,14 @@ class SetResetPasswordView extends StatelessWidget {
                             Get.snackbar("Error", "All fields are required");
                             return;
                           }
-                          if (newPass != confirmPass) {
+                          /*  if (newPass != confirmPass) {
                             Get.snackbar("Error", "Passwords do not match");
                             return;
-                          }
+                          } */
 
                           // Call API
                           await authController.resetPassword(
+                            otp: otp,
                             email: email,
                             newPassword: newPass,
                             onSuccess: () {
@@ -93,10 +95,6 @@ class SetResetPasswordView extends StatelessWidget {
               ),
 
               const SizedBox(height: 40),
-              const Text(
-                'Your Profile helps us customize your experience',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
             ],
           ),
         ),

@@ -1,31 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:spotem/core/util/app_colors.dart';
+
+import '../controller/theme_controller.dart';
 
 class AboutAppScreen extends StatelessWidget {
-  const AboutAppScreen({super.key});
+  AboutAppScreen({super.key});
+
+  ThemeController themeController = Get.put(ThemeController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.red, // Status bar background
-          statusBarIconBrightness: Brightness.dark, // Android icons
-          statusBarBrightness: Brightness.dark, // iOS icons
-        ),
         centerTitle: false,
 
-        title: const Text("About App"),
+        title: Text(
+          "About App",
+          style: TextStyle(
+            color: AppColors.appColor,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         elevation: 1,
+        iconTheme: IconThemeData(color: AppColors.appColor, size: 30),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: RichText(
             text: TextSpan(
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: Colors.black,
+                color: themeController.isDarkMode.value
+                    ? Colors.white
+                    : Colors.black,
                 height: 1.5,
               ),
               children: const [
