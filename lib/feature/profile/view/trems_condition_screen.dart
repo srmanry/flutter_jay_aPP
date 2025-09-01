@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotem/core/util/app_colors.dart';
 
 class TermsConditionsView extends StatelessWidget {
   const TermsConditionsView({super.key});
@@ -10,7 +11,8 @@ class TermsConditionsView extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         title: const Text("Terms & Conditions"),
-        elevation: 1,
+        iconTheme: IconThemeData(color: AppColors.appColor, size: 30),
+        elevation: 0.5,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,26 +27,26 @@ class TermsConditionsView extends StatelessWidget {
               children: const [
                 TextSpan(
                   text:
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
                       "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "
                       "when an unknown printer took a galley of type and scrambled it to make a type specimen book.\n\n",
                 ),
                 TextSpan(
                   text:
-                  "It has survived not only five centuries, but also the leap into electronic typesetting, "
+                      "It has survived not only five centuries, but also the leap into electronic typesetting, "
                       "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets "
                       "containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n",
                 ),
 
                 TextSpan(
                   text:
-                  "It has survived not only five centuries, but also the leap into electronic typesetting, "
+                      "It has survived not only five centuries, but also the leap into electronic typesetting, "
                       "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets "
                       "containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n",
                 ),
                 TextSpan(
                   text:
-                  "It has survived not only five centuries, but also the leap into electronic typesetting, "
+                      "It has survived not only five centuries, but also the leap into electronic typesetting, "
                       "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets "
                       "containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n",
                 ),

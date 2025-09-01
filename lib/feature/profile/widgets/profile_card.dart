@@ -39,7 +39,11 @@ class ProfileCardWidget extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: AppColors.fieldColor,
+            color: themeController.isDarkMode.value
+                ? const Color.fromARGB(221, 32, 32, 32)
+                : Colors.white,
+
+            // AppColors.fieldColor,
             borderRadius: BorderRadius.circular(8),
           ),
           alignment: Alignment.centerLeft,
@@ -48,10 +52,12 @@ class ProfileCardWidget extends StatelessWidget {
             children: [
               Text(
                 data,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xff777d87),
+                  color: themeController.isDarkMode.value
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               widget ?? const SizedBox(),

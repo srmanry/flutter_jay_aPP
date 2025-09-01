@@ -1,34 +1,38 @@
-class Avatar {
-  final String publicId;
-  final String url;
+class UserProfileModel {
+  final bool success;
+  final String message;
+  final UserData data;
 
-  Avatar({
-    required this.publicId,
-    required this.url,
+  UserProfileModel({
+    required this.success,
+    required this.message,
+    required this.data,
   });
 
-  factory Avatar.fromJson(Map<String, dynamic> json) {
-    return Avatar(
-      publicId: json['public_id'] ?? '',
-      url: json['url'] ?? '',
+  factory UserProfileModel.fromJson(Map<String, dynamic> json) {
+    return UserProfileModel(
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: UserData.fromJson(json['data'] ?? {}),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'public_id': publicId,
-      'url': url,
+      'success': success,
+      'message': message,
+      'data': data.toJson(),
     };
   }
 }
 
-class UserProfile {
+class UserData {
   final Avatar avatar;
   final String id;
   final String name;
   final String email;
   final String phone;
-  final dynamic credit;
+  final int? credit;
   final String role;
   final bool enableNotifications;
   final bool dnd;
@@ -38,8 +42,9 @@ class UserProfile {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int v;
+  final String gender;
 
-  UserProfile({
+  UserData({
     required this.avatar,
     required this.id,
     required this.name,
@@ -55,10 +60,11 @@ class UserProfile {
     required this.createdAt,
     required this.updatedAt,
     required this.v,
+    required this.gender,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) {
-    return UserProfile(
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       avatar: Avatar.fromJson(json['avatar'] ?? {}),
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
@@ -71,9 +77,10 @@ class UserProfile {
       totalPosts: json['totalPosts'] ?? 0,
       address: json['address'] ?? '',
       fine: json['fine'] ?? 0,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toString()),
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
       v: json['__v'] ?? 0,
+      gender: json['gender'] ?? '',
     );
   }
 
@@ -94,34 +101,31 @@ class UserProfile {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       '__v': v,
+      'gender': gender,
     };
   }
 }
 
-class ApiResponse {
-  final bool success;
-  final String message;
-  final UserProfile? data;
+class Avatar {
+  final String publicId;
+  final String url;
 
-  ApiResponse({
-    required this.success,
-    required this.message,
-    this.data,
+  Avatar({
+    required this.publicId,
+    required this.url,
   });
 
-  factory ApiResponse.fromJson(Map<String, dynamic> json) {
-    return ApiResponse(
-      success: json['success'] ?? false,
-      message: json['message'] ?? '',
-      data: json['data'] != null ? UserProfile.fromJson(json['data']) : null,
+  factory Avatar.fromJson(Map<String, dynamic> json) {
+    return Avatar(
+      publicId: json['public_id'] ?? '',
+      url: json['url'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'success': success,
-      'message': message,
-      'data': data?.toJson(),
+      'public_id': publicId,
+      'url': url,
     };
   }
 }

@@ -52,11 +52,14 @@ class ChangePasswordField extends StatelessWidget {
         Container(
           height: 45,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(10),
 
             //color: AppColors.fieldColor,
             // border: Border.all(color: Colors.red),
-            color: const Color(0xFFE8ECF1),
+            //color: const Color(0xFFE8ECF1),
+            color: themeController.isDarkMode.value
+                ? const Color.fromARGB(221, 32, 32, 32)
+                : Colors.white,
           ),
           child: TextFormField(
             // obscureText: obscureText,
@@ -76,8 +79,10 @@ class ChangePasswordField extends StatelessWidget {
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(
-                  color: Color(0xFFFFFFFF),
+                borderSide: BorderSide(
+                  color: themeController.isDarkMode.value
+                      ? Colors.black
+                      : Color(0xFFFFFFFF),
                   width: 0.0,
                 ),
               ),

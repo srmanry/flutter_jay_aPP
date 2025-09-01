@@ -16,7 +16,7 @@ import '../view/otp_code_screen.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
-  var profileData = Rxn<UserProfile>();
+  var profileData = Rxn<UserProfileModel>();
 
   // Controllers
   final emailController = TextEditingController();
@@ -92,7 +92,7 @@ class AuthController extends GetxController {
         data: {"email": email, "password": password},
         options: dio.Options(
           headers: {"Content-Type": "application/json"},
-          validateStatus: (status) => true, 
+          validateStatus: (status) => true,
         ),
       );
 
@@ -418,7 +418,8 @@ class AuthController extends GetxController {
     required String name,
     required String email,
     required String phone,
-    required String company,
+    String? gender,
+    required String address,
     File? imageFile,
   }) async {
     try {
@@ -428,15 +429,15 @@ class AuthController extends GetxController {
 
       dio.FormData formData = dio.FormData.fromMap({
         "name": name,
-        "email": email,
-        "phoneNumber": phone,
-        "companyName": company,
+        //"email": email,
+        "phone": phone,
+        "address": address,
         if (imageFile != null)
-          "profileImage": await dio.MultipartFile.fromFile(imageFile.path),
+          "avatar": await dio.MultipartFile.fromFile(imageFile.path.toString()),
       });
 
-      final response = await dioClient.put(
-        "/api/user/profile",
+      final response = await dioClient.patch(
+        "/user/update-profile",
         data: formData,
         options: dio.Options(
           headers: {
@@ -489,15 +490,9 @@ class AuthController extends GetxController {
         ),
       );
 
-      if (response.statusCode == 200) {
-        final userData = response.data?["data"];
-        if (userData != null) {
-          profileData.value = UserProfile.fromJson(userData);
-          print("Profile fetched successfully: ${profileData.value?.name}");
-        } else {
-          profileData.value = null;
-          print("User data not found in response");
-        }
+      if (response.data != null) {
+        profileData.value = UserProfileModel.fromJson(response.data!);
+        print("Profile fetched successfully: ${profileData.value?.toJson()}");
       } else {
         profileData.value = null;
         print(

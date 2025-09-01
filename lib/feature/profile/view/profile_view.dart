@@ -22,108 +22,118 @@ class ProfileScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         automaticallyImplyLeading: false,
         toolbarHeight: 80,
-        title: Obx(
-          () => Row(
-            children: [
-              authController.profileData.value?.avatar.url != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(60),
-                      child: Image.network(
-                        "${authController.profileData.value?.avatar.url}",
-                        fit: BoxFit.cover,
-                        height: 60,
-                        width: 60,
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 30,
-                      backgroundColor: themeController.isDarkMode.value
-                          ? Colors.white
-                          : Colors.grey[400],
-                      child: Icon(
-                        Icons.photo_size_select_large_rounded,
-                        color: themeController.isDarkMode.value
-                            ? Colors.black
-                            : Colors.black,
-                      ),
-                    ),
-              Expanded(
-                child: Row(
-                  children: [
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Obx(() {
-                          return Text(
-                            authController.profileData.value?.name != null
-                                ? authController.profileData.value!.name
-                                : 'Loading...',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: themeController.isDarkMode.value
-                                  ? Colors.white
-                                  : AppColors.appColor,
-                            ),
-                          );
-                        }),
-                        Obx(() {
-                          return Text(
-                            authController.profileData.value?.email != null
-                                ? authController.profileData.value!.email
-                                : 'Loading...',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: themeController.isDarkMode.value
-                                  ? Colors.white
-                                  : AppColors.appColor,
-                            ),
-                          );
-                        }),
+        title: Obx(() {
+          final profile = authController.profileData.value;
 
-                        /*     Text(
-                         authController.profileData.value?.name != null? authController.profileData.value?.name :'Loading...',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 24,
-                            color:
-                                authController.profileData.value?.name != null
-                                ? Colors.black
-                                : Colors.grey,
-                          ),
-                        ), */
-                        /*  Text(
-                          "${authController.profileData.value?.email != null ? authController.profileData.value?.name : 'Loading...'}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 18,
-                            color:
-                                authController.profileData.value?.email != null
-                                ? Colors.black
-                                : Colors.grey,
-                          ),
-                        ), */
-                      ],
-                    ),
-                    Spacer(),
-                    Obx(
-                      () => Switch(
-                        value: themeController.isDarkMode.value,
-                        onChanged: (_) => themeController.toggleTheme(),
-                        activeColor: Colors.white,
-                      ),
-                    ),
-                  ],
+          if (profile == null) {
+            // 🔹 Loading state
+            return Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.grey[400],
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 20,
+                        width: 100,
+                        color: Colors.grey[300],
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        height: 14,
+                        width: 150,
+                        color: Colors.grey[300],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
+                CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              ],
+            );
+          } else {
+            // 🔹 Data available
+            final avatarUrl = profile.data.avatar.url ?? '';
+            return Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: avatarUrl.isNotEmpty
+                      ? Image.network(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          height: 60,
+                          width: 60,
+                          errorBuilder: (context, error, stackTrace) {
+                            return CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.grey[400],
+                              child: Icon(Icons.person),
+                            );
+                          },
+                        )
+                      : CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey[400],
+                          child: Icon(Icons.person),
+                        ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        profile.data.name,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: themeController.isDarkMode.value
+                              ? Colors.white
+                              : AppColors.appColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        profile.data.email,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: themeController.isDarkMode.value
+                              ? Colors.black
+                              : AppColors.appColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Obx(
+                  () => Switch(
+                    value: themeController.isDarkMode.value,
+                    onChanged: (_) => themeController.toggleTheme(),
+                    activeColor: Colors.white,
+                  ),
+                ),
+              ],
+            );
+          }
+        }),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -135,7 +145,7 @@ class ProfileScreenView extends StatelessWidget {
                 () => Icon(
                   Icons.payment_rounded,
                   color: themeController.isDarkMode.value
-                      ? Colors.black
+                      ? Colors.white
                       : Colors.black,
                 ),
               ),
@@ -150,7 +160,7 @@ class ProfileScreenView extends StatelessWidget {
                 () => Icon(
                   Icons.lock_outline_rounded,
                   color: themeController.isDarkMode.value
-                      ? Colors.black
+                      ? Colors.white
                       : Colors.black,
                 ),
               ),
@@ -165,7 +175,7 @@ class ProfileScreenView extends StatelessWidget {
                 () => Icon(
                   Icons.notification_important_rounded,
                   color: themeController.isDarkMode.value
-                      ? Colors.black
+                      ? Colors.white
                       : Colors.black,
                 ),
               ),
@@ -175,7 +185,12 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(AboutAppScreen());
               },
-              bottomIcon: Icon(Icons.help_outline_rounded, color: Colors.black),
+              bottomIcon: Icon(
+                Icons.help_outline_rounded,
+                color: themeController.isDarkMode.value
+                    ? Colors.white
+                    : Colors.black,
+              ),
               name: "About",
             ),
             profileButtonWidget(
@@ -188,6 +203,9 @@ class ProfileScreenView extends StatelessWidget {
                         "assets/icons/appIcon.png",
                         height: 102,
                         width: 102,
+                        /*  color: themeController.isDarkMode.value
+                            ? Colors.white
+                            : Colors.black, */
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -265,7 +283,6 @@ class ProfileScreenView extends StatelessWidget {
               },
               bottomIcon: Icon(Icons.logout_rounded, color: Colors.red),
               name: "Log Out",
-              textColor: Colors.red,
             ),
           ],
         ),

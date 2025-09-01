@@ -17,102 +17,105 @@ class HomeScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         toolbarHeight: 150,
-        title: Column(
-          children: [
-            Row(
-              children: [
-                Column(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Hello ${authController.profileData.value?.name}",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.appColor,
+        title: Obx(
+          () => Column(
+            children: [
+              Row(
+                children: [
+                  Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello 👋 ${authController.profileData.value?.data.name ?? "Loading..."}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.appColor,
+                            ),
                           ),
-                        ),
-                        Text(
-                          "Welcome to Spot'em365",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            // color: AppColors.appColor,
-                            color: themeController.isDarkMode.value
-                                ? Colors.white
-                                : Colors.grey[800],
+                          Text(
+                            "🎉 Welcome to Spot'em365",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              // color: AppColors.appColor,
+                              color: themeController.isDarkMode.value
+                                  ? Colors.white
+                                  : Colors.grey[800],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                Spacer(),
-
-                authController.profileData.value?.avatar != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(40),
-                        child: Image.network(
-                          "${authController.profileData.value?.avatar.url}",
-                          height: 40,
-                          width: 40,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : CircleAvatar(
-                        radius: 30,
-                        backgroundColor: themeController.isDarkMode.value
-                            ? Colors.white
-                            : Colors.grey[400],
-                        child: Icon(
-                          Icons.person,
-                          color: themeController.isDarkMode.value
-                              ? Colors.black
-                              : Colors.black,
-                        ),
+                        ],
                       ),
-                SizedBox(width: 10),
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.grey[300],
-                  child: Icon(
-                    Icons.notifications_none_outlined,
-                    color: themeController.isDarkMode.value
-                        ? Colors.red
-                        : Colors.red,
+                    ],
+                  ),
+
+                  Spacer(),
+
+                  authController.profileData.value?.data.avatar.url != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: Image.network(
+                            "${authController.profileData.value?.data.avatar.url}",
+                            height: 40,
+                            width: 40,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 25,
+                          backgroundColor: themeController.isDarkMode.value
+                              ? Colors.white
+                              : Colors.grey[400],
+                          child: Icon(
+                            Icons.account_circle_outlined,
+                            color: themeController.isDarkMode.value
+                                ? Colors.black
+                                : Colors.black,
+                          ),
+                        ),
+                  SizedBox(width: 10),
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: themeController.isDarkMode.value
+                        ? Colors.white
+                        : Colors.grey[300],
+                    child: Icon(
+                      Icons.notifications_none_outlined,
+                      color: themeController.isDarkMode.value
+                          ? Colors.red
+                          : Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  // color: AppColors.appColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1.5, color: AppColors.appColor),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: AppColors.appColor),
+                    hintText: "Search",
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.appColor,
+                    ),
+                    border: InputBorder.none,
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 15),
-            Container(
-              height: 45,
-              decoration: BoxDecoration(
-                // color: AppColors.appColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(width: 1.5, color: AppColors.appColor),
               ),
-              child: TextField(
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: AppColors.appColor),
-                  hintText: "Search",
-                  hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.appColor,
-                  ),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       body: LayoutBuilder(
@@ -122,7 +125,7 @@ class HomeScreenView extends StatelessWidget {
           if (isMobile) {
             return Obx(
               () => Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 // ignore: unnecessary_null_comparison
                 child: homeController.reports == null
                     ? Center(child: Text("No Reports Found"))

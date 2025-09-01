@@ -8,10 +8,14 @@ import 'feature/splash/view/splash_screen_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint("Caught Flutter Error+++++++++++++++++: ${details.exception}");
+    debugPrint("Stack: ${details.stack}");
+  };
 }
 
 class MyApp extends StatelessWidget {
-  
   const MyApp({super.key});
 
   @override
@@ -21,13 +25,20 @@ class MyApp extends StatelessWidget {
 
     return Obx(
       () => GetMaterialApp(
-        
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        
+
         theme: ThemeData(
+          useMaterial3: false,
           appBarTheme: AppBarTheme(
-            iconTheme: IconThemeData(color: AppColors.appColor),
+            backgroundColor: themeController.isDarkMode.value
+                ? Colors.black
+                : Colors.white,
+            iconTheme: IconThemeData(
+              color: themeController.isDarkMode.value
+                  ? Colors.white
+                  : Colors.black,
+            ),
             titleTextStyle: TextStyle(
               color: themeController.isDarkMode.value
                   ? AppColors.appColor

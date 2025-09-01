@@ -1,16 +1,17 @@
-/* import 'dart:io';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart'; // image picker
-import 'package:preisslerslunch/feature/auth/controller/auth_controller.dart';
-import 'package:preisslerslunch/feature/auth/model/profile.dart';
-import 'package:preisslerslunch/feature/auth/widget/change_password_field.dart';
+
+import 'package:spotem/feature/auth/controller/auth_controller.dart';
+import 'package:spotem/feature/auth/model/profile.dart';
+import 'package:spotem/feature/auth/widget/change_password_field.dart';
 
 import '../../../../../core/common/widgets/save_botton.dart';
 
 class EditProfileView extends StatefulWidget {
-  final ProfileModel profile;
+  final UserProfileModel profile;
   const EditProfileView({super.key, required this.profile});
 
   @override
@@ -20,20 +21,25 @@ class EditProfileView extends StatefulWidget {
 class _EditProfileViewState extends State<EditProfileView> {
   final AuthController authController = Get.put(AuthController());
 
+  final imageController = TextEditingController();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
-  final companyController = TextEditingController();
+  final addressController = TextEditingController();
+  final genderController = TextEditingController();
 
   File? pickedImage;
 
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.profile.name;
-    emailController.text = widget.profile.email;
-    phoneController.text = widget.profile.phoneNumber;
-    companyController.text = widget.profile.companyName;
+
+    imageController.text = widget.profile.data.avatar.url;
+    nameController.text = widget.profile.data.name;
+
+    phoneController.text = widget.profile.data.phone;
+    addressController.text = widget.profile.data.address;
+    genderController.text = widget.profile.data.gender;
   }
 
   Future<void> pickImage() async {
@@ -76,15 +82,18 @@ class _EditProfileViewState extends State<EditProfileView> {
                             backgroundColor: Colors.black12,
                             backgroundImage: pickedImage != null
                                 ? FileImage(pickedImage!)
-                                : (widget.profile.profileImage != null
+                                // ignore: unnecessary_null_comparison
+                                : (widget.profile.data.avatar.url != null
                                       ? NetworkImage(
-                                              widget.profile.profileImage!,
+                                              widget.profile.data.avatar.url
+                                                  .toString(),
                                             )
                                             as ImageProvider
                                       : null),
                             child:
                                 (pickedImage == null &&
-                                    widget.profile.profileImage == null)
+                                    // ignore: unnecessary_null_comparison
+                                    widget.profile.data.avatar.url == null)
                                 ? const Icon(
                                     Icons.person,
                                     size: 40,
@@ -129,9 +138,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                       controller: phoneController,
                     ),
                     ChangePasswordField(
-                      fieldName: "Company Name",
-                      hinText: "Company Name",
-                      controller: companyController,
+                      fieldName: "Address",
+                      hinText: "Address",
+                      controller: addressController,
                     ),
 
                     const SizedBox(height: 20),
@@ -145,7 +154,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                           name: nameController.text,
                           email: emailController.text,
                           phone: phoneController.text,
-                          company: companyController.text,
+                          address: addressController.text,
                           imageFile: pickedImage,
                         );
                       },
@@ -162,4 +171,3 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 }
- */

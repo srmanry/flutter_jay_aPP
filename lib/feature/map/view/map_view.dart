@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapScreenView extends StatelessWidget {
   const MapScreenView({super.key});
@@ -6,7 +8,37 @@ class MapScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Map"),),
+      appBar: AppBar(title: const Text("Map View"), elevation: 0),
+      body: FlutterMap(
+        options: const MapOptions(
+          initialCenter: LatLng(23.777176, 90.399452), // Dhaka
+          initialZoom: 13,
+        ),
+        children: [
+          // Tile layer (মেইন ম্যাপ)
+          /*   TileLayer(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: const ['a', 'b', 'c'],
+            userAgentPackageName:
+                "com.example.app", // আপনার অ্যাপের প্যাকেজ নেম
+          ), */
+          // Marker layer (পিন বসানো)
+          /*   MarkerLayer(
+            markers: [
+              Marker(
+                point: const LatLng(23.777176, 90.399452),
+                width: 40,
+                height: 40,
+                child: const Icon(
+                  Icons.location_pin,
+                  size: 40,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ), */
+        ],
+      ),
     );
   }
 }
