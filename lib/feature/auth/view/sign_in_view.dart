@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:spotem/core/common/widgets/app_icon.dart';
 import 'package:spotem/core/util/app_colors.dart';
 
 import '../../../../../core/common/common_text.dart';
@@ -31,7 +32,7 @@ class SignInScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset("assets/icons/appIcon.png", height: 124, width: 124),
+           AppIconWidget(),
             const SizedBox(height: 40),
             const Text(
               "Welcome Back",

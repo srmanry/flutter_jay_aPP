@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart'; // image picker
+import 'package:spotem/core/util/app_colors.dart';
 
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/auth/model/profile.dart';
@@ -58,10 +59,13 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: AppColors.appColor,size: 30),
         centerTitle: true,
         title: authController.rememberMe.value == true
             ? const Text("Profile")
             : const Text("Edit Profile"),
+
+        elevation: 0,
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -128,8 +132,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                       controller: nameController,
                     ),
                     ChangePasswordField(
-                      fieldName: "Email",
-                      hinText: "Email",
+                      fieldName: "Date of Birth",
+                      hinText: "date off birth",
                       controller: emailController,
                     ),
                     ChangePasswordField(

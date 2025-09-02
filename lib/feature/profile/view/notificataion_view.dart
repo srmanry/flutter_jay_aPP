@@ -19,11 +19,13 @@ class NotificataionScreenView extends StatelessWidget {
           ),
         ),
         iconTheme: IconThemeData(color: AppColors.appColor, size: 30),
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

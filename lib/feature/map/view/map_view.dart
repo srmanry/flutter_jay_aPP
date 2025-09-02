@@ -15,15 +15,8 @@ class MapScreenView extends StatelessWidget {
           initialZoom: 13,
         ),
         children: [
-          // Tile layer (মেইন ম্যাপ)
-          /*   TileLayer(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: const ['a', 'b', 'c'],
-            userAgentPackageName:
-                "com.example.app", // আপনার অ্যাপের প্যাকেজ নেম
-          ), */
-          // Marker layer (পিন বসানো)
-          /*   MarkerLayer(
+
+          MarkerLayer(
             markers: [
               Marker(
                 point: const LatLng(23.777176, 90.399452),
@@ -36,7 +29,7 @@ class MapScreenView extends StatelessWidget {
                 ),
               ),
             ],
-          ), */
+          ),
         ],
       ),
     );

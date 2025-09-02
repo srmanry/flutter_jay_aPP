@@ -14,6 +14,7 @@ class AboutAppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         centerTitle: false,
 
         title: Text(
@@ -24,7 +25,7 @@ class AboutAppScreen extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        elevation: 1,
+        elevation: 0,
         iconTheme: IconThemeData(color: AppColors.appColor, size: 30),
       ),
       body: Padding(

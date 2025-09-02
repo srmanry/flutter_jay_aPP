@@ -46,6 +46,7 @@ class ChangePasswordField extends StatelessWidget {
                 ? Colors.white
                 : Colors.black,
             fontSize: 16,
+
           ),
         ),
         SizedBox(height: 5),
@@ -57,9 +58,9 @@ class ChangePasswordField extends StatelessWidget {
             //color: AppColors.fieldColor,
             // border: Border.all(color: Colors.red),
             //color: const Color(0xFFE8ECF1),
-            color: themeController.isDarkMode.value
-                ? const Color.fromARGB(221, 32, 32, 32)
-                : Colors.white,
+            color: themeController.isDarkMode.value?Colors.white
+               // ? const Color.fromARGB(221, 32, 32, 32)
+                : Color(0xFFE8ECF1)
           ),
           child: TextFormField(
             // obscureText: obscureText,

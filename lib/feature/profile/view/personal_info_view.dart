@@ -4,6 +4,7 @@ import 'package:spotem/core/common/widgets/save_botton.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/auth/view/edit_profile_view.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 import 'package:spotem/feature/profile/widgets/profile_card.dart';
 
@@ -11,6 +12,8 @@ class PersonalInfoScreenView extends StatelessWidget {
   PersonalInfoScreenView({super.key});
 
   AuthController authController = Get.put(AuthController());
+
+  ThemeController themeController = Get.put(ThemeController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +26,7 @@ class PersonalInfoScreenView extends StatelessWidget {
             fontSize: 24,
             fontWeight: FontWeight.w700,
           ),
+
         ),
         iconTheme: IconThemeData(color: AppColors.appColor),
         elevation: 0,
@@ -54,24 +58,25 @@ class PersonalInfoScreenView extends StatelessWidget {
                 authController.profileData.value == null
                     ? Center(child: CircularProgressIndicator())
                     : CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.black12,
+                        radius: 45,
+                        backgroundColor:themeController.isDarkMode.value? Colors.black12:Colors.black12,
                         child:
-                            authController.profileData.value?.data.avatar ==
+                            authController.profileData.value?.data.avatar !=
                                 null
-                            ? Icon(
-                                Icons.photo_size_select_large_rounded,
-                                color: const Color.fromARGB(255, 95, 94, 94),
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadiusGeometry.circular(45),
+                            ?
+                            ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(70),
                                 child: Image.network(
                                   "${authController.profileData.value?.data.avatar.url.toString()}",
-                                  height: 67,
+                                  height: 70,
                                   fit: BoxFit.cover,
                                   width: 70,
+
                                 ),
-                              ),
+                              ):Icon(
+          Icons.photo_size_select_large_rounded,
+          color: const Color.fromARGB(255, 95, 94, 94),
+        )
                       ),
                 SizedBox(height: 20),
                 ProfileCardWidget(

@@ -41,7 +41,7 @@ class ProfileCardWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: themeController.isDarkMode.value
                 ? const Color.fromARGB(221, 32, 32, 32)
-                : Colors.white,
+                : Color(0xffE8ECF1),
 
             // AppColors.fieldColor,
             borderRadius: BorderRadius.circular(8),

@@ -88,7 +88,7 @@ class ProfileScreenView extends StatelessWidget {
                       : CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.grey[400],
-                          child: Icon(Icons.person),
+                          child: Icon(Icons.account_circle_outlined,color: Colors.grey[300],size: 50,),
                         ),
                 ),
                 SizedBox(width: 10),
@@ -173,7 +173,7 @@ class ProfileScreenView extends StatelessWidget {
               },
               bottomIcon: Obx(
                 () => Icon(
-                  Icons.notification_important_rounded,
+                  Icons.notifications_outlined,
                   color: themeController.isDarkMode.value
                       ? Colors.white
                       : Colors.black,
@@ -185,12 +185,12 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(AboutAppScreen());
               },
-              bottomIcon: Icon(
+              bottomIcon: Obx(()=>Icon(
                 Icons.help_outline_rounded,
                 color: themeController.isDarkMode.value
                     ? Colors.white
                     : Colors.black,
-              ),
+              ),),
               name: "About",
             ),
             profileButtonWidget(

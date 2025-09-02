@@ -26,6 +26,7 @@ class ChangePasswordView extends StatelessWidget {
             fontSize: 24,
           ),
         ),
+        elevation: 0,
       ),
 
       body: LayoutBuilder(

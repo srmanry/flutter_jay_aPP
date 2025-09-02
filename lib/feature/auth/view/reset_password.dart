@@ -47,7 +47,7 @@ class SetResetPasswordView extends StatelessWidget {
                 prefixIcon: Icons.lock_outline,
                 //obscureText: true,
               ),
-              /*  Padding(
+               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 child: CustomTextField(
                   controller: confirmPasswordController,
@@ -55,9 +55,11 @@ class SetResetPasswordView extends StatelessWidget {
                   prefixIcon: Icons.lock_outline,
                   // obscureText: true,
                 ),
-              ), */
+              ),
 
               // Reset Password Button
+
+              SizedBox(height: 30,),
               Obx(
                 () => authController.isLoading.value
                     ? const CircularProgressIndicator()

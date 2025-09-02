@@ -21,7 +21,8 @@ Widget profileButtonWidget({
           decoration: BoxDecoration(
             color: themeController.isDarkMode.value
                 ? const Color.fromARGB(221, 32, 32, 32)
-                : Colors.white,
+                : Color(0xFFE8ECF1),
+            //Colors.white,
             //  color: const Color(0xFFE8ECF1),
             borderRadius: BorderRadius.circular(8),
           ),
@@ -41,7 +42,7 @@ Widget profileButtonWidget({
                         fontWeight: FontWeight.w400,
                         color: themeController.isDarkMode.value
                             ? Colors.white
-                            : Colors.black,
+                            : Color(0xFFF4E4E4E),
                       ),
                     ),
                     Icon(
