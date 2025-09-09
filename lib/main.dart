@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
 
         theme: ThemeData(
           useMaterial3: false,
+        
           appBarTheme: AppBarTheme(
             backgroundColor: themeController.isDarkMode.value
                 ? Colors.black

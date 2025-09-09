@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 
- Text appName =  Text("Preissler's Lunch",style: TextStyle(fontSize: 28,fontWeight: FontWeight.w800,color: Color(0xFF000000)),);
+ Text appName =  Text("Spot'em365",style: TextStyle(fontSize: 28,fontWeight: FontWeight.w800,color: Color(0xFF000000)),);
 
 
  Widget fieldName( String fieldName){

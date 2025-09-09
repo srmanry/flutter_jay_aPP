@@ -55,29 +55,23 @@ class PersonalInfoScreenView extends StatelessWidget {
           child: Obx(
             () => Column(
               children: [
-                authController.profileData.value == null
-                    ? Center(child: CircularProgressIndicator())
-                    : CircleAvatar(
-                        radius: 45,
-                        backgroundColor:themeController.isDarkMode.value? Colors.black12:Colors.black12,
-                        child:
-                            authController.profileData.value?.data.avatar !=
-                                null
-                            ?
-                            ClipRRect(
-                                borderRadius: BorderRadiusGeometry.circular(70),
-                                child: Image.network(
-                                  "${authController.profileData.value?.data.avatar.url.toString()}",
-                                  height: 70,
-                                  fit: BoxFit.cover,
-                                  width: 70,
 
-                                ),
-                              ):Icon(
-          Icons.photo_size_select_large_rounded,
-          color: const Color.fromARGB(255, 95, 94, 94),
-        )
-                      ),
+
+                    ClipRRect(
+                        borderRadius: BorderRadiusGeometry.circular(80),
+                        child:authController.profileData.value?.data.avatar.url !=null? Image.network(
+                          "${authController.profileData.value?.data.avatar.url}",
+                          height: 80,
+                          fit: BoxFit.cover,
+                          width: 80,
+                        )
+                       :Icon(
+                              Icons.photo_size_select_large_rounded,
+                              color: const Color.fromARGB(255, 95, 94, 94),
+                            )),
+
+
+
                 SizedBox(height: 20),
                 ProfileCardWidget(
                   data: "${authController.profileData.value?.data.name}",

@@ -346,7 +346,7 @@ class AuthController extends GetxController {
     String confirmPassword,
   ) async {
     try {
-      // 🔹 Local validation
+      // 
       if (currentPassword.isEmpty) {
         Get.snackbar("Error", "Current Password is required");
         return;

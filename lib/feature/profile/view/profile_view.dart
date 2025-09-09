@@ -29,7 +29,7 @@ class ProfileScreenView extends StatelessWidget {
           final profile = authController.profileData.value;
 
           if (profile == null) {
-            // 🔹 Loading state
+
             return Row(
               children: [
                 CircleAvatar(

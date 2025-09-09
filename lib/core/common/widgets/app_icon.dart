@@ -8,16 +8,19 @@ class AppIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 0,
       children: [
-        Image.asset('assets/images/app_icon.png', width: 100, height: 100),
-        const SizedBox(height: 10),
+        Image.asset('assets/icons/appIcon1.png', width: 150, ),
+
 
         Obx(
           () => Text(
             'Spot’em365',
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: themeController.isDarkMode.value
                   ? const Color(0xFFFFFFFF)
                   : const Color(0xFF000000),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/common/widgets/app_icon.dart';
 import '../../../../../core/common/common_text.dart';
 import '../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../core/common/widgets/save_botton.dart';
@@ -21,7 +22,7 @@ class ForgetPasswordView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 80),
-              Image.asset("assets/icons/appIcon.png", height: 124, width: 124),
+             AppIconWidget(),
               const SizedBox(height: 40),
 
               const Text(

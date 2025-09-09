@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:spotem/core/common/common_text.dart';
+import 'package:spotem/core/common/widgets/app_icon.dart';
 import 'package:spotem/core/common/widgets/custom_text_field.dart';
 import 'package:spotem/core/common/widgets/save_botton.dart';
 
@@ -18,31 +19,14 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: Colors.white,
 
-        automaticallyImplyLeading: false,
-        toolbarHeight: 100,
-        centerTitle: true,
-        title: Column(
-          children: [
-            Image.asset("assets/icons/appIcon.png", height: 124, width: 124),
-          ],
-        ),
-      ), */
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 50),
-            Center(
-              child: Image.asset(
-                "assets/icons/appIcon.png",
-                height: 124,
-                width: 124,
-              ),
-            ),
+            Center(child: AppIconWidget()),
             const SizedBox(height: 30),
             const Text(
               "Create Your Account",

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -57,28 +58,27 @@ class HomeScreenView extends StatelessWidget {
 
 
                    Row(children: [Container(height: 40,width: 40,
-                     child: Obx(()=>authController.profileData.value?.data.avatar.url == null
-                         ? ClipRRect(
+                     child: Obx(()=>  ClipOval(
+                       child: CachedNetworkImage(
+                         imageUrl: authController.profileData.value!.data.avatar.url,
+                         placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                         errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
+                         fadeInDuration: const Duration(milliseconds: 250),
+                         fit: BoxFit.cover,
+                       ),
+                     ),
+                       /*  ClipRRect(
                        borderRadius: BorderRadius.circular(40),
-                       child: Image.network(
+                       child:authController.profileData.value!.data.avatar.url.isNotEmpty? Image.network(
                          "${authController.profileData.value?.data.avatar.url}",
                          height: 40,
                          width: 40,
                          fit: BoxFit.cover,
-                       ),
-                     )
-                         : CircleAvatar(
-                       radius: 25,
-                       backgroundColor: themeController.isDarkMode.value
-                           ? Colors.white
-                           : Colors.grey[400],
-                       child: Icon(
-                         Icons.account_circle_outlined,
-                         color: themeController.isDarkMode.value
-                             ? Colors.black
-                             : Colors.black,
-                       ),
-                     ),),
+                       ):
+                           Icon(Icons.account_circle_outlined),
+                     )*/
+
+                     ),
                    ),
 
                      SizedBox(width: 10,),
@@ -103,17 +103,18 @@ class HomeScreenView extends StatelessWidget {
                 height: 45,
                 decoration: BoxDecoration(
                   // color: AppColors.appColor,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(width: 1.5, color: themeController.isDarkMode.value?Colors.white:Color(0xFF777777)),
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.white:Colors.grey),
+                    prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.grey:Colors.grey),
                     hintText: "Search",
                     hintStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: themeController.isDarkMode.value?Colors.white: Colors.grey,
+                      color: themeController.isDarkMode.value?Colors.grey: Colors.grey,
                     ),
                     border: InputBorder.none,
                   ),
@@ -131,8 +132,8 @@ class HomeScreenView extends StatelessWidget {
             return Obx(
               () => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                // ignore: unnecessary_null_comparison
-                child: homeController.reports == null
+
+                child: homeController.reports.isEmpty
                     ? Center(child: Text("No Reports Found",style: TextStyle(color: Colors.black),))
                     : ListView.builder(
                         itemCount: homeController.reports.length,
@@ -141,10 +142,11 @@ class HomeScreenView extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Container(
                               width: double.infinity,
-                              decoration: BoxDecoration(color: themeController.isDarkMode.value
-? const Color.fromARGB(255, 32, 32, 32)
-                              //color:Colors.black,
-                                  : Colors.grey[200],
+                              decoration: BoxDecoration(
+                               color: themeController.isDarkMode.value
+                                  ?  Colors.white:
+                              Colors.black,
+
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Padding(

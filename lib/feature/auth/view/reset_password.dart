@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/common/widgets/app_icon.dart';
 
 import 'package:spotem/feature/auth/view/sign_in_view.dart';
 import '../../../../../core/common/common_text.dart';
@@ -28,8 +29,8 @@ class SetResetPasswordView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 80),
-              Image.asset("assets/icons/appIcon.png", height: 124, width: 124),
-              const SizedBox(height: 80),
+              AppIconWidget(),
+
               const Text(
                 'Reset Password',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
