@@ -169,7 +169,6 @@ class HomeScreenView extends StatelessWidget {
                                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                                   ),
 
-
                                                   Text(
                                                     DateFormat('yyyy-MM-dd – hh:mm a',).format(homeController.reports[index].createdAt,),
                                                     style: TextStyle(
@@ -190,9 +189,7 @@ class HomeScreenView extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(vertical: 10,),
                                       child: Row(
                                         children: [
-                                          Text("Category: ",
-                                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
-                                          ),
+                                          Text("Category: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),),
                                           Text(
                                             homeController.filteredReports[index].type,
                                             style: TextStyle(color: Colors.white),

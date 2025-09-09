@@ -100,8 +100,8 @@ class ProfileScreenView extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: themeController.isDarkMode.value
-                              ? Colors.black
-                              : AppColors.appColor,
+                              ? Colors.white
+                              : Colors.black,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -112,7 +112,7 @@ class ProfileScreenView extends StatelessWidget {
                   () => Switch(
                     value: themeController.isDarkMode.value,
                     onChanged: (_) => themeController.toggleTheme(),
-                    activeColor: Colors.white,
+                    activeThumbColor: Colors.white,
                   ),
                 ),
               ],

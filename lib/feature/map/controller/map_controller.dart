@@ -67,7 +67,7 @@ class LocationController extends GetxController {
     }
   }
 
-  ///  Location data fetch
+
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
