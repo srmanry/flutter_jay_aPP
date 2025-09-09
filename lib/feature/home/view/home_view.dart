@@ -57,34 +57,28 @@ class HomeScreenView extends StatelessWidget {
 
 
 
-                   Row(children: [Container(height: 40,width: 40,
-                     child: Obx(()=>  ClipOval(
-                       child: authController.profileData.value!.data.avatar.url.isEmpty?
-                       Icon(Icons.account_circle_outlined,size: 30,)
-                       :CachedNetworkImage(
-                         imageUrl: authController.profileData.value!.data.avatar.url,
-                         placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                         errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
-                         fadeInDuration: const Duration(milliseconds: 250),
-                         fit: BoxFit.cover,
-                       ),
+                   Row(children: [Obx(()=>  ClipOval(
+                     child:authController.isLoading==true?CircularProgressIndicator():  authController.profileData.value!.data.avatar.url.isEmpty?
+                     Icon(Icons.account_circle_outlined,size: 30,)
+                     :CachedNetworkImage(
+                       imageUrl: authController.profileData.value!.data.avatar.url,
+                       placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                       errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
+                       fadeInDuration: const Duration(milliseconds: 250),
+                       fit: BoxFit.cover,
                      ),
+                   ),
 
 
-                     ),
                    ),
 
                      SizedBox(width: 10,),
                      CircleAvatar(
                        radius: 20,
-                       backgroundColor: themeController.isDarkMode.value
-                           ? Colors.white
-                           : Colors.grey[300],
+                       backgroundColor: themeController.isDarkMode.value ? Colors.white : Colors.grey[300],
                        child: Icon(
                          Icons.notifications_none_outlined,
-                         color: themeController.isDarkMode.value
-                             ? Colors.red
-                             : Colors.red,
+                         color: themeController.isDarkMode.value ? Colors.red : Colors.red,
                        ),
                      ),],)
                 ],
@@ -95,23 +89,20 @@ class HomeScreenView extends StatelessWidget {
               Obx(()=>Container(
                 height: 45,
                 decoration: BoxDecoration(
-                  // color: AppColors.appColor,
+
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(width: 1.5, color: themeController.isDarkMode.value?Colors.white:Color(0xFF777777)),
                 ),
                 child: TextField(
-                  onChanged: (value){
-                    homeController.searchByType(value);
-                  },
+                  onChanged: (value){homeController.searchByType(value);},
                   decoration: InputDecoration(
-
                     prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.grey:Colors.grey),
                     hintText: "Search",
                     hintStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: themeController.isDarkMode.value?Colors.grey: Colors.grey,
+                      color: themeController.isDarkMode.value?Colors.black: Colors.black,
                     ),
                     border: InputBorder.none,
                   ),
@@ -129,13 +120,12 @@ class HomeScreenView extends StatelessWidget {
             return Obx(
               () => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-
                 child: homeController.filteredReports.isEmpty
                     ? Center(child: Text("No Reports Found",style: TextStyle(color: Colors.black),))
                     : ListView.builder(
                         itemCount: homeController.filteredReports.length,
                         itemBuilder: (_, index) {
-                          final report = homeController.filteredReports[index];
+
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Container(
