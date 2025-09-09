@@ -13,6 +13,7 @@ class HomeController extends GetxController {
  // var reports = Rxn<ReportModel>();
  var reports = <ReportModel>[].obs;  // RxList<ReportModel>
 
+  var filteredReports = <ReportModel>[].obs;
   void changeIndex(int index) {
     currentIndex.value = index;
   }
@@ -21,6 +22,14 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     fetchReports();
+  }
+  void searchByType(String query){
+    if(query.isEmpty){
+      filteredReports.assignAll(reports);
+
+    }else{
+      filteredReports.assignAll(reports.where((r)=>r.type.toLowerCase().contains(query.toLowerCase())).toList());
+    }
   }
 
   final dio.Dio dioClient = dio.Dio(
@@ -51,9 +60,11 @@ class HomeController extends GetxController {
       );
    if (response.statusCode == 200 && response.data["success"] == true) {
   final List<dynamic> reportList = response.data["data"];
+
   reports.value = reportList
       .map((x) => ReportModel.fromJson(x as Map<String, dynamic>))
       .toList();
+  filteredReports.assignAll(reports);
 }
 
        else {

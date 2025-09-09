@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:spotem/core/common/widgets/app_icon.dart';
 import 'package:spotem/core/common/widgets/dialog_widget.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
@@ -27,36 +28,22 @@ class ProfileScreenView extends StatelessWidget {
         toolbarHeight: 80,
         title: Obx(() {
           final profile = authController.profileData.value;
-
           if (profile == null) {
 
             return Row(
               children: [
                 CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey[400],
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                ),
+                  radius: 30, backgroundColor: Colors.grey[400],
+                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,),),
                 SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 20,
-                        width: 100,
-                        color: Colors.grey[300],
-                      ),
+                      Container(height: 20, width: 100, color: Colors.grey[300],),
                       SizedBox(height: 5),
-                      Container(
-                        height: 14,
-                        width: 150,
-                        color: Colors.grey[300],
-                      ),
+                      Container(height: 14, width: 150, color: Colors.grey[300],),
                     ],
                   ),
                 ),
@@ -65,7 +52,7 @@ class ProfileScreenView extends StatelessWidget {
               ],
             );
           } else {
-            // 🔹 Data available
+
             final avatarUrl = profile.data.avatar.url ?? '';
             return Row(
               children: [
@@ -199,14 +186,7 @@ class ProfileScreenView extends StatelessWidget {
                   title: "",
                   content: Column(
                     children: [
-                      Image.asset(
-                        "assets/icons/appIcon.png",
-                        height: 102,
-                        width: 102,
-                        /*  color: themeController.isDarkMode.value
-                            ? Colors.white
-                            : Colors.black, */
-                      ),
+                      AppIconWidget(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Padding(

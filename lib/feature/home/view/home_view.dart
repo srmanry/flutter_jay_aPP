@@ -59,7 +59,9 @@ class HomeScreenView extends StatelessWidget {
 
                    Row(children: [Container(height: 40,width: 40,
                      child: Obx(()=>  ClipOval(
-                       child: CachedNetworkImage(
+                       child: authController.profileData.value!.data.avatar.url.isEmpty?
+                       Icon(Icons.account_circle_outlined,size: 30,)
+                       :CachedNetworkImage(
                          imageUrl: authController.profileData.value!.data.avatar.url,
                          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
                          errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
@@ -67,16 +69,7 @@ class HomeScreenView extends StatelessWidget {
                          fit: BoxFit.cover,
                        ),
                      ),
-                       /*  ClipRRect(
-                       borderRadius: BorderRadius.circular(40),
-                       child:authController.profileData.value!.data.avatar.url.isNotEmpty? Image.network(
-                         "${authController.profileData.value?.data.avatar.url}",
-                         height: 40,
-                         width: 40,
-                         fit: BoxFit.cover,
-                       ):
-                           Icon(Icons.account_circle_outlined),
-                     )*/
+
 
                      ),
                    ),
@@ -108,7 +101,11 @@ class HomeScreenView extends StatelessWidget {
                   border: Border.all(width: 1.5, color: themeController.isDarkMode.value?Colors.white:Color(0xFF777777)),
                 ),
                 child: TextField(
+                  onChanged: (value){
+                    homeController.searchByType(value);
+                  },
                   decoration: InputDecoration(
+
                     prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.grey:Colors.grey),
                     hintText: "Search",
                     hintStyle: TextStyle(
@@ -133,20 +130,18 @@ class HomeScreenView extends StatelessWidget {
               () => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
 
-                child: homeController.reports.isEmpty
+                child: homeController.filteredReports.isEmpty
                     ? Center(child: Text("No Reports Found",style: TextStyle(color: Colors.black),))
                     : ListView.builder(
-                        itemCount: homeController.reports.length,
+                        itemCount: homeController.filteredReports.length,
                         itemBuilder: (_, index) {
+                          final report = homeController.filteredReports[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                               color: themeController.isDarkMode.value
-                                  ?  Colors.white:
-                              Colors.black,
-
+                               color: themeController.isDarkMode.value ?  Colors.white: Colors.black,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Padding(
@@ -154,76 +149,37 @@ class HomeScreenView extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
+                                    Row(children: [
                                         ClipRRect(
-                                          borderRadius:
-                                              BorderRadiusGeometry.circular(45),
+                                          borderRadius: BorderRadiusGeometry.circular(45),
                                           child: Image.network(
-                                            homeController
-                                                .reports[index]
-                                                .user
-                                                .avatar
-                                                .url,
-                                            height: 45,
-                                            width: 45,
-                                            fit: BoxFit.cover,
+                                            homeController.reports[index].user.avatar.url,
+                                            height: 45, width: 45, fit: BoxFit.cover,
                                           ),
                                         ),
                                         SizedBox(width: 10),
                                         Expanded(
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                    homeController
-                                                        .reports[index]
-                                                        .user
-                                                        .name,
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color:
-                                                          themeController
-                                                              .isDarkMode
-                                                              .value
-                                                          ? Colors.black
-                                                          : Colors.white,
-                                                    ),
+                                                  Text(homeController.reports[index].user.name,
+                                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                                   ),
 
-                                                  // ...
+
                                                   Text(
-                                                    DateFormat(
-                                                      'yyyy-MM-dd – hh:mm a',
-                                                    ).format(
-                                                      homeController
-                                                          .reports[index]
-                                                          .createdAt,
-                                                    ),
+                                                    DateFormat('yyyy-MM-dd – hh:mm a',).format(homeController.reports[index].createdAt,),
                                                     style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color:
-                                                          themeController
-                                                              .isDarkMode
-                                                              .value
-                                                          ? Colors.black
-                                                          : Colors.white,
+                                                      fontSize: 12, fontWeight: FontWeight.w400,
+                                                      color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                              Icon(Icons.more_vert,color: themeController.isDarkMode.value
-                                                  ? Colors.black
-                                                  : Colors.white,),
+                                              Icon(Icons.more_vert,color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                             ],
                                           ),
                                         ),
@@ -231,26 +187,14 @@ class HomeScreenView extends StatelessWidget {
                                     ),
 
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 10,
-                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 10,),
                                       child: Row(
                                         children: [
-                                          Text(
-                                            "Category: ",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color:
-                                                  themeController
-                                                      .isDarkMode
-                                                      .value
-                                                  ? Colors.black
-                                                  : Colors.white,
-                                            ),
+                                          Text("Category: ",
+                                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                           ),
                                           Text(
-                                            homeController.reports[index].type,
+                                            homeController.filteredReports[index].type,
                                             style: TextStyle(color: Colors.white),
                                           ),
                                         ],
@@ -260,21 +204,16 @@ class HomeScreenView extends StatelessWidget {
                                     Row(
                                       children: [
                                         Text(
-                                          "Location : ",
-                                          style: TextStyle(
+                                          "Location : ", style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
-                                            color:
-                                                themeController.isDarkMode.value
-                                                ? Colors.black
-                                                : Colors.white,
+                                            color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                           ),
                                         ),
+
                                         Text(
                                           "${homeController.reports[index].location}",
-                                          style: TextStyle(color: themeController.isDarkMode.value
-                                              ? Colors.black
-                                              : Colors.white,),
+                                          style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                         ),
                                       ],
                                     ),
@@ -282,16 +221,11 @@ class HomeScreenView extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 10),
                                       child: Text(
-                                        homeController
-                                            .reports[index]
-                                            .description,
+                                        homeController.reports[index].description,
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
-                                          color:
-                                          themeController.isDarkMode.value
-                                              ? Colors.black
-                                              : Colors.white,
+                                          color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                         ),
                                       ),
                                     ),

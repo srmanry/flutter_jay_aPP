@@ -14,7 +14,6 @@ class AppIconWidget extends StatelessWidget {
       children: [
         Image.asset('assets/icons/appIcon1.png', width: 150, ),
 
-
         Obx(
           () => Text(
             'Spot’em365',
