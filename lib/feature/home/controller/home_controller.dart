@@ -22,6 +22,9 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     fetchReports();
+    ever(reports, (_) {
+      filteredReports.assignAll(reports);
+    });
   }
   void searchByType(String query){
     if(query.isEmpty){
@@ -40,12 +43,7 @@ class HomeController extends GetxController {
     ),
   );
 
-  /// Fetches the reports from the server
-  ///
-  /// This function will make a GET request to the server to fetch the reports.
-  /// The response data will be printed to the console.
-  ///
-  /// If the request fails, an error message will be printed to the console.
+
   Future<void> fetchReports() async {
     try {
       isLoading.value = true;
@@ -70,9 +68,9 @@ class HomeController extends GetxController {
        else {
         print("Reports API Error: ${response.data}");
       }
-      print("🔗 Final URL: ${dioClient.options.baseUrl}/reports");
+      print(" Final URL: ${dioClient.options.baseUrl}/reports");
       print("=========== Token : $token");
-      print("🔗 Final URL: ${dioClient.options.baseUrl}/reports");
+      print("Final URL: ${dioClient.options.baseUrl}/reports");
       print('Reports: ${response.data}');
     } catch (e) {
       print("🔗 Final URL: ${dioClient.options.baseUrl}/reports");
@@ -80,6 +78,9 @@ class HomeController extends GetxController {
       //debugPrintStack()
       // Print the error to the console
       print('+++++++++++++++++reports Error: $e');
+    }
+    finally {
+      isLoading.value = false;
     }
   }
 }

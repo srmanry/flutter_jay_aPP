@@ -19,7 +19,7 @@ class _AppGroundViewState extends State<AppGroundView> {
   final List<Widget> _pages = [
     HomeScreenView(),
 
-    MapScreenView(),
+    GoogleMapScreen(),
 
     ReportScreenView(),
 

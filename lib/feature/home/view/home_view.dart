@@ -61,7 +61,7 @@ class HomeScreenView extends StatelessWidget {
                      child:authController.isLoading==true?CircularProgressIndicator():  authController.profileData.value!.data.avatar.url.isEmpty?
                      Icon(Icons.account_circle_outlined,size: 30,)
                      :CachedNetworkImage(
-                       imageUrl: authController.profileData.value!.data.avatar.url,
+                       imageUrl: authController.profileData.value!.data.avatar.url,height: 45,width: 45,
                        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
                        errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
                        fadeInDuration: const Duration(milliseconds: 250),
@@ -118,7 +118,8 @@ class HomeScreenView extends StatelessWidget {
           bool isMobile = shortestSide < 600;
           if (isMobile) {
             return Obx(
-              () => Padding(
+              () => homeController.isLoading.value?Center(child: Text("Loading....",style: TextStyle(fontSize: 24,color: Colors.grey),)):
+                  Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: homeController.filteredReports.isEmpty
                     ? Center(child: Text("No Reports Found",style: TextStyle(color: Colors.black),))
