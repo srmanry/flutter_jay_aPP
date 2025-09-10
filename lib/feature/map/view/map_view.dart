@@ -5,15 +5,14 @@ import 'package:spotem/feature/map/controller/map_controller.dart';
 
 
 class GoogleMapScreen extends StatelessWidget {
-  //final locationController = Get.find<LocationController>();
-  final LocationController locationController  = Get.put(LocationController());
+  final LocationController locationController = Get.put(LocationController());
 
   GoogleMapScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Map"),elevation: 0,),
+      appBar: AppBar(title: Text("Map"), elevation: 0),
       body: Obx(() {
         if (!locationController.isPermissionGranted.value ||
             locationController.latitude.value == 0.0) {
@@ -25,27 +24,52 @@ class GoogleMapScreen extends StatelessWidget {
           locationController.longitude.value,
         );
 
-        return GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: userLatLng,
-            zoom: 15,
+        // Markers: user + reports
+        Set<Marker> markers = {
+          Marker(
+            markerId: MarkerId('user'),
+            position: userLatLng,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+            infoWindow: InfoWindow(title: "You are here"),
           ),
+        };
+
+        markers.addAll(locationController.reports.map((report) {
+          return Marker(
+            markerId: MarkerId(report.title),
+            position: LatLng(report.latitude, report.longitude),
+            infoWindow: InfoWindow(title: report.title, snippet: report.description),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          );
+        }));
+
+        return GoogleMap(
+          initialCameraPosition: CameraPosition(target: userLatLng, zoom: 15),
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
-          markers: {
-            Marker(
-              markerId: MarkerId('user'),
-              position: userLatLng,
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-            ),
-          },
+          markers: markers,
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await locationController.requestLocationPermission(context);
-        },
-        child: Icon(Icons.gps_fixed),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "permission",
+            onPressed: () => locationController.requestLocationPermission(context),
+            child: Icon(Icons.gps_fixed),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            heroTag: "report",
+            onPressed: () async {
+              // Example: Create a report
+              await locationController.createReport(
+                  "New Report", "This is a test report");
+              Get.snackbar("Report Added", "Report location saved on map");
+            },
+            child: Icon(Icons.report),
+          ),
+        ],
       ),
     );
   }

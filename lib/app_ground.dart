@@ -29,16 +29,7 @@ class _AppGroundViewState extends State<AppGroundView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: AppColors.appColor,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          // statusBarColor: Colors.red, // Status bar background
-          statusBarIconBrightness: Brightness.light, // Android icons
-          statusBarBrightness: Brightness.light, // iOS icons
-        ),
-        automaticallyImplyLeading: false,
-        toolbarHeight: 0,
-      ), */
+
       body: _pages[_currentIndex],
       bottomNavigationBar: SizedBox(
         child: BottomNavigationBar(

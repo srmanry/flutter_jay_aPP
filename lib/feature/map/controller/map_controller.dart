@@ -2,15 +2,17 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
-import 'package:spotem/core/common/common_text.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/feature/report/model/report_model.dart';
 
 class LocationController extends GetxController {
   var latitude = 0.0.obs;
   var longitude = 0.0.obs;
   var isPermissionGranted = false.obs;
 
+  // List of reports
+  var reports = <Report>[].obs;
 
+  // Request location permission
   Future<void> requestLocationPermission(BuildContext context) async {
     var status = await Permission.location.status;
 
@@ -21,37 +23,37 @@ class LocationController extends GetxController {
       bool? userChoice = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: SizedBox(
-
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.location_on,size: 80,color: AppColors.appColor,),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: appName,
+              Icon(Icons.location_on, size: 80, color: Colors.blue),
+              SizedBox(height: 15),
+              Text(
+                "Allow Location Access?",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              
-              Text("Would like to access your location",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700),),
-              const Text(
-                  "To straw real time emergency activity in your area",textAlign: TextAlign.center,style: TextStyle(fontSize: 16,fontWeight: FontWeight.w300),),
-
-              Row(mainAxisAlignment: MainAxisAlignment.center,children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: const Text("Don't allow",style: TextStyle(fontWeight: FontWeight.w700,color: Colors.black,fontSize: 16),),
-                ),
-                SizedBox(width: 20,),
-                TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child:  Text("Allow",style: TextStyle(fontSize: 16,color: AppColors.appColor,fontWeight: FontWeight.w700),),
-                ),
-              ],)
+              SizedBox(height: 10),
+              Text(
+                "To track real-time activity in your area",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text("Don't allow")),
+                  SizedBox(width: 20),
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text("Allow", style: TextStyle(color: Colors.blue))),
+                ],
+              )
             ],
           ),
-          )
-      ));
+        ),
+      );
 
       if (userChoice == true) {
         var newStatus = await Permission.location.request();
@@ -67,7 +69,7 @@ class LocationController extends GetxController {
     }
   }
 
-
+  // Get current user location
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -94,7 +96,21 @@ class LocationController extends GetxController {
 
     latitude.value = position.latitude;
     longitude.value = position.longitude;
+  }
 
-    debugPrint(" Location: ${latitude.value}, ${longitude.value}");
+  // Create a new report at current location
+  Future<void> createReport(String title, String description) async {
+    if (latitude.value == 0.0 && longitude.value == 0.0) {
+      await _getCurrentLocation();
+    }
+
+    reports.add(
+      Report(
+        title: title,
+        description: description,
+        latitude: latitude.value,
+        longitude: longitude.value,
+      ),
+    );
   }
 }
