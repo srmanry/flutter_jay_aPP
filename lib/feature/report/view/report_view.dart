@@ -1,8 +1,13 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart' hide LatLng;
+
 import 'package:spotem/core/common/widgets/save_botton.dart';
 import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/feature/map/controller/map_controller.dart';
+
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 import 'package:spotem/feature/report/controller/report_controller.dart';
 
@@ -11,6 +16,7 @@ class ReportScreenView extends StatelessWidget {
 
   final ReportController controller = Get.put(ReportController());
   final ThemeController themeController = Get.put(ThemeController());
+  final LocationController locationController = Get.put(LocationController());
 
   @override
   Widget build(BuildContext context) {
@@ -43,33 +49,24 @@ class ReportScreenView extends StatelessWidget {
               Text(
                 "Event",
                 style: TextStyle(
-                  color: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
+                  color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+                  fontSize: 14, fontWeight: FontWeight.w400,
                 ),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: controller.titleController,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Title',
-                ),
-                textAlign: TextAlign.justify,
+                  border: OutlineInputBorder(), hintText: 'Title',), textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 15),
               Text(
-                "Description",
-                style: TextStyle(
-                  color: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
+                "Description", style: TextStyle(
+                  color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+                  fontSize: 14, fontWeight: FontWeight.w400,
                 ),
               ),
+
               const SizedBox(height: 10),
               TextField(
                 controller: controller.descriptionController,
@@ -90,7 +87,7 @@ class ReportScreenView extends StatelessWidget {
                   final color = item["color"] as Color;
 
                   return Obx(
-                    () => RadioListTile<String>(
+                        () => RadioListTile<String>(
                       value: label,
                       groupValue: controller.selectedOption.value,
                       contentPadding: EdgeInsets.zero,
@@ -120,13 +117,25 @@ class ReportScreenView extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: buttonWidget(
+
           text: "Report",
           onTap: () async {
-            print(
-              "Selected Option:================ ${controller.selectedOption.value}",
+
+           await locationController.loadLocation();
+           final position = LatLng(
+             locationController.lat.value,
+             locationController.lng.value,
+           );
+            await locationController.createReport(
+
+                controller.titleController.text,
+                controller.descriptionController.text,
+                controller.selectedOption.value,
+                position
+
+
+
             );
-            print("Report Button Clicked");
-            // await controller.reportEvent();
           },
         ),
       ),

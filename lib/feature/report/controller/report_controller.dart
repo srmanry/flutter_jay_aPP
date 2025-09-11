@@ -4,20 +4,22 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ReportController extends GetxController {
-  // Form fields
+
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  // Selected emergency option
+
   var selectedOption = "ICE".obs;
 
-  // Emergency options
+
   final List<Map<String, dynamic>> options = [
     {"label": "ICE", "color": Colors.green},
     {"label": "Fire", "color": Colors.red},
     {"label": "Police", "color": Colors.blue},
     {"label": "Ambulance", "color": Colors.amber},
   ];
+
+
 
   // Submit data
   /* Future<void> submitData() async {

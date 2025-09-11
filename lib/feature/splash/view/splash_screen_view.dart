@@ -15,7 +15,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   //final locationController = Get.find<LocationController>();
-  final locationController = Get.put(LocationController());
+  //final locationController = Get.put(LocationController());
 
   @override
   void initState() {
@@ -27,14 +27,14 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3)); // splash delay
 
 
-    await locationController.requestLocationPermission(context);
+    //await locationController.requestLocationPermission(context);
 
 
     bool loggedIn = await TokenManager.isLoggedIn();
 
     if (!mounted) return;
 
-    if (loggedIn && locationController.isPermissionGranted.value) {
+    if (loggedIn ) {
       Get.offAll(() => AppGroundView());
     } else {
       Get.offAll(() => SignInScreen());

@@ -44,9 +44,9 @@ class BottonText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-      color: Colors.white, // optional, background color
+      color: Colors.white,
       child: Column(
-        mainAxisSize: MainAxisSize.min, // ensures only needed height
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
             'Your Profile helps us customize your experience',
