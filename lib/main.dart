@@ -21,42 +21,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.put(ThemeController());
-    //  final themeController = Get.find<ThemeController>();
-
     return Obx(
       () => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
 
         theme: ThemeData(
+          scaffoldBackgroundColor:  themeController.isDarkMode.value ? Colors.black : Colors.white,
           useMaterial3: false,
-        
           appBarTheme: AppBarTheme(
-            backgroundColor: themeController.isDarkMode.value
-                ? Colors.black
-                : Colors.white,
-            iconTheme: IconThemeData(
-              color: themeController.isDarkMode.value
-                  ? Colors.white
-                  : Colors.black,
-            ),
-            titleTextStyle: TextStyle(
-              color: themeController.isDarkMode.value
-                  ? AppColors.appColor
-                  : AppColors.appColor,
-              fontWeight: FontWeight.w700,
-              fontSize: 24,
+            backgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
+            iconTheme: IconThemeData(color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
+            titleTextStyle: TextStyle(color: themeController.isDarkMode.value ? AppColors.appColor :
+            AppColors.appColor, fontWeight: FontWeight.w700,fontSize: 24,
             ),
           ),
-          //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+
         ),
 
         darkTheme: ThemeData.dark(),
-
-        themeMode: themeController.isDarkMode.value
-            ? ThemeMode.dark
-            : ThemeMode.light,
-
+        themeMode: themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
         home: SplashScreen(),
       ),
     );

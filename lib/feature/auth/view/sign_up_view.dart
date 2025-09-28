@@ -19,7 +19,6 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -70,7 +69,7 @@ class SignupScreen extends StatelessWidget {
               controller: authController.address,
               hintText: "Enter Address",
               prefixIcon: Icons.location_on_outlined,
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.text,
             ),
 
             const SizedBox(height: 15),

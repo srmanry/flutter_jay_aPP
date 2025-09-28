@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/home/controller/home_controller.dart';
+import 'package:spotem/feature/home/view/notification_view.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 class HomeScreenView extends StatelessWidget {
@@ -30,24 +31,14 @@ class HomeScreenView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Hello 👋 ${authController.profileData.value?.data.name ?? "Loading..."}",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.appColor,
-                        ),
+                      Text("Hello 👋 ${authController.profileData.value?.data.name ?? "Loading..."}",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.appColor,),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      Text(
-                        "🎉 Welcome to Spot'em365",
+                      Text("🎉 Welcome to Spot'em365",
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          // color: AppColors.appColor,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : Colors.grey[800],
+                          fontSize: 14, fontWeight: FontWeight.w700,
+                          color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
 
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -59,8 +50,8 @@ class HomeScreenView extends StatelessWidget {
 
                    Row(children: [Obx(()=>  ClipOval(
                      child:authController.isLoading==true?CircularProgressIndicator():  authController.profileData.value!.data.avatar.url.isEmpty?
-                     Icon(Icons.account_circle_outlined,size: 30,)
-                     :CachedNetworkImage(
+                     Icon(Icons.account_circle_outlined,size: 30,) :
+                     CachedNetworkImage(
                        imageUrl: authController.profileData.value!.data.avatar.url,height: 45,width: 45,
                        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
                        errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
@@ -73,12 +64,20 @@ class HomeScreenView extends StatelessWidget {
                    ),
 
                      SizedBox(width: 10,),
-                     CircleAvatar(
-                       radius: 20,
-                       backgroundColor: themeController.isDarkMode.value ? Colors.white : Colors.grey[300],
-                       child: Icon(
-                         Icons.notifications_none_outlined,
-                         color: themeController.isDarkMode.value ? Colors.red : Colors.red,
+                     InkWell(
+                       onTap: (){
+                         Get.to(()=> NotificationView(),
+                         transition: Transition.cupertino,
+                         );
+
+                       },
+                       child: CircleAvatar(
+                         radius: 20,
+                         backgroundColor: themeController.isDarkMode.value ? Colors.white : Colors.grey[300],
+                         child: Icon(
+                           Icons.notifications_none_outlined,
+                           color: themeController.isDarkMode.value ? Colors.red : Colors.red,
+                         ),
                        ),
                      ),],)
                 ],
