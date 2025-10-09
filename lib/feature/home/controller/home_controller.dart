@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:spotem/core/network/local/token_manager.dart';
 import 'package:spotem/feature/home/model/reports_model.dart';
@@ -83,4 +84,23 @@ class HomeController extends GetxController {
       isLoading.value = false;
     }
   }
+
+
+
+  Future<String> getPlaceName(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        return "${place.locality}, ${place.country}";
+      } else {
+        return "Unknown location";
+      }
+    } catch (e) {
+      print("Reverse geocoding error: $e");
+      return "Unknown location";
+    }
+  }
+
+
 }

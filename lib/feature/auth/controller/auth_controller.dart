@@ -70,7 +70,7 @@ class AuthController extends GetxController {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    // 🔹 Basic validation
+
     if (email.isEmpty) {
       Get.snackbar("Error", "Email is required");
       return;

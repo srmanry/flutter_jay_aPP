@@ -1,16 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:spotem/core/network/local/token_manager.dart';
+import '../../map/controller/map_controller.dart'; // location controller import
 
 class ReportController extends GetxController {
-
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
-
   var selectedOption = "ICE".obs;
-
+  var isLoading = false.obs;
 
   final List<Map<String, dynamic>> options = [
     {"label": "ICE", "color": Colors.green},
@@ -19,45 +18,58 @@ class ReportController extends GetxController {
     {"label": "Ambulance", "color": Colors.amber},
   ];
 
+  final Dio dioClient = Dio(
+    BaseOptions(
+      baseUrl: "https://backend-jay.onrender.com/api/v1",
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+    ),
+  );
 
-
-  // Submit data
-  /* Future<void> submitData() async {
-    if (selectedOption.value.isEmpty) return;
-
-    final url = Uri.parse(
-      "https://example.com/api/emergency",
-    ); // Replace with your API
-    final body = {
-      "title": titleController.text,
-      "description": descriptionController.text,
-      "emergency_type": selectedOption.value,
-    };
-
+  // 🔹 API Call
+  Future<void> createReport(double lat, double lng) async {
     try {
-      final response = await http.post(
-        url,
-        body: jsonEncode(body),
-        headers: {"Content-Type": "application/json"},
+      isLoading.value = true;
+      final token = await TokenManager.getAccessToken();
+
+      final body = {
+        "type": selectedOption.value,
+        "title": titleController.text.trim(),
+        "description": descriptionController.text.trim(),
+        "location": {
+          "type": "Point",
+          "coordinates": [lng, lat],
+        }
+      };
+
+      print("📦 Sending Body: $body");
+
+      final response = await dioClient.post(
+        "/report/",
+        data: body,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json"
+          },
+          validateStatus: (status) => status != null && status < 500,
+        ),
       );
 
-      if (response.statusCode == 200) {
-        Get.snackbar(
-          "Success",
-          "Data sent successfully!",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+      isLoading.value = false;
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.snackbar("✅ Success", "Report created successfully");
+        titleController.clear();
+        descriptionController.clear();
       } else {
-        Get.snackbar(
-          "Error",
-          "Error: ${response.body}",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        Get.snackbar("Error", "Failed: ${response.statusCode}");
+        print("Response: ${response.data}");
       }
     } catch (e) {
-      Get.snackbar("Failed", "$e", snackPosition: SnackPosition.BOTTOM);
+      isLoading.value = false;
+      Get.snackbar("Error", "Something went wrong");
+      print("❌ Error: $e");
     }
   }
-}
- */
 }

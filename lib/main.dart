@@ -27,16 +27,17 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
 
         theme: ThemeData(
-          scaffoldBackgroundColor:  themeController.isDarkMode.value ? Colors.black : Colors.white,
+          scaffoldBackgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
           useMaterial3: false,
           appBarTheme: AppBarTheme(
             backgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
             iconTheme: IconThemeData(color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
-            titleTextStyle: TextStyle(color: themeController.isDarkMode.value ? AppColors.appColor :
-            AppColors.appColor, fontWeight: FontWeight.w700,fontSize: 24,
+            titleTextStyle: TextStyle(
+              color: themeController.isDarkMode.value ? AppColors.appColor : AppColors.appColor,
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
             ),
           ),
-
         ),
 
         darkTheme: ThemeData.dark(),
