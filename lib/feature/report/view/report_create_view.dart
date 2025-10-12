@@ -57,7 +57,35 @@ class ReportScreenView extends StatelessWidget {
                   final label = item["label"] as String;
                   final color = item["color"] as Color;
 
-                  return Obx(() => RadioListTile<String>(
+                  return Obx(() {
+                    return InkWell(
+                      onTap: () {
+                        reportController.selectedOption.value = label;
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Radio<String>(
+                            value: label,
+                            groupValue: reportController.selectedOption.value,
+                            onChanged: (value) {
+                              if (value != null) {
+                                reportController.selectedOption.value = value;
+                              }
+                            },
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(label),
+                          const SizedBox(width: 10),
+                          Icon(Icons.location_on, color: color),
+                        ],
+                      ),
+                    );
+                  });
+
+
+                  /*      return Obx(() => RadioListTile<String>(
 
                     value: label,
                     groupValue: reportController.selectedOption.value,
@@ -66,6 +94,8 @@ class ReportScreenView extends StatelessWidget {
                         reportController.selectedOption.value = value;
                       }
                     },
+
+                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                     title: Row(
                       children: [
                         Text(label),
@@ -73,14 +103,37 @@ class ReportScreenView extends StatelessWidget {
                         Icon(Icons.location_on, color: color),
                       ],
                     ),
-                  ));
+                  ));*/
                 },
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
+
+
+      bottomNavigationBar: Obx(() => Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: reportController.isLoading.value ? SizedBox(
+          height: 50,
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.appColor,
+            ),
+          ),
+        ) : buttonWidget(
+          text: "Report",
+          onTap: () async {
+            await locationController.loadLocation();
+            final lat = locationController.lat.value;
+            final lng = locationController.lng.value;
+            await reportController.createReport(lat, lng);
+          },
+        ),
+      )),
+
+
+/*      bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: buttonWidget(
           text: "Report",
@@ -88,10 +141,12 @@ class ReportScreenView extends StatelessWidget {
             await locationController.loadLocation();
             final lat = locationController.lat.value;
             final lng = locationController.lng.value;
-            await reportController.createReport(lat, lng); 
+            await reportController.createReport(lat, lng);
           },
         ),
-      ),
+      ),*/
+
+
     );
   }
 
@@ -100,12 +155,7 @@ class ReportScreenView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            )),
+        Text(label, style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400,)),
         const SizedBox(height: 10),
         TextField(
           controller: controller,
