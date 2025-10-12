@@ -58,6 +58,7 @@ class ReportScreenView extends StatelessWidget {
                   final color = item["color"] as Color;
 
                   return Obx(() => RadioListTile<String>(
+
                     value: label,
                     groupValue: reportController.selectedOption.value,
                     onChanged: (String? value) {
@@ -84,10 +85,10 @@ class ReportScreenView extends StatelessWidget {
         child: buttonWidget(
           text: "Report",
           onTap: () async {
-            await locationController.loadLocation(); // 🔹 Get current location
+            await locationController.loadLocation();
             final lat = locationController.lat.value;
             final lng = locationController.lng.value;
-            await reportController.createReport(lat, lng); // 🔹 Send to API
+            await reportController.createReport(lat, lng); 
           },
         ),
       ),

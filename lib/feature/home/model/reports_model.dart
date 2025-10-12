@@ -1,3 +1,5 @@
+import 'package:geocoding/geocoding.dart';
+
 class ReportModel {
   final String id;
   final UserModel user;
@@ -7,6 +9,8 @@ class ReportModel {
   final LocationModel location;
   final DateTime createdAt;
 
+  String? placeName;
+
   ReportModel({
     required this.id,
     required this.user,
@@ -15,6 +19,7 @@ class ReportModel {
     required this.description,
     required this.location,
     required this.createdAt,
+    this.placeName,
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +32,11 @@ class ReportModel {
       location: LocationModel.fromJson(json["location"]),
       createdAt: DateTime.parse(json["createdAt"]),
     );
+  }
+
+  // 🔹 Helper to set placeName after reverse geocoding
+  void setPlaceName(String name) {
+    placeName = name;
   }
 }
 
@@ -61,11 +71,12 @@ class AvatarModel {
 
   factory AvatarModel.fromJson(Map<String, dynamic> json) {
     return AvatarModel(
-      publicId: json["public_id"],
-      url: json["url"],
+      publicId: json["public_id"] ?? "",
+      url: json["url"] ?? "",
     );
   }
 }
+
 class LocationModel {
   final double lat;
   final double lng;
@@ -74,13 +85,8 @@ class LocationModel {
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
     return LocationModel(
-      lat: json['coordinates'][1],
-      lng: json['coordinates'][0],
+      lat: (json['coordinates'][1] as num).toDouble(),
+      lng: (json['coordinates'][0] as num).toDouble(),
     );
   }
 }
-
-
-  // Getter for convenience
-
-

@@ -1,44 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controller/notification_controller.dart';
 
-class NotificationView extends StatelessWidget {
-  const NotificationView({super.key});
+class NotificationScreen extends StatelessWidget {
+  final NotificationController controller = Get.put(NotificationController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Notification"), elevation: 0,),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(children: [
-           Text("Alert 3"),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (_,index){
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 20, backgroundColor: Colors.grey[400],
-                          child: Icon(Icons.notifications),
-                        ),
-                        Text("Alert $index"),
-                      ],
-                    ),
-                  ),
-                );
-
-
-              },
-            ),
-          )
-
-        ],),
+      appBar: AppBar(
+        elevation: 0,
+        title: Text("Notifications"),
       ),
-
+      body: Obx(() {
+        if (controller.notifications.isEmpty) {
+          return Center(child: Text("No notifications"));
+        }
+        return ListView.builder(
+          itemCount: controller.notifications.length,
+          itemBuilder: (_, index) {
+            return ListTile(
+              title: Text(controller.notifications[index]),
+            );
+          },
+        );
+      }),
     );
   }
 }

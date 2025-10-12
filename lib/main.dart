@@ -4,10 +4,13 @@ import 'package:get/get.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
+import 'feature/home/controller/notification_controller.dart';
 import 'feature/splash/view/splash_screen_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Get.put(NotificationController(), permanent: true);
   runApp(const MyApp());
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
