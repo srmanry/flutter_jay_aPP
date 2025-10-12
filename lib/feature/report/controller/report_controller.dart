@@ -72,4 +72,13 @@ class ReportController extends GetxController {
       print("❌ Error: $e");
     }
   }
+
+
+  // 🔹 Dispose controllers properly
+  @override
+  void onClose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.onClose();
+  }
 }

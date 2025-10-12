@@ -57,19 +57,19 @@ class PersonalInfoScreenView extends StatelessWidget {
               children: [
 
 
-                    ClipRRect(
-                        borderRadius: BorderRadiusGeometry.circular(80),
-                        child:authController.profileData.value?.data.avatar.url !=null? Image.network(
-                          "${authController.profileData.value?.data.avatar.url}",
-                          height: 80,
-                          fit: BoxFit.cover,
-                          width: 80,
-                        )
-                       :Icon(
-                              Icons.photo_size_select_large_rounded,
-                              color: const Color.fromARGB(255, 95, 94, 94),
-                            )),
-
+                authController.profileData.value?.data.avatar.url == null ||
+                    authController.profileData.value!.data.avatar.url.isEmpty ?
+                Icon(
+                  Icons.account_circle_outlined,
+                  color: const Color.fromARGB(255, 95, 94, 94),
+                  size: 80,
+                ) : ClipRRect(
+                  borderRadius: BorderRadius.circular(80),
+                  child: Image.network(
+                    authController.profileData.value!.data.avatar.url,
+                    height: 80, width: 80, fit: BoxFit.cover,
+                  ),
+                ),
 
 
                 SizedBox(height: 20),
@@ -78,10 +78,6 @@ class PersonalInfoScreenView extends StatelessWidget {
                   typeName: "First Name",
                 ),
 
-                ProfileCardWidget(
-                  data: "${authController.profileData.value?.data.gender}",
-                  typeName: "Gender",
-                ),
                 ProfileCardWidget(
                   data: "${authController.profileData.value?.data.phone}",
                   typeName: "Phone",

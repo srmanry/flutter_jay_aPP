@@ -38,9 +38,7 @@ class HomeScreenView extends StatelessWidget {
                       Text("🎉 Welcome to Spot'em365",
                         style: TextStyle(
                           fontSize: 14, fontWeight: FontWeight.w700,
-                          color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
-
-                        ),
+                          color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -59,8 +57,6 @@ class HomeScreenView extends StatelessWidget {
                        fit: BoxFit.cover,
                      ),
                    ),
-
-
                    ),
 
                      SizedBox(width: 10,),
@@ -69,7 +65,6 @@ class HomeScreenView extends StatelessWidget {
                          Get.to(()=> NotificationView(),
                          transition: Transition.cupertino,
                          );
-
                        },
                        child: CircleAvatar(
                          radius: 20,
@@ -88,7 +83,6 @@ class HomeScreenView extends StatelessWidget {
               Obx(()=>Container(
                 height: 45,
                 decoration: BoxDecoration(
-
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(width: 1.5, color: themeController.isDarkMode.value?Colors.white:Color(0xFF777777)),
@@ -98,11 +92,7 @@ class HomeScreenView extends StatelessWidget {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.grey:Colors.grey),
                     hintText: "Search",
-                    hintStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: themeController.isDarkMode.value?Colors.black: Colors.black,
-                    ),
+                    hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: themeController.isDarkMode.value?Colors.black: Colors.black,),
                     border: InputBorder.none,
                   ),
                 ),
@@ -140,7 +130,9 @@ class HomeScreenView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(children: [
-                                        ClipRRect(
+                                      homeController.reports[index].user.avatar.url.isEmpty?
+                                      Icon(Icons.account_circle_outlined,color: themeController.isDarkMode.value ? Colors.black : Colors.white,size: 40,):
+                                      ClipRRect(
                                           borderRadius: BorderRadiusGeometry.circular(45),
                                           child: Image.network(
                                             homeController.reports[index].user.avatar.url,
