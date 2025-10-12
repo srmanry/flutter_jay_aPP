@@ -66,25 +66,21 @@ class AvatarModel {
     );
   }
 }
-
 class LocationModel {
-  final String type;
-  final List<double> coordinates; // [lng, lat]
+  final double lat;
+  final double lng;
 
-  LocationModel({
-    required this.type,
-    required this.coordinates,
-  });
+  LocationModel({required this.lat, required this.lng});
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
     return LocationModel(
-      type: json["type"],
-      coordinates: List<double>.from(json["coordinates"].map((x) => x.toDouble())),
+      lat: json['coordinates'][1],
+      lng: json['coordinates'][0],
     );
   }
+}
+
 
   // Getter for convenience
-  double get latitude => coordinates[1];
-  double get longitude => coordinates[0];
-}
+
 

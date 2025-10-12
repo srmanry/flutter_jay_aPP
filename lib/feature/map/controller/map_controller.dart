@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:spotem/feature/map/service/location_services.dart';
 import '../../../core/network/local/token_manager.dart';
 
@@ -10,6 +11,17 @@ class LocationController extends GetxController {
   var markers = <Marker>{}.obs;
   var isLoading = false.obs;
   GoogleMapController? mapController;
+  var selectedMarkerData = Rx<Map<String, dynamic>?>(null);
+
+
+  String formatTimestamp(String timestamp) {
+    try {
+      DateTime dateTime = DateTime.parse(timestamp).toLocal();
+      return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
+    } catch (e) {
+      return "Invalid Date";
+    }
+  }
 
   final Dio dioClient = Dio(
     BaseOptions(
@@ -65,20 +77,27 @@ class LocationController extends GetxController {
           final type = report['type'] ?? "Report";
           final title = report['title'] ?? "Report";
           final description = report['description'] ?? "Report";
-          final time = report['createdAt'] ?? "Report";
-
+          final time = report['timestamp'] ?? "Report";
 
           markers.add(
-              Marker(
-            markerId: MarkerId("${type}_${latValue}_${lngValue}"),
-            position: LatLng(latValue, lngValue),
-                infoWindow: InfoWindow(
-                  title: "$title\nType: $type",
-                  snippet: "Description: $description\nTime: $time",
-                ),
+            Marker(
+              markerId: MarkerId("${type}_${latValue}_${lngValue}"),
+              position: LatLng(latValue, lngValue),
+              icon: _getMarkerIcon(type),
+              infoWindow: const InfoWindow(title: ''), // Hide default info window
+              onTap: () {
+                selectedMarkerData.value = {
+                  "title": title,
+                  "type": type,
+                  "description": description,
+                  "time": time,
+                  "lat": latValue,
+                  "lng": lngValue,
+                };
+              },
+            ),
+          );
 
-                icon: _getMarkerIcon(type),
-          ));
 
 
         }

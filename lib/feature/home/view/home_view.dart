@@ -179,8 +179,48 @@ class HomeScreenView extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-
                                     Row(
+                                      children: [
+                                        Text(
+                                          "Location : ",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                          ),
+                                        ),
+                                        FutureBuilder<String>(
+                                          future: homeController.getPlaceName(
+                                            homeController.reports[index].location.lat,  // ✅ lat
+                                            homeController.reports[index].location.lng,  // ✅ lng
+                                          ),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return const Text(
+                                                "Loading...",
+                                                style: TextStyle(color: Colors.grey),
+                                              );
+                                            } else if (snapshot.hasError) {
+                                              return const Text(
+                                                "Unknown location",
+                                                style: TextStyle(color: Colors.red),
+                                              );
+                                            } else {
+                                              return Text(
+                                                snapshot.data ?? "Unknown",
+                                                style: TextStyle(
+                                                  color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+
+
+
+                                    /*   Row(
                                       children: [
                                         Text("Location : ", style: TextStyle(fontSize: 16,
                                             fontWeight: FontWeight.w600,
@@ -193,7 +233,7 @@ class HomeScreenView extends StatelessWidget {
                                           style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                         ),
                                       ],
-                                    ),
+                                    ),*/
 
                                     Padding(
                                       padding: const EdgeInsets.only(top: 10),
