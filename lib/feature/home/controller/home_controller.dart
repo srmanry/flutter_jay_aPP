@@ -10,9 +10,8 @@ import 'package:spotem/feature/home/model/reports_model.dart';
 class HomeController extends GetxController {
   final RxInt currentIndex = 0.obs;
   var isLoading = false.obs;
-  // final RxList<ReportModel> reports =  [].obs;
- // var reports = Rxn<ReportModel>();
- var reports = <ReportModel>[].obs;  // RxList<ReportModel>
+
+  var reports = <ReportModel>[].obs;
 
   var filteredReports = <ReportModel>[].obs;
   void changeIndex(int index) {
@@ -27,12 +26,16 @@ class HomeController extends GetxController {
       filteredReports.assignAll(reports);
     });
   }
-  void searchByType(String query){
-    if(query.isEmpty){
-      filteredReports.assignAll(reports);
 
-    }else{
-      filteredReports.assignAll(reports.where((r)=>r.type.toLowerCase().contains(query.toLowerCase())).toList());
+  void searchByType(String query) {
+    if (query.isEmpty) {
+      filteredReports.assignAll(reports);
+    } else {
+      filteredReports.assignAll(
+        reports
+            .where((r) => r.type.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
     }
   }
 
@@ -57,16 +60,14 @@ class HomeController extends GetxController {
           validateStatus: (status) => status != null && status < 500,
         ),
       );
-   if (response.statusCode == 200 && response.data["success"] == true) {
-  final List<dynamic> reportList = response.data["data"];
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        final List<dynamic> reportList = response.data["data"];
 
-  reports.value = reportList
-      .map((x) => ReportModel.fromJson(x as Map<String, dynamic>))
-      .toList();
-  filteredReports.assignAll(reports);
-}
-
-       else {
+        reports.value = reportList
+            .map((x) => ReportModel.fromJson(x as Map<String, dynamic>))
+            .toList();
+        filteredReports.assignAll(reports);
+      } else {
         print("Reports API Error: ${response.data}");
       }
       print(" Final URL: ${dioClient.options.baseUrl}/reports");
@@ -79,13 +80,13 @@ class HomeController extends GetxController {
       //debugPrintStack()
       // Print the error to the console
       print('+++++++++++++++++reports Error: $e');
-    }
-    finally {
+    } finally {
       isLoading.value = false;
     }
   }
 
 
+  
 
   Future<String> getPlaceName(double lat, double lng) async {
     try {
@@ -101,6 +102,4 @@ class HomeController extends GetxController {
       return "Unknown location";
     }
   }
-
-
 }

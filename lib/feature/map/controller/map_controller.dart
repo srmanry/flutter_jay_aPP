@@ -1,19 +1,15 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:spotem/feature/map/service/location_services.dart';
-
 import '../../../core/network/local/token_manager.dart';
 
 class LocationController extends GetxController {
   var lat = 0.0.obs;
   var lng = 0.0.obs;
   var markers = <Marker>{}.obs;
-    var isLoading = false.obs;
+  var isLoading = false.obs;
   GoogleMapController? mapController;
-
-
 
   final Dio dioClient = Dio(
     BaseOptions(
@@ -28,10 +24,11 @@ class LocationController extends GetxController {
   }
 
   Future<void> moveCamera() async {
-    if (mapController == null) return;
-    mapController!.animateCamera(
-      CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16),
-    );
+    if (mapController != null) {
+      mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16),
+      );
+    }
   }
 
   Future<void> loadLocation() async {
@@ -42,76 +39,78 @@ class LocationController extends GetxController {
       await moveCamera();
     }
   }
-Future<void> fetchReportMarker() async {
-  try {
-    isLoading.value = true;
 
-    final token = await TokenManager.getAccessToken();
+  Future<void> fetchReportMarker() async {
+    try {
+      isLoading.value = true;
 
-    final response = await dioClient.get(
-      "/report/coordinates",
-      options: Options(
-        headers: {"Authorization": "Bearer $token"},
-        validateStatus: (status) => status != null && status < 500,
-      ),
-    );
+      final token = await TokenManager.getAccessToken();
 
-    if (response.statusCode == 200) {
-      final data = response.data['data'] as List;
+      final response = await dioClient.get(
+        "/report/coordinates",
+        options: Options(
+          headers: {"Authorization": "Bearer $token"},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
 
-      // Clear existing markers
-      markers.clear();
+      if (response.statusCode == 200) {
+        final data = response.data['data'] as List;
+        markers.clear();
 
-      for (var report in data) {
-        final coords = report['coordinates']; // [longitude, latitude]
-        final latValue = coords[1];
-        final lngValue = coords[0];
-        final type = report['type'] ?? "Report";
+        for (var report in data) {
+          final coords = report['coordinates'];
+          final latValue = coords[1];
+          final lngValue = coords[0];
+          final type = report['type'] ?? "Report";
+          final title = report['title'] ?? "Report";
+          final description = report['description'] ?? "Report";
+          final time = report['createdAt'] ?? "Report";
 
-        markers.add(Marker(
-          markerId: MarkerId("${type}_${latValue}_${lngValue}"),
-          position: LatLng(latValue, lngValue),
-          infoWindow: InfoWindow(
-            title: type,
-            snippet: "Lat: $latValue, Lng: $lngValue",
-          ),
-          icon: _getMarkerIcon(type),
-        ));
+
+          markers.add(
+              Marker(
+            markerId: MarkerId("${type}_${latValue}_${lngValue}"),
+            position: LatLng(latValue, lngValue),
+                infoWindow: InfoWindow(
+                  title: "$title\nType: $type",
+                  snippet: "Description: $description\nTime: $time",
+                ),
+
+                icon: _getMarkerIcon(type),
+          ));
+
+
+        }
+
+
+        if (markers.isNotEmpty) {
+          mapController?.animateCamera(
+            CameraUpdate.newLatLngZoom(markers.first.position, 16),
+          );
+        }
+      } else {
+        Get.snackbar("Error", "Failed to fetch report markers");
       }
-
-      // Optionally move camera to first report
-      if (markers.isNotEmpty && mapController != null) {
-        final firstMarker = markers.first;
-        mapController!.animateCamera(
-          CameraUpdate.newLatLngZoom(firstMarker.position, 12),
-        );
-      }
-
-    } else {
-      Get.snackbar("Error", "Failed to fetch report markers");
+    } catch (e) {
+      Get.snackbar("Error", "Something went wrong: $e");
+    } finally {
+      isLoading.value = false;
     }
-  } catch (e) {
-    Get.snackbar("Error", "Something went wrong: $e");
-  } finally {
-    isLoading.value = false;
   }
-}
 
-// Optional: type অনুযায়ী marker color
-BitmapDescriptor _getMarkerIcon(String type) {
-  switch (type) {
-    case "Fire":
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-    case "Police":
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-    case "Ambulance":
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
-    case "ICE":
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
-    default:
-      return BitmapDescriptor.defaultMarker;
+  BitmapDescriptor _getMarkerIcon(String type) {
+    switch (type) {
+      case "Fire":
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      case "Police":
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+      case "Ambulance":
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
+      case "ICE":
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+      default:
+        return BitmapDescriptor.defaultMarker;
+    }
   }
-}
-
-
 }

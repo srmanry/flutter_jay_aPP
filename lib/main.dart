@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:spotem/core/util/app_colors.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
@@ -30,6 +31,10 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
           useMaterial3: false,
           appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness:themeController.isDarkMode.value? Brightness.light:Brightness.dark,
+            ),
             backgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
             iconTheme: IconThemeData(color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
             titleTextStyle: TextStyle(

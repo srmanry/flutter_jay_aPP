@@ -17,6 +17,7 @@ class ReportScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +47,7 @@ class ReportScreenView extends StatelessWidget {
                   reportController.descriptionController, maxLines: 5),
               const SizedBox(height: 20),
 
-              // 🔹 Options List
+
               ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,

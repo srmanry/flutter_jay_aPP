@@ -69,7 +69,7 @@ class AvatarModel {
 
 class LocationModel {
   final String type;
-  final List<double> coordinates;
+  final List<double> coordinates; // [lng, lat]
 
   LocationModel({
     required this.type,
@@ -82,4 +82,9 @@ class LocationModel {
       coordinates: List<double>.from(json["coordinates"].map((x) => x.toDouble())),
     );
   }
+
+  // Getter for convenience
+  double get latitude => coordinates[1];
+  double get longitude => coordinates[0];
 }
+
