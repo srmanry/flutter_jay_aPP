@@ -11,6 +11,7 @@ import 'package:spotem/feature/home/controller/home_controller.dart';
 import 'package:spotem/feature/alert/ui/view/alert_view.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
+import '../../../core/util/internet_controller.dart';
 import 'view_report_screen.dart';
 
 class HomeScreenView extends StatelessWidget {
@@ -18,6 +19,7 @@ class HomeScreenView extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
   final ThemeController themeController = Get.put(ThemeController());
   final HomeController homeController = Get.put(HomeController());
+  final InternetController internetController = Get.put(InternetController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,18 +51,21 @@ class HomeScreenView extends StatelessWidget {
 
 
 
-                  Row(children: [Obx(()=>  ClipOval(
-                    child:authController.isLoading==true?CircularProgressIndicator():  authController.profileData.value!.data.avatar.url.isEmpty?
-                    Icon(Icons.account_circle_outlined,size: 30,) :
-                    CachedNetworkImage(
-                      imageUrl: authController.profileData.value!.data.avatar.url,height: 45,width: 45,
-                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined),
-                      fadeInDuration: const Duration(milliseconds: 250),
-                      fit: BoxFit.cover,
+                internetController.isConnected.value?Center(child: Text("No Internet Connection")):
+                Row(
+
+                    children: [Obx(()=>  ClipOval(
+                      child:authController.isLoading==true?CircularProgressIndicator():  authController.profileData.value!.data.avatar.url.isEmpty?
+                      Icon(Icons.account_circle_outlined,size: 30,) :
+                      CachedNetworkImage(
+                        imageUrl: authController.profileData.value!.data.avatar.url,height: 45,width: 45,
+                        placeholder: (context, url) => const Center(child: CircularProgressIndicator(strokeWidth: 2,)),
+                        errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined,size: 40,),
+                        fadeInDuration: const Duration(milliseconds: 250),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  ),
+                    ),
 
                     SizedBox(width: 10,),
                     InkWell(
@@ -83,14 +88,14 @@ class HomeScreenView extends StatelessWidget {
 
               // search bar =============
               SizedBox(height: 20),
-              Obx(()=>Container(
+              Container(
                 height: 45,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(width: 1.5, color: themeController.isDarkMode.value?Colors.white:Color(0xFF777777)),
                 ),
-                child: TextField(
+                child:Obx(()=> TextField(
                   onChanged: (value){homeController.searchByType(value);},
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.grey:Colors.grey),
