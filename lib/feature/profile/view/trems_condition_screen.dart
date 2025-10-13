@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 
 class TermsConditionsView extends StatelessWidget {
   const TermsConditionsView({super.key});

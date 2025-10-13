@@ -6,7 +6,7 @@ import 'package:get/get.dart' hide FormData, MultipartFile;
 
 import 'package:spotem/app_ground.dart';
 import 'package:spotem/core/common/widgets/dialog_widget.dart';
-import 'package:spotem/core/network/local/token_manager.dart';
+import 'package:spotem/core/service/local/token_manager.dart';
 import 'package:spotem/feature/auth/view/sign_in_view.dart';
 import 'package:spotem/feature/profile/view/privacy_screen.dart';
 import 'package:spotem/feature/profile/view/trems_condition_screen.dart';

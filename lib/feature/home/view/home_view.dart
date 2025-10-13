@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/home/controller/home_controller.dart';
-import 'package:spotem/feature/home/view/notification_view.dart';
+import 'package:spotem/feature/alert/ui/view/alert_view.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 import 'view_report_screen.dart';
@@ -65,7 +65,7 @@ class HomeScreenView extends StatelessWidget {
                     SizedBox(width: 10,),
                     InkWell(
                       onTap: (){
-                        Get.to(()=> NotificationScreen(),
+                        Get.to(()=> AlertScreen(),
                           transition: Transition.cupertino,
                         );
                       },

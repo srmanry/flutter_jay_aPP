@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/home/view/home_view.dart';
 import 'package:spotem/feature/map/view/map_view.dart';
 import 'package:spotem/feature/report/view/report_create_view.dart';

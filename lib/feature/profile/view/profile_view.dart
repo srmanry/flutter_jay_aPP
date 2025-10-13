@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:spotem/core/common/widgets/app_icon.dart';
 import 'package:spotem/core/common/widgets/dialog_widget.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/auth/view/change_password_view.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
@@ -112,7 +112,7 @@ class ProfileScreenView extends StatelessWidget {
                   () => Switch(
                     value: themeController.isDarkMode.value,
                     onChanged: (_) => themeController.toggleTheme(),
-                    activeThumbColor: Colors.white,
+                    activeColor: Colors.white,
                   ),
                 ),
               ],

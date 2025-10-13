@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart'; // image picker
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/auth/model/profile.dart';
