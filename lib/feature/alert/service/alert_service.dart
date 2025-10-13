@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:spotem/core/base/success.dart';
 import 'package:spotem/core/helper/format_response_data.dart';
 import 'package:spotem/core/helper/typedefs.dart';
@@ -18,11 +19,15 @@ base class AlertService extends AlertInterface{
   FutureRequest<Success<List<AlertModel>>> getAlerts() async{
     return await asyncTryCatch(tryFunc: () async{
       final response = await apiService.get(
-        "/alert",
+        "/report/alerts",
       );
         return Success(
           data: (extractBodyData(response) as List<dynamic>)
-              .map((e) => AlertModel.fromJson(e as Map<String, dynamic>))
+              .map((e) {
+                final alert = AlertModel.fromJson(e as Map<String, dynamic>);
+                debugPrint("Alert >> ${alert.toString()}");
+                return alert;
+          })
               .toList(),
         );
     });

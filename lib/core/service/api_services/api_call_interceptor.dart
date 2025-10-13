@@ -37,6 +37,7 @@ class ApiCallInterceptor extends Interceptor {
   @override
   Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     // IF TIMEOUT, then possibly internet is down. Hence reject the request.
+    debugPrint("Error url:: ${err.requestOptions.uri.toString()}");
     final accessToken = (await _currentAccessToken());
     if(err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.receiveTimeout) {
       return handler.reject(err);

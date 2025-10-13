@@ -5,17 +5,16 @@ import 'api_call_interceptor.dart';
 
 class ApiService {
   ApiService() {
-    Dio(
-      BaseOptions(
-        baseUrl: "https://backend-jay.onrender.com/api/v1",
-      ),
-    );
     _dio.interceptors.add(
       ApiCallInterceptor(),
     );
   }
   
-  late final Dio _dio;
+  late final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: "https://backend-jay.onrender.com/api/v1",
+    ),
+  );
   final SocketService _socketService = SocketService();
 
   // Public GET/POST/PUT/DELETE wrappers

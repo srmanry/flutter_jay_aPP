@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,60 +27,90 @@ class HomeScreenView extends StatelessWidget {
         elevation: 0,
         toolbarHeight: 150,
         title: Obx(
-              () => Column(
+          () => Column(
             children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Hello 👋 ${authController.profileData.value?.data.name ?? "Loading..."}",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.appColor,),
+                      Text(
+                        "Hello 👋 ${authController.profileData.value?.data.name ?? "Loading..."}",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.appColor,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      Text("🎉 Welcome to Spot'em365",
+                      Text(
+                        "🎉 Welcome to Spot'em365",
                         style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w700,
-                          color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: themeController.isDarkMode.value
+                              ? Colors.white
+                              : Colors.grey[800],
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
 
-
-
-                internetController.isConnected.value?Center(child: Text("No Internet Connection")):
-                Row(
-
-                    children: [Obx(()=>  ClipOval(
-                      child:authController.isLoading==true?CircularProgressIndicator():  authController.profileData.value!.data.avatar.url.isEmpty?
-                      Icon(Icons.account_circle_outlined,size: 30,) :
-                      CachedNetworkImage(
-                        imageUrl: authController.profileData.value!.data.avatar.url,height: 45,width: 45,
-                        placeholder: (context, url) => const Center(child: CircularProgressIndicator(strokeWidth: 2,)),
-                        errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined,size: 40,),
-                        fadeInDuration: const Duration(milliseconds: 250),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    ),
-
-                    SizedBox(width: 10,),
-                    InkWell(
-                      onTap: (){
-                        Get.to(()=> AlertScreen(),
-                          transition: Transition.cupertino,
-                        );
-                      },
-                      child: CircleAvatar(
-                        radius: 20,
-                        backgroundColor: themeController.isDarkMode.value ? Colors.white : Colors.grey[300],
-                        child: Icon(
-                          Icons.notifications_none_outlined,
-                          color: themeController.isDarkMode.value ? Colors.red : Colors.red,
+                  //internetController.isConnected.value?Center(child: Text("No Internet Connection")):
+                  Row(
+                    children: [
+                      Obx(
+                        () => ClipOval(
+                          child: authController.isLoading == true
+                              ? CircularProgressIndicator() : authController.profileData.value!.data.avatar.url.isEmpty
+                              ? Icon(Icons.account_circle_outlined, size: 30)
+                              : CachedNetworkImage(
+                                  imageUrl: authController.profileData.value!.data.avatar.url,
+                                  height: 45,
+                                  width: 45,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(
+                                        Icons.account_circle_outlined,
+                                        size: 40,
+                                      ),
+                                  fadeInDuration: const Duration(
+                                    milliseconds: 250,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
-                    ),],)
+
+                      SizedBox(width: 10),
+                      InkWell(
+                        onTap: () {
+                          Get.to(
+                            () => AlertScreen(),
+                            transition: Transition.cupertino,
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: themeController.isDarkMode.value
+                              ? Colors.white
+                              : Colors.grey[300],
+                          child: Icon(
+                            Icons.notifications_none_outlined,
+                            color: themeController.isDarkMode.value
+                                ? Colors.red
+                                : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
 
@@ -92,18 +121,38 @@ class HomeScreenView extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(50),
-                  border: Border.all(width: 1.5, color: themeController.isDarkMode.value?Colors.white:Color(0xFF777777)),
-                ),
-                child:Obx(()=> TextField(
-                  onChanged: (value){homeController.searchByType(value);},
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value?Colors.grey:Colors.grey),
-                    hintText: "Category",
-                    hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: themeController.isDarkMode.value?Colors.black: Colors.black,),
-                    border: InputBorder.none,
+                  border: Border.all(
+                    width: 1.5,
+                    color: themeController.isDarkMode.value
+                        ? Colors.white
+                        : Color(0xFF777777),
                   ),
                 ),
-              ),)
+                child: Obx(
+                  () => TextField(
+                    onChanged: (value) {
+                      homeController.searchByType(value);
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: themeController.isDarkMode.value
+                            ? Colors.grey
+                            : Colors.grey,
+                      ),
+                      hintText: "Category",
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: themeController.isDarkMode.value
+                            ? Colors.black
+                            : Colors.black,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -114,146 +163,298 @@ class HomeScreenView extends StatelessWidget {
           bool isMobile = shortestSide < 600;
           if (isMobile) {
             return Obx(
-                  () => homeController.isLoading.value?Center(child: Text("Loading....",style: TextStyle(fontSize: 24,color: Colors.grey),)):
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: homeController.filteredReports.isEmpty
-                    ? Center(child: Text("No Reports Found",style: TextStyle(color: Colors.black),))
-                    : ListView.builder(
-                  itemCount: homeController.filteredReports.length,
-                  itemBuilder: (_, index) {
-
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: themeController.isDarkMode.value ?  Colors.white: Colors.black,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(children: [
-                                homeController.reports[index].user.avatar.url.isEmpty?
-                                Icon(Icons.account_circle_outlined,color: themeController.isDarkMode.value ? Colors.black : Colors.white,size: 40,):
-                                ClipRRect(
-                                  borderRadius: BorderRadiusGeometry.circular(45),
-                                  child: Image.network(
-                                    homeController.reports[index].user.avatar.url,
-                                    height: 45, width: 45, fit: BoxFit.cover,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+              () => homeController.isLoading.value
+                  ? Center(
+                      child: Text(
+                        "Loading....",
+                        style: TextStyle(fontSize: 24, color: Colors.grey),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: homeController.filteredReports.isEmpty
+                          ? Center(
+                              child: Text(
+                                "No Reports Found",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: homeController.filteredReports.length,
+                              itemBuilder: (_, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: themeController.isDarkMode.value
+                                          ? Colors.white
+                                          : Colors.black,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(homeController.reports[index].user.name,
-                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
+                                          Row(
+                                            children: [
+                                              homeController
+                                                      .reports[index]
+                                                      .user
+                                                      .avatar
+                                                      .url
+                                                      .isEmpty
+                                                  ? Icon(
+                                                      Icons
+                                                          .account_circle_outlined,
+                                                      color:
+                                                          themeController
+                                                              .isDarkMode
+                                                              .value
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                      size: 40,
+                                                    )
+                                                  : ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadiusGeometry.circular(
+                                                            45,
+                                                          ),
+                                                      child: Image.network(
+                                                        homeController
+                                                            .reports[index]
+                                                            .user
+                                                            .avatar
+                                                            .url,
+                                                        height: 45,
+                                                        width: 45,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          homeController
+                                                              .reports[index]
+                                                              .user
+                                                              .name,
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color:
+                                                                themeController
+                                                                    .isDarkMode
+                                                                    .value
+                                                                ? Colors.black
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+
+                                                        Text(
+                                                          DateFormat(
+                                                            'yyyy-MM-dd – hh:mm a',
+                                                          ).format(
+                                                            homeController
+                                                                .reports[index]
+                                                                .createdAt,
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color:
+                                                                themeController
+                                                                    .isDarkMode
+                                                                    .value
+                                                                ? Colors.black
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Get.to(
+                                                          () => ViewReportScreen(
+                                                            report: homeController
+                                                                .reports[index],
+                                                          ),
+                                                          transition: Transition
+                                                              .cupertino,
+                                                        );
+                                                      },
+                                                      child: Icon(
+                                                        Icons.more_vert,
+                                                        color:
+                                                            themeController
+                                                                .isDarkMode
+                                                                .value
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
 
-                                          Text(
-                                            DateFormat('yyyy-MM-dd – hh:mm a',).format(homeController.reports[index].createdAt,),
-                                            style: TextStyle(
-                                              fontSize: 12, fontWeight: FontWeight.w400,
-                                              color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 10,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "Category: ",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color:
+                                                        themeController
+                                                            .isDarkMode
+                                                            .value
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  homeController
+                                                      .filteredReports[index]
+                                                      .type,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Location : ",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      themeController
+                                                          .isDarkMode
+                                                          .value
+                                                      ? Colors.black
+                                                      : Colors.white,
+                                                ),
+                                              ),
+                                              FutureBuilder<String>(
+                                                future: homeController
+                                                    .getPlaceName(
+                                                      homeController
+                                                          .reports[index]
+                                                          .location
+                                                          .lat,
+                                                      homeController
+                                                          .reports[index]
+                                                          .location
+                                                          .lng,
+                                                    ),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const Text(
+                                                      "Loading...",
+                                                      style: TextStyle(
+                                                        color: Colors.grey,
+                                                      ),
+                                                    );
+                                                  } else if (snapshot
+                                                      .hasError) {
+                                                    return const Text(
+                                                      "Unknown location",
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Text(
+                                                      snapshot.data ??
+                                                          "Unknown",
+                                                      style: TextStyle(
+                                                        color:
+                                                            themeController
+                                                                .isDarkMode
+                                                                .value
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          ),
+
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 10,
+                                            ),
+                                            child: Text(
+                                              homeController
+                                                  .reports[index]
+                                                  .title,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color:
+                                                    themeController
+                                                        .isDarkMode
+                                                        .value
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                              ),
+                                            ),
+                                          ),
+
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 10,
+                                            ),
+                                            child: Text(
+                                              homeController
+                                                  .reports[index]
+                                                  .description,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color:
+                                                    themeController
+                                                        .isDarkMode
+                                                        .value
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                      InkWell(onTap: (){
-                                        Get.to(()=> ViewReportScreen(report: homeController.reports[index],),
-                                          transition: Transition.cupertino,
-                                        );
-                                      },
-                                        child: Icon(Icons.more_vert,color: themeController.isDarkMode.value ? Colors.black : Colors.white,)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10,),
-                                child: Row(
-                                  children: [
-                                    Text("Category: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),),
-                                    Text(
-                                      homeController.filteredReports[index].type,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Location : ",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                     ),
                                   ),
-                                  FutureBuilder<String>(
-                                    future: homeController.getPlaceName(
-                                      homeController.reports[index].location.lat,
-                                      homeController.reports[index].location.lng,
-                                    ),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return const Text("Loading...", style: TextStyle(color: Colors.grey),);
-                                      } else if (snapshot.hasError) {
-                                        return const Text("Unknown location", style: TextStyle(color: Colors.red),);
-                                      } else {
-                                        return Text(
-                                          snapshot.data ?? "Unknown",
-                                          style: TextStyle(
-                                            color: themeController.isDarkMode.value ? Colors.black : Colors.white,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  homeController.reports[index].title,
-                                  style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w400,
-                                    color: themeController.isDarkMode.value ? Colors.black : Colors.white,
-                                  ),
-                                ),
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  homeController.reports[index].description,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: themeController.isDarkMode.value ? Colors.black : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+                                );
+                              },
+                            ),
+                    ),
             );
           }
           return Center(child: Text("Other  Screen View"));

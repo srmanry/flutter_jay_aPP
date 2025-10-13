@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:spotem/feature/report/model/report_model.dart';
 
 enum AlertType {
@@ -10,6 +11,7 @@ enum AlertType {
   const AlertType(this.value);
 
   static AlertType fromString(String value) {
+    value = value.toLowerCase();
     switch (value) {
       case "fire":
         return AlertType.fire;
@@ -30,6 +32,7 @@ class AlertReport {
   final String title;
   final String description;
 
+
   AlertReport({
     required this.id,
     required this.title,
@@ -49,7 +52,7 @@ class AlertModel {
   final String id;
   final AlertType type;
   final Location location;
-  final AlertReport report;
+  final AlertReport? report;
   final bool isRead;
   final DateTime createdAt;
 
@@ -63,13 +66,21 @@ class AlertModel {
   });
 
   factory AlertModel.fromJson(Map<String, dynamic> json) {
+    debugPrint("Parsing >> $json");
+    // debugPrint("Parsed report >> ${AlertReport.fromJson(json['report'])}");
+    // debugPrint("Location parsed >> ${Location.fromJson(json['location'])}");
     return AlertModel(
       id: json['_id'],
       type: AlertType.fromString(json['type']),
       location: Location.fromJson(json['location']),
-      report: AlertReport.fromJson(json['report']),
-      isRead: json['isRead'],
+      report: json['report'] == null ? null : AlertReport.fromJson(json['report']),
+      isRead: json['isRead'] as bool,
       createdAt: DateTime.parse(json['createdAt']),
     );
+  }
+
+  @override
+  String toString() {
+    return 'AlertModel(id: $id, type: $type, location: $location, report: $report, isRead: $isRead, createdAt: $createdAt)';
   }
 }
