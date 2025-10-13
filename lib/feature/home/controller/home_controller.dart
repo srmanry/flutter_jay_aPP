@@ -79,9 +79,7 @@ class HomeController extends GetxController {
       filteredReports.assignAll(reports);
     } else {
       filteredReports.assignAll(
-        reports
-            .where((r) => r.type.toLowerCase().contains(query.toLowerCase()))
-            .toList(),
+        reports.where((r) => r.type.toLowerCase().contains(query.toLowerCase())).toList(),
       );
     }
   }

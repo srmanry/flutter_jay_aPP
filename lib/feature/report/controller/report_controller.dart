@@ -41,7 +41,7 @@ class ReportController extends GetxController {
           "coordinates": [lng, lat],
         }
       };
-await Future.delayed(const Duration(seconds: 3),);
+    await Future.delayed(const Duration(seconds: 3),);
       print(" Sending Body: $body");
 
       final response = await dioClient.post(

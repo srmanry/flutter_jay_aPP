@@ -39,7 +39,8 @@ class MyApp extends StatelessWidget {
               statusBarIconBrightness:themeController.isDarkMode.value? Brightness.light:Brightness.dark,
             ),
             backgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
-            iconTheme: IconThemeData(color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
+            iconTheme: IconThemeData(color: AppColors.appColor,),
+            //iconTheme: IconThemeData(color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
             titleTextStyle: TextStyle(
               color: themeController.isDarkMode.value ? AppColors.appColor : AppColors.appColor,
               fontWeight: FontWeight.w700,
