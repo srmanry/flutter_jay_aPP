@@ -2,12 +2,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenManager {
   static const _accessTokenKey = "accessToken";
+  static const _refreshTokenKey = "refreshToken";
   static const _roleKey = "role";
   static const _isLoggedInKey = "isLoggedIn";
 
   // Save token and role after login
   static Future<void> saveToken({
     required String accessToken,
+    String refreshToken = "",
     required String role,
   }) async {
     final prefs = await SharedPreferences.getInstance();
@@ -16,10 +18,20 @@ class TokenManager {
     await prefs.setBool(_isLoggedInKey, true);
   }
 
-  // Get access token
+  /// Get access token
   static Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_accessTokenKey);
+  }
+
+  /// Get refresh token
+  static Future<String?> getrefreshToken() async{
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_refreshTokenKey);
+    } catch (e) {
+      return null;
+    }
   }
 
   // Get role

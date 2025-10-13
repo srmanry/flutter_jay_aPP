@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:spotem/core/network/local/token_manager.dart';
+import 'package:spotem/core/service/local/token_manager.dart';
 import 'package:spotem/feature/home/model/reports_model.dart';
 
 class HomeController extends GetxController {

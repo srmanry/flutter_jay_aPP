@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:spotem/core/common/widgets/app_icon.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 
 import '../../../../../core/common/common_text.dart';
 import '../../../../../core/common/widgets/custom_text_field.dart';

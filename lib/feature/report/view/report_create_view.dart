@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/core/common/widgets/save_botton.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 import '../../map/controller/map_controller.dart';
 import '../controller/report_controller.dart';

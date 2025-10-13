@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:spotem/core/util/app_colors.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
 class ProfileCardWidget extends StatelessWidget {
