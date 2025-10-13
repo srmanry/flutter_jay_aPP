@@ -2,7 +2,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 
 import 'package:spotem/core/utils/app_colors.dart';
@@ -11,7 +10,7 @@ import 'package:spotem/feature/home/controller/home_controller.dart';
 import 'package:spotem/feature/alert/ui/view/alert_view.dart';
 import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
-import '../../../core/util/internet_controller.dart';
+import '../../../core/utils/internet_controller.dart';
 import 'view_report_screen.dart';
 
 class HomeScreenView extends StatelessWidget {
