@@ -1,4 +1,7 @@
+import 'dart:ui' as ui;
+
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -117,8 +120,8 @@ class LocationController extends GetxController {
       isLoading.value = false;
     }
   }
-
-  BitmapDescriptor _getMarkerIcon(String type) {
+// old=============
+ BitmapDescriptor _getMarkerIcon(String type) {
     switch (type) {
       case "Fire":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
@@ -132,4 +135,147 @@ class LocationController extends GetxController {
         return BitmapDescriptor.defaultMarker;
     }
   }
+
+
+
+
+
+  Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
+    const size = 40.0;
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
+
+    textPainter.text = TextSpan(
+      text: String.fromCharCode(iconData.codePoint),
+      style: TextStyle(
+        fontSize: size,
+        fontFamily: iconData.fontFamily,
+        color: color,
+      ),
+    );
+
+    textPainter.layout();
+    textPainter.paint(canvas, Offset.zero);
+
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(size.toInt(), size.toInt());
+    final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
+
+    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+  }
+
+
+  /*Future<void> fetchNearbyPlaces() async {
+    const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI"; // 🔑 তোমার Google Maps Places API key বসাও
+    final types = ["hospital", "police", "fire_station"];
+
+    for (var type in types) {
+      final url =
+          "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat.value},${lng.value}&radius=3000&type=$type&key=$apiKey";
+
+      try {
+        final response = await Dio().get(url);
+        if (response.statusCode == 200 && response.data["results"] != null) {
+          final results = response.data["results"] as List;
+
+          for (var place in results) {
+            final name = place["name"] ?? type.capitalizeFirst!;
+            final geometry = place["geometry"]["location"];
+            final placeLat = geometry["lat"];
+            final placeLng = geometry["lng"];
+        *//*    final icon = await _getCustomMarkerIcon(type);
+            markers.add(
+              Marker(
+                markerId: MarkerId("${type}_${placeLat}_$placeLng"),
+                position: LatLng(placeLat, placeLng),
+                icon: icon, // 👈 এখানে custom icon ব্যবহার হচ্ছে
+                infoWindow: InfoWindow(title: name),
+              ),
+            );*//*
+
+            final policeIcon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
+
+            markers.add(
+              Marker(
+                markerId: MarkerId("police_1"),
+                position: LatLng(23.8103, 90.4125),
+                icon: policeIcon,
+              ),
+            );
+
+
+          }
+        }
+      } catch (e) {
+        print("Error fetching $type places: $e");
+      }
+    }
+
+    markers.refresh();
+  }*/
+
+  Future<void> fetchNearbyPlaces() async {
+    const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI"; // তোমার API key
+    final types = ["hospital", "police", "fire_station"];
+
+    for (var type in types) {
+      final url =
+          "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat.value},${lng.value}&radius=3000&type=$type&key=$apiKey";
+
+      try {
+        final response = await Dio().get(url);
+        if (response.statusCode == 200 && response.data["results"] != null) {
+          final results = response.data["results"] as List;
+
+          for (var place in results) {
+            final name = place["name"] ?? type.capitalizeFirst!;
+            final geometry = place["geometry"]["location"];
+            final placeLat = geometry["lat"];
+            final placeLng = geometry["lng"];
+
+            // Marker icon type অনুযায়ী আলাদা
+            BitmapDescriptor icon;
+            switch (type) {
+              case "hospital":
+                icon = await getMarkerFromIcon(Icons.local_hospital_outlined, Colors.pink,);
+                break;
+              case "police":
+                icon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
+                break;
+              case "fire_station":
+                icon = await getMarkerFromIcon(Icons.local_fire_department, Colors.red);
+                break;
+              default:
+                icon = BitmapDescriptor.defaultMarker;
+            }
+
+            markers.add(
+              Marker(
+                markerId: MarkerId("${type}_${placeLat}_$placeLng"),
+                position: LatLng(placeLat, placeLng),
+                icon: icon,
+                infoWindow: InfoWindow(title: name),
+                onTap: () {
+                  selectedMarkerData.value = {
+                    "title": name,
+                    "type": type.capitalizeFirst,
+                    "lat": placeLat,
+                    "lng": placeLng,
+                    "time": DateTime.now().toString(),
+                  };
+                },
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        print("Error fetching $type places: $e");
+      }
+    }
+
+    markers.refresh();
+  }
+
 }

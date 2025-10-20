@@ -1,56 +1,3 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:spotem/feature/home/controller/home_controller.dart';
-import '../controller/map_controller.dart';
-
-class GoogleMapScreen extends StatelessWidget {
-  GoogleMapScreen({super.key});
-
-  final LocationController locationController = Get.put(LocationController());
-  final HomeController homeController = Get.put(HomeController());
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(locationController.lat.value, locationController.lng.value),
-              zoom: 16,
-            ),
-            markers: Set<Marker>.from(locationController.markers),
-
-            mapType: MapType.normal,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: true,
-            zoomControlsEnabled: true,
-            onMapCreated: (controller) async {
-              locationController.setMapController(controller);
-              await locationController.loadLocation();
-              await locationController.fetchReportMarker();
-             // await homeController.fetchReports();
-            },
-          ),
-
-          // Optional: Loading indicator overlay
-          Obx(() => locationController.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
-              : const SizedBox.shrink(child: Column(children: [
-
-          ],),
-
-          )),
-        ],
-      ),
-    );
-  }
-}
-*/
-
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -97,6 +44,8 @@ class GoogleMapScreen extends StatelessWidget {
               locationController.setMapController(controller);
               await locationController.loadLocation();
               await locationController.fetchReportMarker();
+              await locationController.fetchNearbyPlaces();
+
             },
             onTap: (_) {
               // Tap anywhere to hide custom info card
@@ -107,50 +56,72 @@ class GoogleMapScreen extends StatelessWidget {
 
           Obx(() => locationController.isLoading.value
               ? const Center(child: CircularProgressIndicator())
-              : const SizedBox.shrink()),
+              :  SizedBox.shrink()),
 
 
           Obx(() {
             final data = locationController.selectedMarkerData.value;
-            if (data == null) return const SizedBox.shrink();
+            if (data == null) return  SizedBox.shrink();
 
             Color cardColor;
             IconData cardIcon;
+            Color? iconColor;
+            Color ?textColor;
 
             switch (data["type"]) {
               case "Fire":
-                cardColor = Colors.deepOrange;
+                cardColor = Colors.white;
                 cardIcon = Icons.local_fire_department;
+                iconColor = Colors.red[400];
+                textColor = Colors.red[400];
                 break;
               case "Police":
-                cardColor = Colors.blue.shade200;
+                cardColor = Colors.white;
                 cardIcon = Icons.local_police;
+                iconColor = Colors.blue;
+                textColor = Colors.blue;
                 break;
               case "Ambulance":
-                cardColor = Colors.orange.shade200;
-                cardIcon = Icons.local_hospital;
+                cardColor = Colors.white;
+                cardIcon = Icons.car_crash_outlined;
+                iconColor = Colors.orange.shade200;
+                textColor = Colors.orange.shade200;
                 break;
               default:
-                cardColor = Colors.grey.shade200;
+                cardColor = Colors.white;
                 cardIcon = Icons.location_on;
+                iconColor = Color(0xFF2B7FD0);
+                textColor = Color(0xFF2B7FD0);
             }
 
             return Positioned(
               bottom: 100,
               left: 20,
-              right: 20,
               child: AnimatedOpacity(
                 opacity: 1.0,
                 duration: const Duration(milliseconds: 300),
-                child: Card(
-                  color: cardColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 10,
-                  shadowColor: Colors.black54,
+                child: Container(
+                  width: 300,
+
+                 decoration: BoxDecoration(
+                   color: cardColor,
+                   borderRadius: BorderRadius.circular(16),
+                   shape: BoxShape.rectangle,
+                   boxShadow: [
+                     BoxShadow(
+                       color: Colors.black26,
+                       blurRadius: 2,
+                       offset: const Offset(0, 0),
+                     ),
+                   ],
+                 ),
+                 // shape: RoundedRectangleBorder(
+                 //    borderRadius: BorderRadius.circular(16),
+                 //  ),
+          /*        elevation: 10,
+                  shadowColor: Colors.black54,*/
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding:  EdgeInsets.all(16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,23 +129,23 @@ class GoogleMapScreen extends StatelessWidget {
                         // Header Row (Icon + Type)
                         Row(
                           children: [
-                            Icon(cardIcon, color: Colors.black87, size: 26),
-                            const SizedBox(width: 8),
+                            Icon(cardIcon, color: iconColor, size: 26),
+                            SizedBox(width: 8),
                             Text(
-                              data["type"],
-                              style: const TextStyle(
+                              data["type"]?? "",
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                color: Colors.black87,
+                                color: textColor,  // Using the textColor variable that's already defined
                               ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 8),
+                  ),
 
+                        SizedBox(height: 8),
                         // Title
                         Text(
-                          data["title"],
+                          data["title"]?? "",
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -185,7 +156,9 @@ class GoogleMapScreen extends StatelessWidget {
 
                         // Description
                         Text(
-                          data["description"],
+                          data["description"] ?? "",
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.black87,
@@ -201,45 +174,19 @@ class GoogleMapScreen extends StatelessWidget {
                             const SizedBox(width: 4),
                             Text(
                               "Time: ${formatTimestamp(data["time"])}",
-                              style: const TextStyle(
-                                  color: Colors.black54, fontSize: 13),
+                              style: const TextStyle(color: Colors.black54, fontSize: 13),
                             ),
 
                           ],
                         ),
                         const SizedBox(height: 12),
 
-                        // Button
-                     /*   Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black87,
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 18),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            onPressed: () {
-                              Get.snackbar(
-                                "More Details",
-                                "Lat: ${data["lat"]}, Lng: ${data["lng"]}",
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
-                            },
-                            child: const Text(
-                              "More Details",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),*/
-                      ],
+                  ]
                     ),
                   ),
                 ),
-              ),
-            );
+              ));
+
           }),
         ],
       ),
