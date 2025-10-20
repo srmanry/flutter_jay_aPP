@@ -79,16 +79,12 @@ class GoogleMapScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // 🔹 Main Google Map
+
           Obx(() => GoogleMap(
             initialCameraPosition: CameraPosition(
               target: LatLng(
-                locationController.lat.value == 0.0
-                    ? 23.8103
-                    : locationController.lat.value,
-                locationController.lng.value == 0.0
-                    ? 90.4125
-                    : locationController.lng.value,
+                locationController.lat.value == 0.0 ? 23.8103 : locationController.lat.value,
+                locationController.lng.value == 0.0 ? 90.4125 : locationController.lng.value,
               ),
               zoom: 14,
             ),
@@ -108,12 +104,12 @@ class GoogleMapScreen extends StatelessWidget {
             },
           )),
 
-          // 🔹 Loading indicator overlay
+
           Obx(() => locationController.isLoading.value
               ? const Center(child: CircularProgressIndicator())
               : const SizedBox.shrink()),
 
-          // 🔹 Custom Marker Info Card (Bottom Positioned)
+
           Obx(() {
             final data = locationController.selectedMarkerData.value;
             if (data == null) return const SizedBox.shrink();
@@ -123,7 +119,7 @@ class GoogleMapScreen extends StatelessWidget {
 
             switch (data["type"]) {
               case "Fire":
-                cardColor = Colors.redAccent.shade100;
+                cardColor = Colors.deepOrange;
                 cardIcon = Icons.local_fire_department;
                 break;
               case "Police":

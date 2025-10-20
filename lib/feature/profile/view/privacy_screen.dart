@@ -14,8 +14,8 @@ class AboutAppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        centerTitle: false,
+        leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
+        centerTitle: true,
 
         title: Text(
           "About App",

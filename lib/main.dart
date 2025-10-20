@@ -11,7 +11,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Get.put(AlertController(), permanent: true);
+  Get.put(ThemeController(), permanent: true);
   runApp(const MyApp());
+
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     debugPrint("Caught Flutter Error+++++++++++++++++: ${details.exception}");
@@ -24,35 +26,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = Get.put(ThemeController());
-    return Obx(
-      () => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+    final themeController = Get.find<ThemeController>();
 
+    return Obx(() {
+      return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: '',
+        themeMode: themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
         theme: ThemeData(
-          scaffoldBackgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
+          scaffoldBackgroundColor: Colors.white,
           useMaterial3: false,
           appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness:themeController.isDarkMode.value? Brightness.light:Brightness.dark,
-            ),
-            backgroundColor: themeController.isDarkMode.value ? Colors.black : Colors.white,
-            iconTheme: IconThemeData(color: AppColors.appColor,),
-            //iconTheme: IconThemeData(color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
-            titleTextStyle: TextStyle(
-              color: themeController.isDarkMode.value ? AppColors.appColor : AppColors.appColor,
-              fontWeight: FontWeight.w700,
-              fontSize: 24,
-            ),
+            systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark,),
+            backgroundColor: Colors.white,
+            iconTheme: IconThemeData(color: AppColors.appColor),
+            titleTextStyle:  TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24,),
           ),
         ),
 
-        darkTheme: ThemeData.dark(),
-        themeMode: themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
-        home: SplashScreen(),
-      ),
-    );
+        darkTheme: ThemeData(
+          scaffoldBackgroundColor: Colors.black,
+          useMaterial3: false,
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light,),
+            backgroundColor: Colors.black,
+            iconTheme: IconThemeData(color: AppColors.appColor),
+            titleTextStyle:  TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24,),
+          ),
+        ),
+
+        home: const SplashScreen(),
+      );
+    });
   }
 }

@@ -59,6 +59,7 @@ class AuthController extends GetxController {
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
       baseUrl: "https://backend-jay.onrender.com/api/v1",
+     // baseUrl: "https://api.therareroutes.com/api/v1",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
     ),
@@ -69,7 +70,6 @@ class AuthController extends GetxController {
   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-
 
     if (email.isEmpty) {
       Get.snackbar("Error", "Email is required");
@@ -198,6 +198,8 @@ class AuthController extends GetxController {
       Get.snackbar("Error", "Something went wrong");
     }
   }
+
+
 
   Future<void> logout() async {
     try {
@@ -346,7 +348,7 @@ class AuthController extends GetxController {
     String confirmPassword,
   ) async {
     try {
-      // 
+      //
       if (currentPassword.isEmpty) {
         Get.snackbar("Error", "Current Password is required");
         return;
@@ -365,14 +367,14 @@ class AuthController extends GetxController {
 
       isLoading.value = true;
 
-      // 🔹 Token
+
       final token = await TokenManager.getAccessToken();
       if (token == null) {
         Get.snackbar("Error", "User not logged in");
         return;
       }
 
-      // 🔹 API call
+
       final response = await dioClient.post(
         "/user/change-password",
         data: {
@@ -389,7 +391,7 @@ class AuthController extends GetxController {
         ),
       );
 
-      // 🔹 Response handling
+
       if (response.statusCode == 200) {
         Get.snackbar("Success", "Password changed successfully");
         CustomDialog(
@@ -399,13 +401,13 @@ class AuthController extends GetxController {
         );
         Get.to(() => AppGroundView());
       } else {
-        // 🔹 Show server error (like current password mismatch)
+        //  Show server error (like current password mismatch)
         final message = response.data?["message"] ?? "Something went wrong";
         Get.snackbar("Error", message);
         print("Change Password Error: $message"); // debug log
       }
     } catch (e, stacktrace) {
-      // 🔹 Show actual exception if API fails
+      //  Show actual exception if API fails
       print("Exception changing password: $e");
       print(stacktrace);
       Get.snackbar("Error", "An unexpected error occurred");

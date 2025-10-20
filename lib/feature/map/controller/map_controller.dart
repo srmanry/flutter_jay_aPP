@@ -84,7 +84,7 @@ class LocationController extends GetxController {
               markerId: MarkerId("${type}_${latValue}_${lngValue}"),
               position: LatLng(latValue, lngValue),
               icon: _getMarkerIcon(type),
-              infoWindow: const InfoWindow(title: ''), // Hide default info window
+              infoWindow: const InfoWindow(title: ''),
               onTap: () {
                 selectedMarkerData.value = {
                   "title": title,
@@ -109,10 +109,10 @@ class LocationController extends GetxController {
           );
         }
       } else {
-        Get.snackbar("Error", "Failed to fetch report markers");
+        //Get.snackbar("Error", "Failed to fetch report markers");
       }
     } catch (e) {
-      Get.snackbar("Error", "Something went wrong: $e");
+     // Get.snackbar("Error", "Something went wrong: $e");
     } finally {
       isLoading.value = false;
     }

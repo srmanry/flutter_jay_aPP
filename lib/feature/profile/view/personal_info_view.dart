@@ -17,7 +17,7 @@ class PersonalInfoScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(    leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
         centerTitle: false,
         title: Text(
           "Personal Info",

@@ -15,17 +15,10 @@ class ChangePasswordView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(    leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
         iconTheme: IconThemeData(color: AppColors.appColor),
         centerTitle: true,
-        title: Text(
-          "Change Password",
-          style: TextStyle(
-            color: AppColors.appColor,
-            fontWeight: FontWeight.w700,
-            fontSize: 24,
-          ),
-        ),
+        title: Text("Change Password", style: TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24,),),
         elevation: 0,
       ),
 
@@ -58,7 +51,40 @@ class ChangePasswordView extends StatelessWidget {
                       hinText: "Confirm Password",
                       controller: confirmPasswordController,
                     ),
-                    SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric( vertical: 30),
+                      child: Obx(
+                            () => authController.isLoading.value
+                            ? Center(child: CircularProgressIndicator())
+                            : ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.appColor,
+                            minimumSize: Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () {
+                            authController.changePassword(
+                              currentPasswordController.text.trim(),
+                              newPasswordController.text.trim(),
+                              confirmPasswordController.text.trim(),
+                            );
+                          },
+
+                          child: Text(
+                            "Save",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                          ),
+                          //label: Icon(Icons.arrow_forward, color: Colors.white,size: 20,),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -68,39 +94,7 @@ class ChangePasswordView extends StatelessWidget {
           }
         },
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
-        child: Obx(
-          () => authController.isLoading.value
-              ? Center(child: CircularProgressIndicator())
-              : ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.appColor,
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    authController.changePassword(
-                      currentPasswordController.text.trim(),
-                      newPasswordController.text.trim(),
-                      confirmPasswordController.text.trim(),
-                    );
-                  },
 
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    ),
-                  ),
-                  //label: Icon(Icons.arrow_forward, color: Colors.white,size: 20,),
-                ),
-        ),
-      ),
     );
   }
 }

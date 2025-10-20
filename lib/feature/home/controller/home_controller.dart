@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:spotem/core/service/local/token_manager.dart';
 import 'package:spotem/feature/home/model/reports_model.dart';
 
@@ -26,8 +27,8 @@ class HomeController extends GetxController {
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
       baseUrl: "https://backend-jay.onrender.com/api/v1",
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 60),
     ),
   );
 
@@ -74,7 +75,25 @@ class HomeController extends GetxController {
     }
   }
 
+
   void searchByType(String query) {
+    if (query.isEmpty) {
+      filteredReports.assignAll(reports);
+    } else {
+      final dateFormat = DateFormat('yyyy-MM-dd');
+      filteredReports.assignAll(
+        reports.where((r) {
+
+          final localDate = r.createdAt.toLocal();
+          final formattedDate = dateFormat.format(localDate);
+          return formattedDate.contains(query);
+        }).toList(),
+      );
+    }
+
+
+
+    /* void searchByType(String query) {
     if (query.isEmpty) {
       filteredReports.assignAll(reports);
     } else {
@@ -82,5 +101,13 @@ class HomeController extends GetxController {
         reports.where((r) => r.type.toLowerCase().contains(query.toLowerCase())).toList(),
       );
     }
+  }*/
+  }
+
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    fetchReports();
   }
 }

@@ -33,44 +33,19 @@ class _AppGroundViewState extends State<AppGroundView> {
 
       body: _pages[_currentIndex],
       bottomNavigationBar: SizedBox(
-        child: BottomNavigationBar(
-          selectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
+        child: BottomNavigationBar(selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14,),
 
           type: BottomNavigationBarType.fixed,
           unselectedItemColor: Colors.white,
           selectedItemColor: AppColors.appColor,
           backgroundColor: AppColors.navBarColor,
           currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
+          onTap: (index) {setState(() {_currentIndex = index;});},
           items: const [
             BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child: Icon(Icons.home_outlined),
-              ),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child: Icon(Icons.location_on_outlined),
-              ),
-              label: "Map",
-            ),
-            BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child: Icon(Icons.report_gmailerrorred_outlined),
-              ),
-              label: "Report",
-            ),
+              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.home_outlined),), label: "Home",),
+            BottomNavigationBarItem(icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.location_on_outlined),), label: "Map",),
+            BottomNavigationBarItem(icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.report_gmailerrorred_outlined),), label: "Report",),
 
             BottomNavigationBarItem(
               icon: Padding(

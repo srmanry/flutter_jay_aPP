@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:spotem/feature/home/model/reports_model.dart';
 
@@ -20,7 +21,7 @@ class ViewReportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
 
-        centerTitle: true,
+         leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),centerTitle: true,
           elevation: 0,
           title: Text(report.title)),
       body: GoogleMap(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 
 class TermsConditionsView extends StatelessWidget {
@@ -7,7 +8,7 @@ class TermsConditionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         title: const Text("Terms & Conditions"),

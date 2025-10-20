@@ -17,7 +17,7 @@ class ApiService {
   );
   final SocketService _socketService = SocketService();
 
-  // Public GET/POST/PUT/DELETE wrappers
+
   Future<Response> get(
     String path, {
     dynamic data,

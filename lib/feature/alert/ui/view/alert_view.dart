@@ -16,7 +16,7 @@ class AlertScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
+        leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
         elevation: 0,
         centerTitle: true,
         title: Text("Notifications"),
@@ -44,7 +44,7 @@ class AlertScreen extends StatelessWidget {
   Widget notificationCard(AlertModel alert) {
     // TODO:: replace [Container] with notification card;
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -53,25 +53,15 @@ class AlertScreen extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          //spacing: 8,
+
           children: [
-            Text(alert.report?.title ?? "..",style: TextStyle(fontWeight: FontWeight.bold),),  SizedBox(height: 8,),
-
-            Text(alert.report?.description ?? ".."),
-            SizedBox(height: 8,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text( DateFormat('dd MMM yyyy, hh:mm a') .format(alert.createdAt) ),
-                InkWell(
-                    onTap: () {
-                      Get.to(() => AlertMapScreen());
-                    },
-                    child: Icon(Icons.location_on_outlined,color: AppColors.appColor,)),
-
-              ],
+            Text(alert.report?.title ?? "..",style: TextStyle(fontWeight: FontWeight.bold),),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(alert.report?.description ?? ".."),
             ),
-           Divider(),
+            Text( DateFormat('dd MMM yyyy, hh:mm a') .format(alert.createdAt) ),
+          Divider(),
           ],
         ),
       ),

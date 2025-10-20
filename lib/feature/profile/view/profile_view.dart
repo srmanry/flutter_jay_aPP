@@ -99,9 +99,7 @@ class ProfileScreenView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : Colors.black,
+                          color: themeController.isDarkMode.value ? Colors.white : Colors.black,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -112,7 +110,7 @@ class ProfileScreenView extends StatelessWidget {
                   () => Switch(
                     value: themeController.isDarkMode.value,
                     onChanged: (_) => themeController.toggleTheme(),
-                    activeColor: Colors.white,
+                   // activeColor: Colors.white,
                   ),
                 ),
               ],
@@ -154,7 +152,7 @@ class ProfileScreenView extends StatelessWidget {
 
               name: "Change Password",
             ),
-            profileButtonWidget(
+           /* profileButtonWidget(
               onTap: () {
                 Get.to(NotificataionScreenView());
               },
@@ -167,16 +165,14 @@ class ProfileScreenView extends StatelessWidget {
                 ),
               ),
               name: "Notification Settings",
-            ),
+            ),*/
             profileButtonWidget(
               onTap: () {
                 Get.to(AboutAppScreen());
               },
               bottomIcon: Obx(()=>Icon(
                 Icons.help_outline_rounded,
-                color: themeController.isDarkMode.value
-                    ? Colors.white
-                    : Colors.black,
+                color: themeController.isDarkMode.value ? Colors.white : Colors.black,
               ),),
               name: "About",
             ),
