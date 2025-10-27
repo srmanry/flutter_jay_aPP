@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:spotem/core/utils/app_colors.dart';
+
+import '../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
 
 class ByRegistation extends StatelessWidget {
@@ -15,7 +17,7 @@ class ByRegistation extends StatelessWidget {
       children: [
         Obx(
           () => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Checkbox(
               //checkColor: Color(0xFF868686),
               value: c.rememberMe.value,

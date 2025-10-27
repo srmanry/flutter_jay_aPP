@@ -1,9 +1,11 @@
+
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import 'package:spotem/core/service/local/token_manager.dart';
-import 'package:spotem/feature/home/model/reports_model.dart';
+
+import '../../../core/service/local/token_manager.dart';
+import '../model/reports_model.dart';
 
 class HomeController extends GetxController {
   final RxInt currentIndex = 0.obs;
@@ -26,6 +28,8 @@ class HomeController extends GetxController {
 
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
+
+      //baseUrl: "https://api.spotem365.com/api/v1",
       baseUrl: "https://backend-jay.onrender.com/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),

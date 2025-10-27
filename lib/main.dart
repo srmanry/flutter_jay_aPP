@@ -1,10 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/utils/app_colors.dart';
-import 'package:spotem/feature/profile/controller/theme_controller.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+
+import 'core/utils/app_colors.dart';
 import 'feature/alert/controller/alert_controller.dart';
+import 'feature/profile/controller/theme_controller.dart';
 import 'feature/splash/view/splash_screen_view.dart';
 
 void main() async {
@@ -12,6 +15,7 @@ void main() async {
 
   Get.put(AlertController(), permanent: true);
   Get.put(ThemeController(), permanent: true);
+
   runApp(const MyApp());
 
   FlutterError.onError = (FlutterErrorDetails details) {

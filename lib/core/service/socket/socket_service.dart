@@ -3,7 +3,9 @@ import 'dart:async';
 
 import 'package:flutter/rendering.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:spotem/core/service/local/token_manager.dart';
+
+import '../local/token_manager.dart';
+
 
 class SocketConnectParam {
   final String _token;

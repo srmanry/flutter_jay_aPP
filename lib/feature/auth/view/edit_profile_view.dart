@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart'; // image picker
-import 'package:spotem/core/utils/app_colors.dart';
 
-import 'package:spotem/feature/auth/controller/auth_controller.dart';
-import 'package:spotem/feature/auth/model/profile.dart';
-import 'package:spotem/feature/auth/widget/change_password_field.dart';
 
 import '../../../../../core/common/widgets/save_botton.dart';
+import '../../../core/utils/app_colors.dart';
+import '../controller/auth_controller.dart';
+import '../model/profile.dart';
+import '../widget/change_password_field.dart';
 
 class EditProfileView extends StatefulWidget {
   final UserProfileModel profile;
@@ -59,6 +59,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
         iconTheme: IconThemeData(color: AppColors.appColor,size: 30),
         centerTitle: true,
         title: authController.rememberMe.value == true
@@ -81,43 +82,38 @@ class _EditProfileViewState extends State<EditProfileView> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.black12,
-                            backgroundImage: pickedImage != null
-                                ? FileImage(pickedImage!)
-                                // ignore: unnecessary_null_comparison
-                                : (widget.profile.data.avatar.url != null
-                                      ? NetworkImage(
-                                              widget.profile.data.avatar.url
-                                                  .toString(),
-                                            )
-                                            as ImageProvider
-                                      : null),
-                            child:
-                                (pickedImage == null &&
-                                    // ignore: unnecessary_null_comparison
-                                    widget.profile.data.avatar.url == null)
-                                ? const Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  )
-                                : null,
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.appColor,
+                                width: 2,
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.black12,
+                              backgroundImage: pickedImage != null ? FileImage(pickedImage!)
+                                  // ignore: unnecessary_null_comparison
+                                  : (widget.profile.data.avatar.url != null ?
+                              NetworkImage(widget.profile.data.avatar.url.toString(),) as ImageProvider
+                                        : null),
+                              child:
+                                  (pickedImage == null &&
+                                      // ignore: unnecessary_null_comparison
+                                      widget.profile.data.avatar.url == null)
+                                  ? const Icon(Icons.person, size: 40, color: Colors.grey,) : null,
+                            ),
                           ),
                           Positioned(
                             bottom: 0,
                             right: 10,
                             child: InkWell(
                               onTap: pickImage,
-                              child: const CircleAvatar(
+                              child:  CircleAvatar(
                                 radius: 18,
-                                backgroundColor: Colors.redAccent,
-                                child: Icon(
-                                  Icons.edit,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
+                                backgroundColor: AppColors.appColor,
+                                child: Icon(Icons.edit, color: Colors.white, size: 20,),
                               ),
                             ),
                           ),

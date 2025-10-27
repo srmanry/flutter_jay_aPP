@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:spotem/core/service/socket/socket_service.dart';
 
+import '../socket/socket_service.dart';
 import 'api_call_interceptor.dart';
 
 class ApiService {

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import '../../home/controller/home_controller.dart';
 import '../controller/map_controller.dart';
-import 'package:spotem/feature/home/controller/home_controller.dart';
-// Top-level helper to format ISO timestamp strings to readable form.
+
 String formatTimestamp(String? timestamp) {
   if (timestamp == null) return "Unknown time";
   try {
@@ -28,17 +28,18 @@ class GoogleMapScreen extends StatelessWidget {
         children: [
 
           Obx(() => GoogleMap(
+            padding: EdgeInsets.symmetric(vertical: 80,horizontal: 12),
             initialCameraPosition: CameraPosition(
               target: LatLng(
-                locationController.lat.value == 0.0 ? 23.8103 : locationController.lat.value,
-                locationController.lng.value == 0.0 ? 90.4125 : locationController.lng.value,
+                locationController.lat.value == 0.0 ? 0.0 : locationController.lat.value,
+                locationController.lng.value == 0.0 ? 0.0 : locationController.lng.value,
               ),
               zoom: 14,
             ),
             markers: Set<Marker>.from(locationController.markers),
             mapType: MapType.normal,
             myLocationEnabled: true,
-            myLocationButtonEnabled: true,
+            myLocationButtonEnabled: false,
             zoomControlsEnabled: true,
             onMapCreated: (controller) async {
               locationController.setMapController(controller);
@@ -84,18 +85,18 @@ class GoogleMapScreen extends StatelessWidget {
               case "Ambulance":
                 cardColor = Colors.white;
                 cardIcon = Icons.car_crash_outlined;
-                iconColor = Colors.orange.shade200;
-                textColor = Colors.orange.shade200;
+                iconColor = Colors.orange;
+                textColor = Colors.orange;
                 break;
               default:
                 cardColor = Colors.white;
-                cardIcon = Icons.location_on;
+                cardIcon = Icons.location_on_outlined;
                 iconColor = Color(0xFF2B7FD0);
                 textColor = Color(0xFF2B7FD0);
             }
 
             return Positioned(
-              bottom: 100,
+              top: 100,
               left: 20,
               child: AnimatedOpacity(
                 opacity: 1.0,
@@ -108,11 +109,7 @@ class GoogleMapScreen extends StatelessWidget {
                    borderRadius: BorderRadius.circular(16),
                    shape: BoxShape.rectangle,
                    boxShadow: [
-                     BoxShadow(
-                       color: Colors.black26,
-                       blurRadius: 2,
-                       offset: const Offset(0, 0),
-                     ),
+                     BoxShadow(color: Colors.black26, blurRadius: 2, offset: const Offset(0, 0),),
                    ],
                  ),
                  // shape: RoundedRectangleBorder(
@@ -133,47 +130,30 @@ class GoogleMapScreen extends StatelessWidget {
                             SizedBox(width: 8),
                             Text(
                               data["type"]?? "",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: textColor,  // Using the textColor variable that's already defined
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor,),
                             ),
                           ],
                   ),
 
                         SizedBox(height: 8),
                         // Title
-                        Text(
-                          data["title"]?? "",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
+                        Text(data["title"]?? "", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black,),),
                         const SizedBox(height: 4),
 
                         // Description
-                        Text(
-                          data["description"] ?? "",
+                        Text(data["description"] ?? "",
                           maxLines: 5,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black87,
-                          ),
+                          style: const TextStyle(fontSize: 14, color: Colors.black87,),
                         ),
                         const SizedBox(height: 8),
 
                         // Time Row
                         Row(
                           children: [
-                            const Icon(Icons.access_time,
-                                size: 16, color: Colors.black54),
+                            const Icon(Icons.access_time, size: 16, color: Colors.black54),
                             const SizedBox(width: 4),
-                            Text(
-                              "Time: ${formatTimestamp(data["time"])}",
+                            Text("Time: ${formatTimestamp(data["time"])}",
                               style: const TextStyle(color: Colors.black54, fontSize: 13),
                             ),
 
@@ -188,6 +168,25 @@ class GoogleMapScreen extends StatelessWidget {
               ));
 
           }),
+
+              Positioned(
+              bottom: 20,
+              right: 16,
+              child: FloatingActionButton(
+                    backgroundColor: Colors.white,
+                    onPressed: () async {
+                    if(locationController.lat.value != 0.0 && locationController.lng.value != 0.0){
+                    locationController.mapController?.animateCamera(
+                    CameraUpdate.newLatLngZoom(
+                    LatLng(locationController.lat.value, locationController.lng.value), 16,),
+                   );
+                 }
+               },
+              child: Icon(Icons.my_location, color: Colors.blue, size: 28),
+              ),
+
+              )
+
         ],
       ),
     );

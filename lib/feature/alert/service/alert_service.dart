@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotem/core/base/success.dart';
-import 'package:spotem/core/helper/format_response_data.dart';
-import 'package:spotem/core/helper/typedefs.dart';
-import 'package:spotem/core/service/api_services/api_service.dart';
-import 'package:spotem/feature/alert/interface/alert_interface.dart';
-import 'package:spotem/feature/alert/model/alert_model.dart';
+
+import '../../../core/base/success.dart';
+import '../../../core/helper/format_response_data.dart';
+import '../../../core/helper/typedefs.dart';
+import '../../../core/service/api_services/api_service.dart';
+import '../interface/alert_interface.dart';
+import '../model/alert_model.dart';
+
 
 base class AlertService extends AlertInterface{
 

@@ -1,15 +1,14 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-import 'package:spotem/core/utils/app_colors.dart';
-import 'package:spotem/feature/auth/controller/auth_controller.dart';
-import 'package:spotem/feature/home/controller/home_controller.dart';
-import 'package:spotem/feature/alert/ui/view/alert_view.dart';
-import 'package:spotem/feature/profile/controller/theme_controller.dart';
-
+import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/internet_controller.dart';
+import '../../alert/ui/view/alert_view.dart';
+import '../../auth/controller/auth_controller.dart';
+import '../../profile/controller/theme_controller.dart';
+import '../controller/home_controller.dart';
 import 'view_report_screen.dart';
 
 class HomeScreenView extends StatelessWidget {
@@ -33,22 +32,39 @@ class HomeScreenView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
+                    spacing: 4,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Hello 👋 ${authController.profileData.value?.data.name ?? "Loading..."}",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.appColor,),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        "🎉 Welcome to Spot'em365",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
+                      SizedBox(
+                        width: 150,
+                        child: Text(maxLines: 1,
+                          authController.profileData.value?.data.name ?? " ",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black,),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
+                     Row(
+                       children: [
+                         Text(
+                            "Welcome to",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ), Text(
+                            " Spotem365",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                             // color: AppColors.appColor,
+                              //color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                       ],
+                     ),
                     ],
                   ),
 
@@ -58,17 +74,29 @@ class HomeScreenView extends StatelessWidget {
                       Obx(
                         () => ClipOval(
                           child: authController.isLoading == true
-                              ? CircularProgressIndicator() : authController.profileData.value!.data.avatar.url.isEmpty
+                              ? CircularProgressIndicator() :
+                         // authController.profileData.value!.data.avatar.url.isEmpty
+                         (authController.profileData.value?.data.avatar.url.isEmpty??true)
                               ? Icon(Icons.account_circle_outlined, size: 30)
-                              : CachedNetworkImage(
-                                  imageUrl: authController.profileData.value!.data.avatar.url,
-                                  height: 45,
-                                  width: 45,
-                                  placeholder: (context, url) => const Center(child: CircularProgressIndicator(strokeWidth: 2,),),
-                                  errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined, size: 40,),
-                                  fadeInDuration: const Duration(milliseconds: 250,),
-                                  fit: BoxFit.cover,
+                              : Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(45),
+                                  border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,),
                                 ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(45),
+                                  child: CachedNetworkImage(
+                                      imageUrl: authController.profileData.value!.data.avatar.url,
+                                      height: 45,
+                                      width: 45,
+                                      placeholder: (context, url) => const Center(child: CircularProgressIndicator(strokeWidth: 2,),),
+                                      errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined, size: 40,),
+                                      fadeInDuration: const Duration(milliseconds: 250,),
+                                      fit: BoxFit.cover,
+                                    ),
+                                ),
+                              ),
                         ),
                       ),
 
@@ -114,6 +142,8 @@ class HomeScreenView extends StatelessWidget {
         ):Container()
       ),
       body: RefreshIndicator.adaptive(
+        color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+        backgroundColor: themeController.isDarkMode.value ? Colors.white : Colors.black,
         onRefresh: () async {
           await homeController.fetchReports();
         },
@@ -124,10 +154,10 @@ class HomeScreenView extends StatelessWidget {
             if (isMobile) {
               return internetController.isConnected==true? Obx(
                 () => homeController.isLoading.value ?
-                Center(child: Text("Loading....", style: TextStyle(fontSize: 24, color: Colors.grey),),)
+                Center(child: Text("Loading....", style: TextStyle(fontSize: 24, color: themeController.isDarkMode.value ? Colors.black : Colors.white),),)
                     : Padding(padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: homeController.filteredReports.isEmpty
-                            ? Center(child: Text("No Reports Found", style: TextStyle(color: Colors.black),),)
+                            ? Center(child: Text("No Reports Found", style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black),),)
                             : ListView.builder(
                                 itemCount: homeController.filteredReports.length,
                                 itemBuilder: (_, index) {
@@ -146,15 +176,22 @@ class HomeScreenView extends StatelessWidget {
                                           children: [
                                             Row(
                                               children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(45),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: homeController.reports[index].user.avatar.url,
-                                                    height: 45,
-                                                    width: 45,
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (context, url) => CircularProgressIndicator(color: Colors.white,),
-                                                    errorWidget: (context, url, error) => Icon(Icons.error,color: Colors.red,),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(45),
+                                                    border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,),
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(45),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: homeController.reports[index].user.avatar.url,
+                                                      height: 45,
+                                                      width: 45,
+                                                      fit: BoxFit.cover,
+                                                      placeholder: (context, url) => CircularProgressIndicator(color: Colors.white,),
+                                                      errorWidget: (context, url, error) => Icon(Icons.error,color: Colors.red,),
+                                                    ),
                                                   ),
                                                 ),
                                                 SizedBox(width: 10),
@@ -165,10 +202,14 @@ class HomeScreenView extends StatelessWidget {
                                                       Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Text(
-                                                            homeController.reports[index].user.name,
-                                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
-                                                              color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                          SizedBox(
+                                                            width: 150,
+                                                            child: Text(
+                                                              homeController.reports[index].user.name,
+                                                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
+                                                                color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
                                                             ),
                                                           ),
 
@@ -207,45 +248,24 @@ class HomeScreenView extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text("Location : ",
-                                                  style: TextStyle(fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
+                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,
                                                     color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                   ),
                                                 ),
                                                 FutureBuilder<String>(
-                                                  future: homeController
-                                                      .getPlaceName(
+                                                  future: homeController.getPlaceName(
                                                         homeController.reports[index].location.lat,
                                                         homeController.reports[index].location.lng,
                                                       ),
                                                   builder: (context, snapshot) {
-                                                    if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState.waiting) {
-                                                      return const Text(
-                                                        "Loading...",
-                                                        style: TextStyle(
-                                                          color: Colors.grey,
-                                                        ),
-                                                      );
-                                                    } else if (snapshot
-                                                        .hasError) {
-                                                      return const Text(
-                                                        "Unknown location",
-                                                        style: TextStyle(
-                                                          color: Colors.red,
-                                                        ),
-                                                      );
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return  Text("Loading...", style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white,),);
+                                                    } else if (snapshot.hasError) {
+                                                      return const Text("Unknown location", style: TextStyle(color: Colors.red,),);
                                                     } else {
                                                       return Text(
-                                                        snapshot.data ??
-                                                            "Unknown",
-                                                        style: TextStyle(
-                                                          color:
-                                                              themeController.isDarkMode.value
-                                                              ? Colors.black
-                                                              : Colors.white,
-                                                        ),
+                                                        snapshot.data ?? "Unknown",
+                                                        style: TextStyle(color: themeController.isDarkMode.value ? Colors.black: Colors.white,),
                                                       );
                                                     }
                                                   },
@@ -262,12 +282,7 @@ class HomeScreenView extends StatelessWidget {
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w400,
-                                                  color:
-                                                      themeController
-                                                          .isDarkMode
-                                                          .value
-                                                      ? Colors.black
-                                                      : Colors.white,
+                                                  color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                 ),
                                               ),
                                             ),
@@ -292,7 +307,7 @@ class HomeScreenView extends StatelessWidget {
                                 },
                               ),
                       ),
-              ):Center(child: Text("Chack Your Internet Connection"));
+              ):Center(child: Text("Chack Your Internet Connection", style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black),));
             }
             return Center(child: Text("Other  Screen View"));
           },

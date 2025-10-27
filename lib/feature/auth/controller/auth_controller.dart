@@ -3,16 +3,14 @@ import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
-
-import 'package:spotem/app_ground.dart';
-import 'package:spotem/core/common/widgets/dialog_widget.dart';
-import 'package:spotem/core/service/local/token_manager.dart';
-import 'package:spotem/feature/auth/view/sign_in_view.dart';
-import 'package:spotem/feature/profile/view/privacy_screen.dart';
-import 'package:spotem/feature/profile/view/trems_condition_screen.dart';
-
+import '../../../app_ground.dart';
+import '../../../core/common/widgets/dialog_widget.dart';
+import '../../../core/service/local/token_manager.dart';
+import '../../profile/view/privacy_screen.dart';
+import '../../profile/view/trems_condition_screen.dart';
 import '../model/profile.dart';
 import '../view/otp_code_screen.dart';
+import '../view/sign_in_view.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
@@ -58,8 +56,8 @@ class AuthController extends GetxController {
   //================================================== Dio
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
+     // baseUrl: "https://api.spotem365.com/api/v1",
       baseUrl: "https://backend-jay.onrender.com/api/v1",
-     // baseUrl: "https://api.therareroutes.com/api/v1",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
     ),

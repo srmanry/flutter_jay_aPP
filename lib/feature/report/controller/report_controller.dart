@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/service/local/token_manager.dart';
+
+import '../../../core/service/local/token_manager.dart';
 import '../../map/controller/map_controller.dart'; // location controller import
 
 class ReportController extends GetxController {

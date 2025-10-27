@@ -1,8 +1,9 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:spotem/core/service/local/token_manager.dart';
 
+
+import '../local/token_manager.dart';
 import 'refresh_token_manager.dart';
 
 class _CancelRefreshToken extends CancelToken {}

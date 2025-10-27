@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:spotem/core/common/widgets/list/paginated_list.dart';
-import 'package:spotem/feature/alert/model/alert_model.dart';
-import '../../../../core/utils/app_colors.dart';
+
+import '../../../../core/common/widgets/list/paginated_list.dart';
 import '../../controller/alert_controller.dart';
-import 'alart_map.dart';
+import '../../model/alert_model.dart';
+
 
 class AlertScreen extends StatelessWidget {
   final AlertController controller = Get.put(AlertController());
@@ -20,7 +20,7 @@ class AlertScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text("Notifications"),
-       /* actions: [Padding(
+     /*  actions: [Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(controller.alerts.value.data.length.toString(),style: TextStyle(color: Colors.red),),
         )],*/
@@ -32,7 +32,7 @@ class AlertScreen extends StatelessWidget {
           controller.fetchAlerts(forceFetch: true);
         },
         skeleton: Center(
-          child: SizedBox(height: 30, width: 30, child: CircularProgressIndicator()),
+          child: SizedBox(height: 30, width: 30, child: Center(child: CircularProgressIndicator())),
         ), skeletonCount: 1,
         builder: (index, data) {
           return notificationCard(data);

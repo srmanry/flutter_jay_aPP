@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:spotem/core/utils/app_colors.dart';
+
+
+import '../../utils/app_colors.dart';
 
 Widget buttonWidget({required String text, VoidCallback? onTap}) {
   return InkWell(

@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:spotem/core/utils/pagination.dart';
-import 'package:spotem/feature/alert/interface/alert_interface.dart';
-import 'package:spotem/feature/alert/model/alert_model.dart';
-import 'package:spotem/feature/alert/service/alert_service.dart';
+
+import '../../../core/utils/pagination.dart';
+import '../model/alert_model.dart';
+import '../service/alert_service.dart';
+
 
 
 class AlertController extends GetxController {

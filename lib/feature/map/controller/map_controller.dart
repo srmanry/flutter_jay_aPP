@@ -1,12 +1,13 @@
 import 'dart:ui' as ui;
 
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:spotem/feature/map/service/location_services.dart';
 import '../../../core/service/local/token_manager.dart';
+import '../service/location_services.dart';
 
 class LocationController extends GetxController {
   var lat = 0.0.obs;
@@ -29,8 +30,9 @@ class LocationController extends GetxController {
   final Dio dioClient = Dio(
     BaseOptions(
       baseUrl: "https://backend-jay.onrender.com/api/v1",
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+     // baseUrl: "https://api.spotem365.com/api/v1",
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 60),
     ),
   );
 
@@ -120,15 +122,17 @@ class LocationController extends GetxController {
       isLoading.value = false;
     }
   }
+
+
 // old=============
  BitmapDescriptor _getMarkerIcon(String type) {
     switch (type) {
       case "Fire":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
       case "Police":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue,);
       case "Ambulance":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange,);
       case "ICE":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
       default:

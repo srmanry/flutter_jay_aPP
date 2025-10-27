@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/utils/app_colors.dart';
-import 'package:spotem/feature/profile/controller/theme_controller.dart';
+
+import '../../../core/utils/app_colors.dart';
+import '../controller/theme_controller.dart';
+
 
 class NotificataionScreenView extends StatelessWidget {
   NotificataionScreenView({super.key});
@@ -32,9 +35,7 @@ class NotificataionScreenView extends StatelessWidget {
                 Text(
                   "Notificataion/Disable All Notificataion",
                   style: TextStyle(
-                    color: themeController.isDarkMode.value
-                        ? Colors.white
-                        : Colors.black,
+                    color: themeController.isDarkMode.value ? Colors.white : Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),

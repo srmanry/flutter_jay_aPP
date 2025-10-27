@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:spotem/feature/home/model/reports_model.dart';
+
+import '../model/reports_model.dart';
+
 
 class ViewReportScreen extends StatelessWidget {
   final ReportModel report;

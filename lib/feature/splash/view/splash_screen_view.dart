@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/app_ground.dart';
-import 'package:spotem/core/common/widgets/app_icon.dart';
-import 'package:spotem/core/service/local/token_manager.dart';
-import 'package:spotem/feature/auth/view/sign_in_view.dart';
-import 'package:spotem/feature/map/controller/map_controller.dart'; // তোমার LocationController এখানে আছে
+
+
+import '../../../app_ground.dart';
+import '../../../core/common/widgets/app_icon.dart';
+import '../../../core/service/local/token_manager.dart';
+import '../../auth/view/sign_in_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

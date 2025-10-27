@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:spotem/core/utils/app_colors.dart';
 
-import 'package:spotem/feature/auth/widget/change_password_field.dart';
 
 class ReponsiveScreen extends StatelessWidget {
   const ReponsiveScreen({super.key});

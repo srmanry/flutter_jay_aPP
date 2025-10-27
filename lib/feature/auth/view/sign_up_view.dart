@@ -1,12 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import 'package:spotem/core/common/common_text.dart';
-import 'package:spotem/core/common/widgets/app_icon.dart';
-import 'package:spotem/core/common/widgets/custom_text_field.dart';
-import 'package:spotem/core/common/widgets/save_botton.dart';
-
+import '../../../core/common/widgets/app_icon.dart';
+import '../../../core/common/widgets/custom_text_field.dart';
+import '../../../core/common/widgets/save_botton.dart';
 import '../controller/auth_controller.dart';
 import '../widget/by_registation.dart';
 import 'sign_in_view.dart';
@@ -99,8 +98,8 @@ class SignupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            ByRegistation(),
-            const SizedBox(height: 20),
+           // ByRegistation(),
+            const SizedBox(height: 30),
 
             Obx(() {
               return authController.isLoading.value

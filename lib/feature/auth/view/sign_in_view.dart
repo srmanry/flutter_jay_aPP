@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:spotem/core/common/widgets/app_icon.dart';
-import 'package:spotem/core/utils/app_colors.dart';
 
-import '../../../../../core/common/common_text.dart';
+
 import '../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../core/common/widgets/save_botton.dart';
+import '../../../core/common/widgets/app_icon.dart';
+import '../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
 import '../widget/remember_me.dart';
 import 'forget_password_view.dart';
@@ -71,9 +70,9 @@ class SignInScreen extends StatelessWidget {
 
             const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const RememberForgotRow(),
+               // const RememberForgotRow(),
                 InkWell(
                   onTap: () {
                     Get.to(() => ForgetPasswordView());

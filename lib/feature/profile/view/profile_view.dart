@@ -1,17 +1,18 @@
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:spotem/core/common/widgets/app_icon.dart';
-import 'package:spotem/core/common/widgets/dialog_widget.dart';
-import 'package:spotem/core/utils/app_colors.dart';
-import 'package:spotem/feature/auth/controller/auth_controller.dart';
-import 'package:spotem/feature/auth/view/change_password_view.dart';
-import 'package:spotem/feature/profile/controller/theme_controller.dart';
 
-import 'package:spotem/feature/profile/view/notificataion_view.dart';
-import 'package:spotem/feature/profile/view/personal_info_view.dart';
-import 'package:spotem/feature/profile/view/privacy_screen.dart';
-import 'package:spotem/feature/profile/widgets/profile_botton_widget.dart';
+
+import '../../../core/common/widgets/app_icon.dart';
+import '../../../core/utils/app_colors.dart';
+import '../../auth/controller/auth_controller.dart';
+import '../../auth/view/change_password_view.dart';
+import '../controller/theme_controller.dart';
+import '../widgets/profile_botton_widget.dart';
+import 'personal_info_view.dart';
+import 'privacy_screen.dart';
 
 class ProfileScreenView extends StatelessWidget {
   ProfileScreenView({super.key});
@@ -56,28 +57,23 @@ class ProfileScreenView extends StatelessWidget {
             final avatarUrl = profile.data.avatar.url ?? '';
             return Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
-                  child: avatarUrl.isNotEmpty
-                      ? Image.network(
-                          avatarUrl,
-                          fit: BoxFit.cover,
-                          height: 60,
-                          width: 60,
-                          errorBuilder: (context, error, stackTrace) {
-                            return CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.grey[400],
-                              child: Icon(Icons.person),
-                            );
-                          },
-                        )
-                      : CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.grey[400],
-                          child: Icon(Icons.account_circle_outlined,color: Colors.grey[300],size: 50,),
-                        ),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.appColor, width: 2,),),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: CachedNetworkImage(
+                      imageUrl:  avatarUrl,
+                      fit: BoxFit.cover,
+                      height: 60,
+                      width: 60,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
                 ),
+
                 SizedBox(width: 10),
                 Expanded(
                   child: Column(

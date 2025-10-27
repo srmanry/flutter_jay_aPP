@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotem/feature/report/model/report_model.dart';
+
+
+import '../../../core/common/models/location.dart';
 
 enum AlertType {
   fire("fire"),
