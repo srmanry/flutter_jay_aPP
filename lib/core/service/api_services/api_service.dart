@@ -12,7 +12,7 @@ class ApiService {
   
   late final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://backend-jay.onrender.com/api/v1",
+      baseUrl: "https://api.spotem365.com/api/v1",
     ),
   );
   final SocketService _socketService = SocketService();

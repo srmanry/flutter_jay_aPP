@@ -13,7 +13,7 @@ import 'feature/splash/view/splash_screen_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Get.put(AlertController(), permanent: true);
+  //Get.put(AlertController(), permanent: true);
   Get.put(ThemeController(), permanent: true);
 
   runApp(const MyApp());

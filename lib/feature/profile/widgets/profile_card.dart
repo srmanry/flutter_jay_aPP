@@ -49,14 +49,19 @@ class ProfileCardWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                data,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.black,
+              SizedBox(
+                  //width:250,
+                //width: MediaQuery.of(context).size.width * 0.7,
+                child: Text(
+                  data,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: themeController.isDarkMode.value
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               widget ?? const SizedBox(),

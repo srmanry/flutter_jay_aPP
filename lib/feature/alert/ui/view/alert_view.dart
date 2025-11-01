@@ -30,6 +30,7 @@ class AlertScreen extends StatelessWidget {
         emptyMessage: "No alerts!!",
         onRefresh: () {
           controller.fetchAlerts(forceFetch: true);
+
         },
         skeleton: Center(
           child: SizedBox(height: 30, width: 30, child: Center(child: CircularProgressIndicator())),
@@ -44,25 +45,28 @@ class AlertScreen extends StatelessWidget {
   Widget notificationCard(AlertModel alert) {
     // TODO:: replace [Container] with notification card;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
 
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
 
-          children: [
-            Text(alert.report?.title ?? "..",style: TextStyle(fontWeight: FontWeight.bold),),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(alert.report?.description ?? ".."),
-            ),
-            Text( DateFormat('dd MMM yyyy, hh:mm a') .format(alert.createdAt) ),
-          Divider(),
-          ],
+            children: [
+              Text(alert.report?.title ?? "..",style: TextStyle(fontWeight: FontWeight.bold),),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(alert.report?.description ?? ".."),
+              ),
+              Text( DateFormat('dd MMM yyyy, hh:mm a') .format(alert.createdAt) ),
+            //Divider(),
+            ],
+          ),
         ),
       ),
     );

@@ -30,8 +30,8 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
+	<!-- <key>UIMainStoryboardFile</key>
+	<string>Main</string>-->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -46,13 +46,17 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 
+    <!-- Access photos -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Spotem uses your photo library to let you upload profile or product images.</string>
+
 	<!--  Location Permissions -->
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app needs access to your location to show nearby places and maps.</string>
+    <string>Spotem uses needs access to your location to show nearby places and maps.</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>This app requires location access even when in the background for better tracking.</string>
+    <string>Spotem uses your location to provide better service recommendations.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>We use your location to provide better service recommendations and maps.</string>
+    <string>Spotem uses your location to provide a better map and service experience.</string>
 
     <!--  Internet access is automatically allowed,
          but below key helps if you use WebViews or external APIs -->

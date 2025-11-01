@@ -1,3 +1,4 @@
+/*
 class NotificationModel {
   final String id;
   final String title;
@@ -20,3 +21,4 @@ class NotificationModel {
     );
   }
 }
+*/

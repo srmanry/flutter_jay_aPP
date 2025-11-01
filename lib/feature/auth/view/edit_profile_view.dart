@@ -127,11 +127,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                       hinText: "full name",
                       controller: nameController,
                     ),
-                    ChangePasswordField(
+                 /*   ChangePasswordField(
                       fieldName: "Date of Birth",
                       hinText: "date off birth",
                       controller: emailController,
-                    ),
+                    )*/
                     ChangePasswordField(
                       fieldName: "Phone Number",
                       hinText: "phone number",
@@ -149,7 +149,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     buttonWidget(
                       text: "Save",
                       onTap: () async {
-                        print("Save Button Clicked");
+
                         await authController.profileUpdate(
                           name: nameController.text,
                           email: emailController.text,

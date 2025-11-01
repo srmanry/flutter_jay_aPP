@@ -6,8 +6,8 @@ import 'package:get/get.dart' hide FormData, MultipartFile;
 import '../../../app_ground.dart';
 import '../../../core/common/widgets/dialog_widget.dart';
 import '../../../core/service/local/token_manager.dart';
-import '../../profile/view/privacy_screen.dart';
-import '../../profile/view/trems_condition_screen.dart';
+import '../../profile/view/about_app_screen.dart';
+import '../../profile/view/pricacy_screen.dart';
 import '../model/profile.dart';
 import '../view/otp_code_screen.dart';
 import '../view/sign_in_view.dart';
@@ -34,7 +34,7 @@ class AuthController extends GetxController {
   void toggleRegister(bool value) => rememberMe.value = value;
 
   void termOfService() {
-    Get.to(() => TermsConditionsView());
+    Get.to(() => PrivacyPolicyView());
   }
 
   void privacyPolicy() {
@@ -56,8 +56,8 @@ class AuthController extends GetxController {
   //================================================== Dio
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
-     // baseUrl: "https://api.spotem365.com/api/v1",
-      baseUrl: "https://backend-jay.onrender.com/api/v1",
+      baseUrl: "https://api.spotem365.com/api/v1",
+     // baseUrl: "https://backend-jay.onrender.com/api/v1",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
     ),
@@ -96,8 +96,7 @@ class AuthController extends GetxController {
 
       isLoading.value = false;
 
-      print("Status Code: ${response.statusCode}");
-      print("Response Data: ${response.data}");
+
       if (response.statusCode == 200) {
         final data = response.data["data"];
         final token = data["accessToken"];
@@ -304,10 +303,10 @@ class AuthController extends GetxController {
     required Function onSuccess,
   }) async {
     try {
-      /*  if (passwordController.text.length < 6) {
+    /*  if (passwordController.text.length < 6 && confirmPasswordController.text.length &&passwordController.text.) {
         Get.snackbar("Error", "Password must be at least 6 characters long");
         return;
-      } */
+      }*/
       isLoading.value = true;
       final response = await dioClient.post(
         "/auth/reset-password",

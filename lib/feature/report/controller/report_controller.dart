@@ -21,7 +21,7 @@ class ReportController extends GetxController {
 
   final Dio dioClient = Dio(
     BaseOptions(
-      baseUrl: "https://backend-jay.onrender.com/api/v1",
+      baseUrl: "https://api.spotem365.com/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
     ),
@@ -60,16 +60,16 @@ class ReportController extends GetxController {
       isLoading.value = false;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar(" Success", "Report created successfully");
+       // Get.snackbar(" Success", "Report created successfully");
         titleController.clear();
         descriptionController.clear();
       } else {
-        Get.snackbar("Failed to create report", "Try again");
+        Get.snackbar(backgroundColor: Colors.black12,"Failed to create report", "Try again",colorText: Colors.white);
         print("Response: ${response.data}");
       }
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar("", "Something went wrong");
+      Get.snackbar("", "Something went wrong",backgroundColor: Colors.black12, colorText: Colors.white);
       print(" Error: $e");
     }
   }

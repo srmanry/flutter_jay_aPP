@@ -12,7 +12,8 @@ import '../../auth/view/change_password_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_botton_widget.dart';
 import 'personal_info_view.dart';
-import 'privacy_screen.dart';
+import 'about_app_screen.dart';
+import 'pricacy_screen.dart';
 
 class ProfileScreenView extends StatelessWidget {
   ProfileScreenView({super.key});
@@ -171,6 +172,17 @@ class ProfileScreenView extends StatelessWidget {
                 color: themeController.isDarkMode.value ? Colors.white : Colors.black,
               ),),
               name: "About",
+            ),
+
+            profileButtonWidget(
+              onTap: () {
+                Get.to(PrivacyPolicyView());
+              },
+              bottomIcon: Obx(()=>Icon(
+                Icons.privacy_tip_outlined,
+                color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+              ),),
+              name: "Privacy Policy",
             ),
             profileButtonWidget(
               onTap: () {

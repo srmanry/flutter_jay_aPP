@@ -47,7 +47,7 @@ class SetResetPasswordView extends StatelessWidget {
                 prefixIcon: Icons.lock_outline,
                 //obscureText: true,
               ),
-               Padding(
+             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 child: CustomTextField(
                   controller: confirmPasswordController,
@@ -57,7 +57,7 @@ class SetResetPasswordView extends StatelessWidget {
                 ),
               ),
 
-              // Reset Password Button
+
 
               SizedBox(height: 30,),
               Obx(
@@ -67,17 +67,16 @@ class SetResetPasswordView extends StatelessWidget {
                         text: "Reset Password",
                         onTap: () async {
                           final newPass = newPasswordController.text.trim();
-                          final confirmPass = confirmPasswordController.text
-                              .trim();
+                          final confirmPass = confirmPasswordController.text.trim();
 
                           if (newPass.isEmpty || confirmPass.isEmpty) {
                             Get.snackbar("Error", "All fields are required");
                             return;
                           }
-                          /*  if (newPass != confirmPass) {
+                           if (newPass != confirmPass) {
                             Get.snackbar("Error", "Passwords do not match");
                             return;
-                          } */
+                          }
 
                           // Call API
                           await authController.resetPassword(

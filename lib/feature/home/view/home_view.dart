@@ -39,7 +39,7 @@ class HomeScreenView extends StatelessWidget {
                         width: 150,
                         child: Text(maxLines: 1,
                           authController.profileData.value?.data.name ?? " ",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black,),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: themeController.isDarkMode.value ? Colors.white : Colors.black,),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -239,15 +239,15 @@ class HomeScreenView extends StatelessWidget {
                                             Padding(padding: const EdgeInsets.symmetric(vertical: 10,),
                                               child: Row(
                                                 children: [
-                                                  Text("Category: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),),
-                                                  Text(homeController.filteredReports[index].type, style: TextStyle(color: Colors.white,),
+                                                  Text("Category : ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.black : Colors.white,),),
+                                                  Text(homeController.filteredReports[index].type, style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white,),
                                                   ),
                                                 ],
                                               ),
                                             ),
                                             Row(
                                               children: [
-                                                Text("Location : ",
+                                                Text("Location :",
                                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,
                                                     color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                   ),
@@ -274,9 +274,7 @@ class HomeScreenView extends StatelessWidget {
                                             ),
 
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 10,
-                                              ),
+                                              padding: const EdgeInsets.only(top: 10,),
                                               child: Text(
                                                 homeController.reports[index].title,
                                                 style: TextStyle(
@@ -288,9 +286,7 @@ class HomeScreenView extends StatelessWidget {
                                             ),
 
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 10,
-                                              ),
+                                              padding: const EdgeInsets.only(top: 10,),
                                               child: Text(
                                                 homeController.reports[index].description,
                                                 style: TextStyle(

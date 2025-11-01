@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/app_ground.dart';
 
 import '../../../core/common/widgets/save_botton.dart';
 import '../../../core/utils/app_colors.dart';
@@ -19,7 +20,7 @@ class ReportScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(onTap: () {Get.back();}, child: Icon(Icons.arrow_back_ios_rounded)),
+        leading: GestureDetector(onTap: () {Get.to(AppGroundView());}, child: Icon(Icons.arrow_back_ios_rounded)),
         elevation: 0,
         centerTitle: true,
         title: Row(
@@ -32,6 +33,8 @@ class ReportScreenView extends StatelessWidget {
           ],
         ),
       ),
+
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -81,26 +84,6 @@ class ReportScreenView extends StatelessWidget {
                     );
                   });
 
-
-                  /*      return Obx(() => RadioListTile<String>(
-
-                    value: label,
-                    groupValue: reportController.selectedOption.value,
-                    onChanged: (String? value) {
-                      if (value != null) {
-                        reportController.selectedOption.value = value;
-                      }
-                    },
-
-                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                    title: Row(
-                      children: [
-                        Text(label),
-                        const SizedBox(width: 8),
-                        Icon(Icons.location_on, color: color),
-                      ],
-                    ),
-                  ));*/
                 },
               ),
             ],
