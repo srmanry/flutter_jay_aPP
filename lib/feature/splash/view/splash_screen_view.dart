@@ -18,14 +18,10 @@ class _SplashScreenState extends State<SplashScreen> {
   //final locationController = Get.find<LocationController>();
   //final locationController = Get.put(LocationController());
 
-
-
   @override
   void initState() {
     super.initState();
-
-    print('no------------------------');
-   // _initFlow();
+    _initFlow();
   }
 
   Future<void> _initFlow() async {
@@ -48,13 +44,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('no------------------------ 2 ');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body:
-      Text("JAY"),
-      //Center(child: AppIconWidget()),
+      body: Center(child: AppIconWidget()),
     );
   }
 }

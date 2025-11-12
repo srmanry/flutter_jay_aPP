@@ -90,18 +90,18 @@ class PersonalInfoScreenView extends StatelessWidget {
                     typeName: "First Name",
                   ),
 
-                  ProfileCardWidget(
+                 /* ProfileCardWidget(
                     data: "${authController.profileData.value?.data.phone}",
                     typeName: "Phone",
-                  ),
+                  ),*/
                   ProfileCardWidget(
                     data: "${authController.profileData.value?.data.email}",
                     typeName: "Gmail",
                   ),
-                  ProfileCardWidget(
+                /*  ProfileCardWidget(
                     data: "${authController.profileData.value?.data.address}",
                     typeName: "Address",
-                  ),
+                  ),*/
 
                   ProfileCardWidget(
                     data: "${authController.profileData.value?.data.totalPosts}",

@@ -70,7 +70,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth < 600) {
+
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
@@ -132,7 +132,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       hinText: "date off birth",
                       controller: emailController,
                     )*/
-                    ChangePasswordField(
+               /*     ChangePasswordField(
                       fieldName: "Phone Number",
                       hinText: "phone number",
                       controller: phoneController,
@@ -142,7 +142,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       hinText: "Address",
                       controller: addressController,
                     ),
-
+*/
                     const SizedBox(height: 20),
 
                     // ==== Save Button ====
@@ -163,9 +163,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
               ),
             );
-          } else {
-            return const Center(child: Text("Desktop View"));
-          }
+          
         },
       ),
     );

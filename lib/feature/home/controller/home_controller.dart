@@ -28,7 +28,6 @@ class HomeController extends GetxController {
 
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
-
       //baseUrl: "https://api.spotem365.com/api/v1",
       baseUrl: "https://api.spotem365.com/api/v1",
       connectTimeout: const Duration(seconds: 60),
@@ -49,10 +48,25 @@ class HomeController extends GetxController {
       );
       if (response.statusCode == 200 && response.data["success"] == true) {
         final List<dynamic> reportList = response.data["data"];
-        reports.value = reportList
+        print('============ report  data ===============${response.data}');
+        for(final data in reportList){
+
+         try{
+           final report = ReportModel.fromJson(data as Map<String, dynamic>);
+
+           reports.add(report);
+
+         }
+         catch(e){}
+
+
+        }
+
+     /*   reports.value = reportList
             .map((x) => ReportModel.fromJson(x as Map<String, dynamic>))
-            .toList();
+            .toList();*/
         filteredReports.assignAll(reports);
+        print('=============================$filteredReports');
       } else {
         print("Reports API Error: ${response.data}");
       }

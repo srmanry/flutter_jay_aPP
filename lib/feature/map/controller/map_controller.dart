@@ -86,6 +86,7 @@ class LocationController extends GetxController {
 
           markers.add(
             Marker(
+           //   consumeTapEvents: true,
               markerId: MarkerId("${type}_${latValue}_${lngValue}"),
               position: LatLng(latValue, lngValue),
               icon: _getMarkerIcon(type),

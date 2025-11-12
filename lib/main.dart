@@ -1,12 +1,12 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 
 import 'core/utils/app_colors.dart';
-import 'feature/alert/controller/alert_controller.dart';
+
 import 'feature/profile/controller/theme_controller.dart';
 import 'feature/splash/view/splash_screen_view.dart';
 
@@ -31,7 +31,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-
+    SystemChrome.setSystemUIOverlayStyle(
+       SystemUiOverlayStyle(
+         statusBarIconBrightness: themeController.isDarkMode.value ? Brightness.light : Brightness.dark,
+       // statusBarColor: themeController.isDarkMode.value ? Colors.white : Colors.black, // Status bar background color
+      ),
+    );
     return Obx(() {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -41,7 +46,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: false,
           appBarTheme: AppBarTheme(
-            systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark,),
+           // systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark,),
             backgroundColor: Colors.white,
             iconTheme: IconThemeData(color: AppColors.appColor),
             titleTextStyle:  TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24,),

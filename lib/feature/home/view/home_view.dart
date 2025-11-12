@@ -149,9 +149,8 @@ class HomeScreenView extends StatelessWidget {
         },
         child: LayoutBuilder(
           builder: (context, constraints) {
-            var shortestSide = MediaQuery.of(context).size.shortestSide;
-            bool isMobile = shortestSide < 600;
-            if (isMobile) {
+
+             {
               return internetController.isConnected==true? Obx(
                 () => homeController.isLoading.value ?
                 Center(child: Text("Loading....", style: TextStyle(fontSize: 24, color: themeController.isDarkMode.value ? Colors.black : Colors.white),),)

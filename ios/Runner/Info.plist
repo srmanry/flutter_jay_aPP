@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -26,12 +24,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<!-- <key>UIMainStoryboardFile</key>
-	<string>Main</string>-->
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -45,28 +41,34 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 
-    <!-- Access photos -->
+	 <!-- Access photos -->
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Spotem uses your photo library to let you upload profile or product images.</string>
+    <string>Spotem uses your photo library to let you upload profile images.</string>
 
-	<!--  Location Permissions -->
+
+    <!--  Camera Permissions -->
+    <key>NSCameraUsageDescription</key>
+    <string>Spotem uses your camera to let you upload profile images.</string>
+
+
+    <!-- Location Permission -->
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Spotem uses needs access to your location to show nearby places and maps.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Spotem uses your location to provide better service recommendations.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Spotem uses your location to provide a better map and service experience.</string>
+    <string>This app uses your location only to help fill in your address when creating a report. It does not track, store, or share your location data.</string>
 
-    <!--  Internet access is automatically allowed,
+
+	 <!--  Internet access is automatically allowed,
          but below key helps if you use WebViews or external APIs -->
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
-
-    <!--  Google Maps API key for iOS -->
+	<!--  Google Maps API key for iOS -->
     <key>GMSApiKey</key>
     <string>AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI</string>
 </dict>

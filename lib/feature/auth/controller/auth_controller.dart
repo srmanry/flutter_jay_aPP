@@ -8,6 +8,7 @@ import '../../../core/common/widgets/dialog_widget.dart';
 import '../../../core/service/local/token_manager.dart';
 import '../../profile/view/about_app_screen.dart';
 import '../../profile/view/pricacy_screen.dart';
+import '../../splash/view/splash_screen_view.dart';
 import '../model/profile.dart';
 import '../view/otp_code_screen.dart';
 import '../view/sign_in_view.dart';
@@ -134,14 +135,14 @@ class AuthController extends GetxController {
       return;
     }
 
-    if (phoneController.text.isEmpty) {
+/*    if (phoneController.text.isEmpty) {
       Get.snackbar("Error", "Phone Number is required");
       return;
-    }
-    if (address.text.isEmpty) {
+    }*/
+  /*  if (address.text.isEmpty) {
       Get.snackbar("Error", "Address is required");
       return;
-    }
+    }*/
     if (password.length < 6) {
       Get.snackbar("Error", "Password must be at least 6 characters long");
       return;
@@ -504,6 +505,55 @@ class AuthController extends GetxController {
     } finally {
       isLoading.value = false;
       print("Profile data: ${profileData.value?.toJson()}");
+    }
+  }
+
+
+
+  //=================== Delete Account (Server-side only) =========================
+  Future<void> deleteAccount() async {
+    try {
+      isLoading.value = true;
+
+      // Get user token from local storage
+      final token = await TokenManager.getAccessToken();
+      if (token == null) {
+        Get.snackbar("Error", "User not logged in");
+        isLoading.value = false;
+        return;
+      }
+
+      // Call the delete account API
+      final response = await dioClient.delete(
+        "/user/delete-account",
+        options: dio.Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      isLoading.value = false;
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        Get.snackbar(
+          "Success",
+          response.data?["message"] ?? "Account deleted successfully 🎉",
+        );
+        TokenManager.clear();
+        Get.to(() => SplashScreen());
+
+
+      } else {
+        final msg = response.data?['message'] ?? "Failed to delete account";
+        Get.snackbar("Error", msg);
+      }
+    } catch (e) {
+      isLoading.value = false;
+      print("❌ Exception deleting account: $e");
+      Get.snackbar("Error", "Something went wrong while deleting account");
     }
   }
 }

@@ -23,6 +23,20 @@ class ReportModel {
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
+    try{
+
+
+      final userModel =  UserModel.fromJson(json["user"]);
+    final userLocation = LocationModel.fromJson(json["location"]);
+
+   print('================== user json  =========== ${json['user']}');
+
+
+    }catch(e){
+      print('================== a ra area  json  ${json}');
+      print('=================== report model erro ===========${e}');
+    }
+
     return ReportModel(
       id: json["_id"],
       user: UserModel.fromJson(json["user"]),

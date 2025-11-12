@@ -8,6 +8,7 @@ import '../../../../../core/common/common_text.dart';
 import '../../../../../core/common/widgets/save_botton.dart';
 import '../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
+import 'forget_password_view.dart';
 import 'reset_password.dart';
 
 class OtpCodeScreenView extends StatelessWidget {
@@ -118,9 +119,10 @@ class OtpCodeScreenView extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
-                              Get.to(() => OtpCodeScreenView(email: email));
+                              Get.to(()=> ForgetPasswordView());
+                              print("*************RESEND OTP");
                               //authController.sendOtp(); // resend OTP
                             },
                             child: Text(

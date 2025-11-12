@@ -54,23 +54,23 @@ class SignupScreen extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 15),
+           // const SizedBox(height: 15),
 
             // fieldName("Phone Number"),
-            CustomTextField(
+     /*       CustomTextField(
               controller: authController.phoneController,
               hintText: "Enter Phone Number",
               prefixIcon: Icons.phone,
               keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 15),
-            CustomTextField(
+            ),*/
+           // const SizedBox(height: 15),
+       /*     CustomTextField(
               controller: authController.address,
               hintText: "Enter Address",
               prefixIcon: Icons.location_on_outlined,
               keyboardType: TextInputType.text,
             ),
-
+*/
             const SizedBox(height: 15),
             CustomTextField(
               controller: authController.passwordController,

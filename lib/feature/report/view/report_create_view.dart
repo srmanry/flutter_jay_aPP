@@ -20,7 +20,7 @@ class ReportScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(onTap: () {Get.to(AppGroundView());}, child: Icon(Icons.arrow_back_ios_rounded)),
+        //leading: GestureDetector(onTap: () {Get.to(AppGroundView());}, child: Icon(Icons.arrow_back_ios_rounded)),
         elevation: 0,
         centerTitle: true,
         title: Row(
@@ -47,8 +47,11 @@ class ReportScreenView extends StatelessWidget {
                   reportController.descriptionController, maxLines: 5),
               const SizedBox(height: 20),
 
-
+              Text('Report Type', style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400,),),
+              SizedBox(height: 8,),
               ListView.builder(
+
+
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 itemCount: reportController.options.length,
@@ -147,37 +150,6 @@ class ReportScreenView extends StatelessWidget {
 
 
 
-/*      bottomNavigationBar: Obx(() => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: reportController.isLoading.value ? SizedBox(
-          height: 50,
-          child: Center(
-            child: CircularProgressIndicator(color: AppColors.appColor,),
-          ),
-        ) : buttonWidget(
-          text: "Report",
-          onTap: () async {
-            await locationController.loadLocation();
-            final lat = locationController.lat.value;
-            final lng = locationController.lng.value;
-            await reportController.createReport(lat, lng);
-          },
-        ),
-      )),*/
-
-
-/*      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: buttonWidget(
-          text: "Report",
-          onTap: () async {
-            await locationController.loadLocation();
-            final lat = locationController.lat.value;
-            final lng = locationController.lng.value;
-            await reportController.createReport(lat, lng);
-          },
-        ),
-      ),*/
 
 
     );

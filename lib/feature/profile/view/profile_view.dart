@@ -184,6 +184,95 @@ class ProfileScreenView extends StatelessWidget {
               ),),
               name: "Privacy Policy",
             ),
+
+
+            profileButtonWidget(
+              onTap: () {
+                Get.defaultDialog(
+                  title: "",
+                  content: Column(
+                    children: [
+                      AppIconWidget(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Are you sure to account Delete?",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.red
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                             authController.deleteAccount();
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.red,
+                                border: Border.all(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: AppColors.appColor,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+              bottomIcon: Icon(Icons.delete, color: Colors.red),
+              name: "Delete Account",
+            ),
+
+
             profileButtonWidget(
               onTap: () {
                 Get.defaultDialog(
@@ -198,10 +287,10 @@ class ProfileScreenView extends StatelessWidget {
                           child: Text(
                             "Are You Sure To Log Out?",
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
-                            textAlign: TextAlign.justify,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
