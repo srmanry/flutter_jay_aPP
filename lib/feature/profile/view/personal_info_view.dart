@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../core/utils/app_colors.dart';
 import '../../auth/controller/auth_controller.dart';
-import '../../auth/view/edit_profile_view.dart';
+import 'edit_profile_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_card.dart';
 

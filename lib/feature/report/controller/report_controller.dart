@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 
 import '../../../core/service/local/token_manager.dart';
-import '../../map/controller/map_controller.dart'; // location controller import
 
 class ReportController extends GetxController {
   final titleController = TextEditingController();
@@ -11,6 +11,7 @@ class ReportController extends GetxController {
 
   var selectedOption = "ICE".obs;
   var isLoading = false.obs;
+  var isCreateingReport = false.obs;
 
   final List<Map<String, dynamic>> options = [
     {"label": "ICE", "color": Colors.green},
@@ -27,10 +28,9 @@ class ReportController extends GetxController {
     ),
   );
 
-
   Future<void> createReport(double lat, double lng) async {
     try {
-      isLoading.value = true;
+      isCreateingReport.value = true;
       final token = await TokenManager.getAccessToken();
 
       final body = {
@@ -40,10 +40,9 @@ class ReportController extends GetxController {
         "location": {
           "type": "Point",
           "coordinates": [lng, lat],
-        }
+        },
       };
-    await Future.delayed(const Duration(seconds: 3),);
-      print(" Sending Body: $body");
+      await Future.delayed(const Duration(seconds: 3));
 
       final response = await dioClient.post(
         "/report/",
@@ -51,35 +50,39 @@ class ReportController extends GetxController {
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           validateStatus: (status) => status != null && status < 500,
         ),
       );
 
-      isLoading.value = false;
+      isCreateingReport.value = false;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-       // Get.snackbar(" Success", "Report created successfully");
+        Get.snackbar(
+          " Success",
+          "Report created successfully",
+          colorText: AppColors.appColor,
+          backgroundColor: Colors.black12,
+        );
         titleController.clear();
         descriptionController.clear();
       } else {
-        Get.snackbar(backgroundColor: Colors.black12,"Failed to create report", "Try again",colorText: Colors.white);
-        print("Response: ${response.data}");
+        Get.snackbar(
+          backgroundColor: Colors.black12,
+          "Failed to create report",
+          "Try again",
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
-      isLoading.value = false;
-      Get.snackbar("", "Something went wrong",backgroundColor: Colors.black12, colorText: Colors.white);
-      print(" Error: $e");
+      isCreateingReport.value = false;
+      Get.snackbar(
+        "",
+        "Something went wrong",
+        backgroundColor: Colors.black12,
+        colorText: Colors.white,
+      );
     }
-  }
-
-
-
-  @override
-  void onClose() {
-    titleController.dispose();
-    descriptionController.dispose();
-    super.onClose();
   }
 }

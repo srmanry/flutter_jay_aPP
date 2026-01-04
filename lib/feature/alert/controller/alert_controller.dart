@@ -20,10 +20,10 @@ class AlertController extends GetxController {
   void fetchAlerts({bool forceFetch = false}) async {
     if (forceFetch) {
       alerts.value = RefreshingPage([]);
-      print("=============================== Have alart ${alerts.value.data}");
+      
     } else {
       alerts.value = LoadingNextPage(alerts.value.data);
-      print("=============================== No alart ${alerts.value.data}");
+      
     }
     await alertService.getAlerts().then((lr) {
       lr.fold((l){
@@ -40,7 +40,7 @@ class AlertController extends GetxController {
 
   StreamSubscription<AlertModel>? alertSubscription;
 
-  _listenToAlertStream() {
+  void _listenToAlertStream() {
     alertSubscription = alertService.alertStream().listen((alert) {
       alerts.value = Loaded(alerts.value.data + [alert]);
     });
@@ -48,7 +48,7 @@ class AlertController extends GetxController {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+
     super.dispose();
     alertSubscription?.cancel();
   }

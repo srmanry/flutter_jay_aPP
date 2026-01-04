@@ -22,7 +22,7 @@ class ForgetPasswordView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 80),
-             AppIconWidget(),
+              AppIconWidget(),
               const SizedBox(height: 40),
 
               const Text(
@@ -45,7 +45,9 @@ class ForgetPasswordView extends StatelessWidget {
 
               const SizedBox(height: 30),
               buttonWidget(
-                text: "Send OTP",
+                text: authController.isSentOtp.value
+                    ? "Sending OTP..."
+                    : "Send OTP",
                 onTap: () {
                   authController.sendOtp();
                 },

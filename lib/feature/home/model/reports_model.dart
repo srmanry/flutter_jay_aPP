@@ -1,5 +1,3 @@
-import 'package:geocoding/geocoding.dart';
-
 class ReportModel {
   final String id;
   final UserModel user;
@@ -23,20 +21,6 @@ class ReportModel {
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
-    try{
-
-
-      final userModel =  UserModel.fromJson(json["user"]);
-    final userLocation = LocationModel.fromJson(json["location"]);
-
-   print('================== user json  =========== ${json['user']}');
-
-
-    }catch(e){
-      print('================== a ra area  json  ${json}');
-      print('=================== report model erro ===========${e}');
-    }
-
     return ReportModel(
       id: json["_id"],
       user: UserModel.fromJson(json["user"]),
@@ -59,11 +43,7 @@ class UserModel {
   final String name;
   final AvatarModel avatar;
 
-  UserModel({
-    required this.id,
-    required this.name,
-    required this.avatar,
-  });
+  UserModel({required this.id, required this.name, required this.avatar});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -78,10 +58,7 @@ class AvatarModel {
   final String publicId;
   final String url;
 
-  AvatarModel({
-    required this.publicId,
-    required this.url,
-  });
+  AvatarModel({required this.publicId, required this.url});
 
   factory AvatarModel.fromJson(Map<String, dynamic> json) {
     return AvatarModel(

@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-
-import '../../../../../core/common/common_text.dart';
 
 import '../../../../../core/common/widgets/save_botton.dart';
 import '../../../core/utils/app_colors.dart';
@@ -81,31 +78,31 @@ class OtpCodeScreenView extends StatelessWidget {
                     const SizedBox(height: 30),
                     // Verify OTP button
                     Obx(
-                      () => authController.isLoading.value
-                          ? const CircularProgressIndicator()
-                          : buttonWidget(
-                              text: "Verify OTP",
-                              onTap: () {
-                                final otp = otpController.text.trim();
-                                if (otp.isEmpty) {
-                                  Get.snackbar("Error", "Please enter OTP");
-                                  return;
-                                }
+                      () => buttonWidget(
+                        text: authController.isOTPverified.value
+                            ? "Loading..."
+                            : "Verify OTP",
+                        onTap: () {
+                          final otp = otpController.text.trim();
+                          if (otp.isEmpty) {
+                            Get.snackbar("Error", "Please enter OTP");
+                            return;
+                          }
 
-                                authController.verifyOtp(
+                          authController.verifyOtp(
+                            email: email,
+                            otp: otp,
+                            onSuccess: () {
+                              Get.off(
+                                () => SetResetPasswordView(
                                   email: email,
                                   otp: otp,
-                                  onSuccess: () {
-                                    Get.off(
-                                      () => SetResetPasswordView(
-                                        email: email,
-                                        otp: otp,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -121,7 +118,7 @@ class OtpCodeScreenView extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                              Get.to(()=> ForgetPasswordView());
+                              Get.to(() => ForgetPasswordView());
                               print("*************RESEND OTP");
                               //authController.sendOtp(); // resend OTP
                             },

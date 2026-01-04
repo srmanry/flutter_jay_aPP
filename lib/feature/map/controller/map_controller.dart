@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -14,9 +14,9 @@ class LocationController extends GetxController {
   var lng = 0.0.obs;
   var markers = <Marker>{}.obs;
   var isLoading = false.obs;
+  var hasPermission = false.obs;
   GoogleMapController? mapController;
   var selectedMarkerData = Rx<Map<String, dynamic>?>(null);
-
 
   String formatTimestamp(String timestamp) {
     try {
@@ -30,7 +30,7 @@ class LocationController extends GetxController {
   final Dio dioClient = Dio(
     BaseOptions(
       baseUrl: "https://api.spotem365.com/api/v1",
-     // baseUrl: "https://api.spotem365.com/api/v1",
+      // baseUrl: "https://api.spotem365.com/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
     ),
@@ -86,7 +86,7 @@ class LocationController extends GetxController {
 
           markers.add(
             Marker(
-           //   consumeTapEvents: true,
+              //   consumeTapEvents: true,
               markerId: MarkerId("${type}_${latValue}_${lngValue}"),
               position: LatLng(latValue, lngValue),
               icon: _getMarkerIcon(type),
@@ -103,11 +103,7 @@ class LocationController extends GetxController {
               },
             ),
           );
-
-
-
         }
-
 
         if (markers.isNotEmpty) {
           mapController?.animateCamera(
@@ -118,22 +114,23 @@ class LocationController extends GetxController {
         //Get.snackbar("Error", "Failed to fetch report markers");
       }
     } catch (e) {
-     // Get.snackbar("Error", "Something went wrong: $e");
+      // Get.snackbar("Error", "Something went wrong: $e");
     } finally {
       isLoading.value = false;
     }
   }
 
-
-// old=============
- BitmapDescriptor _getMarkerIcon(String type) {
+  // old=============
+  BitmapDescriptor _getMarkerIcon(String type) {
     switch (type) {
       case "Fire":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
       case "Police":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue,);
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
       case "Ambulance":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange,);
+        return BitmapDescriptor.defaultMarkerWithHue(
+          BitmapDescriptor.hueOrange,
+        );
       case "ICE":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
       default:
@@ -141,11 +138,10 @@ class LocationController extends GetxController {
     }
   }
 
-
-
-
-
-  Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
+  Future<BitmapDescriptor> getMarkerFromIcon(
+    IconData iconData,
+    Color color,
+  ) async {
     const size = 40.0;
 
     final recorder = ui.PictureRecorder();
@@ -171,7 +167,6 @@ class LocationController extends GetxController {
     return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
   }
 
-
   /*Future<void> fetchNearbyPlaces() async {
     const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI"; // 🔑 তোমার Google Maps Places API key বসাও
     final types = ["hospital", "police", "fire_station"];
@@ -190,7 +185,7 @@ class LocationController extends GetxController {
             final geometry = place["geometry"]["location"];
             final placeLat = geometry["lat"];
             final placeLng = geometry["lng"];
-        *//*    final icon = await _getCustomMarkerIcon(type);
+        */ /*    final icon = await _getCustomMarkerIcon(type);
             markers.add(
               Marker(
                 markerId: MarkerId("${type}_${placeLat}_$placeLng"),
@@ -198,7 +193,7 @@ class LocationController extends GetxController {
                 icon: icon, // 👈 এখানে custom icon ব্যবহার হচ্ছে
                 infoWindow: InfoWindow(title: name),
               ),
-            );*//*
+            );*/ /*
 
             final policeIcon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
 
@@ -240,17 +235,23 @@ class LocationController extends GetxController {
             final placeLat = geometry["lat"];
             final placeLng = geometry["lng"];
 
-            // Marker icon type অনুযায়ী আলাদা
+      
             BitmapDescriptor icon;
             switch (type) {
               case "hospital":
-                icon = await getMarkerFromIcon(Icons.local_hospital_outlined, Colors.pink,);
+                icon = await getMarkerFromIcon(
+                  Icons.local_hospital_outlined,
+                  Colors.pink,
+                );
                 break;
               case "police":
                 icon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
                 break;
               case "fire_station":
-                icon = await getMarkerFromIcon(Icons.local_fire_department, Colors.red);
+                icon = await getMarkerFromIcon(
+                  Icons.local_fire_department,
+                  Colors.red,
+                );
                 break;
               default:
                 icon = BitmapDescriptor.defaultMarker;
@@ -283,4 +284,19 @@ class LocationController extends GetxController {
     markers.refresh();
   }
 
+  // 🔹 Permission check + load location
+  Future<void> checkPermissionAndLoadLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
+    hasPermission.value =
+        permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
+
+    if (hasPermission.value) {
+      await loadLocation();
+    }
+  }
 }

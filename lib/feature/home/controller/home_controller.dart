@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
@@ -49,20 +48,15 @@ class HomeController extends GetxController {
       if (response.statusCode == 200 && response.data["success"] == true) {
         final List<dynamic> reportList = response.data["data"];
         print('============ report  data ===============${response.data}');
-        for(final data in reportList){
+        for (final data in reportList) {
+          try {
+            final report = ReportModel.fromJson(data as Map<String, dynamic>);
 
-         try{
-           final report = ReportModel.fromJson(data as Map<String, dynamic>);
-
-           reports.add(report);
-
-         }
-         catch(e){}
-
-
+            reports.add(report);
+          } catch (e) {}
         }
 
-     /*   reports.value = reportList
+        /*   reports.value = reportList
             .map((x) => ReportModel.fromJson(x as Map<String, dynamic>))
             .toList();*/
         filteredReports.assignAll(reports);
@@ -93,39 +87,27 @@ class HomeController extends GetxController {
     }
   }
 
-
   void searchByType(String query) {
     if (query.isEmpty) {
       filteredReports.assignAll(reports);
     } else {
-      final dateFormat = DateFormat('yyyy-MM-dd');
       filteredReports.assignAll(
         reports.where((r) {
-
-          final localDate = r.createdAt.toLocal();
-          final formattedDate = dateFormat.format(localDate);
-          return formattedDate.contains(query);
+          return r.type.toLowerCase().contains(query.toLowerCase());
         }).toList(),
       );
     }
+  }
 
-
-
-    /* void searchByType(String query) {
+  void searchByCategory(String query) {
     if (query.isEmpty) {
       filteredReports.assignAll(reports);
     } else {
       filteredReports.assignAll(
-        reports.where((r) => r.type.toLowerCase().contains(query.toLowerCase())).toList(),
+        reports.where((r) {
+          return r.type.toLowerCase().contains(query.toLowerCase());
+        }).toList(),
       );
     }
-  }*/
-  }
-
-@override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    fetchReports();
   }
 }

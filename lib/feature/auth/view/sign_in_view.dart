@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import '../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../core/common/widgets/save_botton.dart';
 import '../../../core/common/widgets/app_icon.dart';
 import '../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
-import '../widget/remember_me.dart';
+
 import 'forget_password_view.dart';
 import 'sign_up_view.dart';
 
@@ -31,7 +30,7 @@ class SignInScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-           AppIconWidget(),
+            AppIconWidget(),
             const SizedBox(height: 40),
             const Text(
               "Welcome Back",
@@ -72,7 +71,7 @@ class SignInScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-               // const RememberForgotRow(),
+                // const RememberForgotRow(),
                 InkWell(
                   onTap: () {
                     Get.to(() => ForgetPasswordView());
@@ -96,19 +95,14 @@ class SignInScreen extends StatelessWidget {
             const SizedBox(height: 25),
 
             Obx(() {
-              return authController.isLoading.value
-                  ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : buttonWidget(
-                      text: "Sign In",
-                      onTap: () {
-                        authController.login();
-                      },
-                    );
+              return buttonWidget(
+                text: authController.isLogin.value
+                    ? "Please wait..."
+                    : "Sign In",
+                onTap: () {
+                  authController.login();
+                },
+              );
             }),
 
             const SizedBox(height: 20),

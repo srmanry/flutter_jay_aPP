@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 
 import '../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../core/common/widgets/save_botton.dart';
@@ -47,7 +47,7 @@ class SetResetPasswordView extends StatelessWidget {
                 prefixIcon: Icons.lock_outline,
                 //obscureText: true,
               ),
-             Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 child: CustomTextField(
                   controller: confirmPasswordController,
@@ -57,42 +57,49 @@ class SetResetPasswordView extends StatelessWidget {
                 ),
               ),
 
-
-
-              SizedBox(height: 30,),
+              SizedBox(height: 30),
               Obx(
-                () => authController.isLoading.value
-                    ? const CircularProgressIndicator()
-                    : buttonWidget(
-                        text: "Reset Password",
-                        onTap: () async {
-                          final newPass = newPasswordController.text.trim();
-                          final confirmPass = confirmPasswordController.text.trim();
+                () => buttonWidget(
+                  text: authController.isResetPassword.value
+                      ? "Loading..."
+                      : "Reset Password",
+                  onTap: () async {
+                    final newPass = newPasswordController.text.trim();
+                    final confirmPass = confirmPasswordController.text.trim();
 
-                          if (newPass.isEmpty || confirmPass.isEmpty) {
-                            Get.snackbar("Error", "All fields are required");
-                            return;
-                          }
-                           if (newPass != confirmPass) {
-                            Get.snackbar("Error", "Passwords do not match");
-                            return;
-                          }
+                    if (newPass.isEmpty || confirmPass.isEmpty) {
+                      Get.snackbar(
+                        "Error",
+                        "All fields are required",
+                        colorText: Colors.red,
+                      );
+                      return;
+                    }
+                    if (newPass != confirmPass) {
+                      Get.snackbar(
+                        "Error",
+                        "Passwords do not match",
+                        colorText: Colors.red,
+                      );
+                      return;
+                    }
 
-                          // Call API
-                          await authController.resetPassword(
-                            otp: otp,
-                            email: email,
-                            newPassword: newPass,
-                            onSuccess: () {
-                              Get.snackbar(
-                                "Success",
-                                "Password reset successfully",
-                              );
-                              Get.off(() => SignInScreen());
-                            },
-                          );
-                        },
-                      ),
+                    // Call API
+                    await authController.resetPassword(
+                      otp: otp,
+                      email: email,
+                      newPassword: newPass,
+                      onSuccess: () {
+                        Get.snackbar(
+                          "Success",
+                          "Password reset successfully",
+                          colorText: AppColors.appColor,
+                        );
+                        Get.off(() => SignInScreen());
+                      },
+                    );
+                  },
+                ),
               ),
 
               const SizedBox(height: 40),

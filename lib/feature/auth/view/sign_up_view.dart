@@ -1,13 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:get/get.dart';
 
 import '../../../core/common/widgets/app_icon.dart';
 import '../../../core/common/widgets/custom_text_field.dart';
 import '../../../core/common/widgets/save_botton.dart';
 import '../controller/auth_controller.dart';
-import '../widget/by_registation.dart';
+
 import 'sign_in_view.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -54,17 +53,17 @@ class SignupScreen extends StatelessWidget {
                 return null;
               },
             ),
-           // const SizedBox(height: 15),
+            // const SizedBox(height: 15),
 
             // fieldName("Phone Number"),
-     /*       CustomTextField(
+            /*       CustomTextField(
               controller: authController.phoneController,
               hintText: "Enter Phone Number",
               prefixIcon: Icons.phone,
               keyboardType: TextInputType.phone,
             ),*/
-           // const SizedBox(height: 15),
-       /*     CustomTextField(
+            // const SizedBox(height: 15),
+            /*     CustomTextField(
               controller: authController.address,
               hintText: "Enter Address",
               prefixIcon: Icons.location_on_outlined,
@@ -98,23 +97,18 @@ class SignupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-           // ByRegistation(),
+            // ByRegistation(),
             const SizedBox(height: 30),
 
             Obx(() {
-              return authController.isLoading.value
-                  ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : buttonWidget(
-                      text: "Sign Up",
-                      onTap: () {
-                        authController.signUp();
-                      },
-                    );
+              return buttonWidget(
+                text: authController.isLoading.value
+                    ? "Please wait ..."
+                    : "Sign Up",
+                onTap: () {
+                  authController.signUp();
+                },
+              );
             }),
 
             const SizedBox(height: 20),

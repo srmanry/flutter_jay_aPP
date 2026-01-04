@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
+import 'package:spotem/core/utils/app_colors.dart';
 import '../../../app_ground.dart';
 import '../../../core/common/widgets/dialog_widget.dart';
 import '../../../core/service/local/token_manager.dart';
@@ -15,6 +16,11 @@ import '../view/sign_in_view.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
+  var isUpdateingProfile = false.obs;
+  var isLogin = false.obs;
+  var isSentOtp = false.obs;
+  var isOTPverified = false.obs;
+  var isResetPassword = false.obs;
   var profileData = Rxn<UserProfileModel>();
 
   // Controllers
@@ -58,7 +64,7 @@ class AuthController extends GetxController {
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
       baseUrl: "https://api.spotem365.com/api/v1",
-     // baseUrl: "https://backend-jay.onrender.com/api/v1",
+      // baseUrl: "https://backend-jay.onrender.com/api/v1",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
     ),
@@ -71,11 +77,11 @@ class AuthController extends GetxController {
     final password = passwordController.text.trim();
 
     if (email.isEmpty) {
-      Get.snackbar("Error", "Email is required");
+      Get.snackbar("Error", "Email is required", colorText: Colors.red);
       return;
     }
     if (password.isEmpty) {
-      Get.snackbar("Error", "Password is required");
+      Get.snackbar("Error", "Password is required", colorText: Colors.red);
       return;
     }
     if (!isValidEmail(email)) {
@@ -84,7 +90,7 @@ class AuthController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
+      isLogin.value = true;
 
       final response = await dioClient.post(
         "/auth/login",
@@ -95,8 +101,7 @@ class AuthController extends GetxController {
         ),
       );
 
-      isLoading.value = false;
-
+      isLogin.value = false;
 
       if (response.statusCode == 200) {
         final data = response.data["data"];
@@ -105,18 +110,22 @@ class AuthController extends GetxController {
         await TokenManager.saveToken(accessToken: token, role: role);
 
         Get.offAll(() => AppGroundView());
-        Get.snackbar("Success", "Login Successful 🎉");
+        Get.snackbar(
+          "Success",
+          "Login Successful 🎉",
+          colorText: AppColors.appColor,
+        );
       } else if (response.statusCode == 403) {
         final msg = response.data['message'] ?? "Access forbidden";
-        Get.snackbar("Error", msg);
+        Get.snackbar("Error", msg, colorText: Colors.red);
       } else {
         final msg = response.data['message'] ?? "Invalid email or password";
-        Get.snackbar("Error", msg);
+        Get.snackbar("Error", msg, colorText: Colors.red);
       }
     } catch (e) {
-      isLoading.value = false;
-      print("EXCEPTION IN LOGIN: $e");
-      Get.snackbar("Error", "Something went wrong");
+      isLogin.value = false;
+
+      Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
     }
   }
 
@@ -127,32 +136,48 @@ class AuthController extends GetxController {
 
     // Validation
     if (nameController.text.isEmpty) {
-      Get.snackbar("Error", "Name is required");
+      Get.snackbar("Error", "Name is required", colorText: Colors.red);
       return;
     }
     if (!isValidEmail(email)) {
-      Get.snackbar("Error", "required & valid email address");
+      Get.snackbar(
+        "Error",
+        "required & valid email address",
+        colorText: Colors.red,
+      );
       return;
     }
 
-/*    if (phoneController.text.isEmpty) {
+    /*    if (phoneController.text.isEmpty) {
       Get.snackbar("Error", "Phone Number is required");
       return;
     }*/
-  /*  if (address.text.isEmpty) {
+    /*  if (address.text.isEmpty) {
       Get.snackbar("Error", "Address is required");
       return;
     }*/
     if (password.length < 6) {
-      Get.snackbar("Error", "Password must be at least 6 characters long");
+      Get.snackbar(
+        "Error",
+        "Password must be at least 6 characters long",
+        colorText: Colors.red,
+      );
       return;
     }
     if (password != confirmPassword) {
-      Get.snackbar("Error", "Password and Confirm Password do not match");
+      Get.snackbar(
+        "Error",
+        "Password and Confirm Password do not match",
+        colorText: Colors.red,
+      );
       return;
     }
     if (passwordController.text != confirmPasswordController.text) {
-      Get.snackbar("Error", "Password and Confirm Password do not match");
+      Get.snackbar(
+        "Error",
+        "Password and Confirm Password do not match",
+        colorText: Colors.red,
+      );
       return;
     }
 
@@ -177,27 +202,22 @@ class AuthController extends GetxController {
 
       isLoading.value = false;
 
-      print("Status Code: ${response.statusCode}");
-      print("Response: ${response.data}");
-
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Get.snackbar("Success", "Account Created 🎉");
+        Get.snackbar(
+          "Success",
+          "Account Created 🎉",
+          colorText: AppColors.appColor,
+        );
         Get.to(() => SignInScreen());
       } else {
         final msg = response.data['message'] ?? "Something went wrong";
-        Get.snackbar("Error", msg);
+        Get.snackbar("Error", msg, colorText: Colors.red);
       }
     } catch (e) {
-      print("Password: '${passwordController.text}'");
-      print("ConfirmPassword: '${confirmPasswordController.text}'");
-
-      print("EXCEPTION IN SIGNUP: $e");
       isLoading.value = false;
-      Get.snackbar("Error", "Something went wrong");
+      Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
     }
   }
-
-
 
   Future<void> logout() async {
     try {
@@ -208,22 +228,26 @@ class AuthController extends GetxController {
       // Navigate to login screen
       Get.offAll(() => SignInScreen());
 
-      Get.snackbar("Success", "Logged out successfully");
+      Get.snackbar(
+        "Success",
+        "Logged out successfully",
+        colorText: AppColors.appColor,
+      );
     } catch (e) {
-      print("Logout error: $e");
-      Get.snackbar("Error", "Something went wrong");
+   
+      Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
     }
   }
 
   //=================== Send OTP Function========================
   Future<void> sendOtp() async {
     if (emailController.text.isEmpty) {
-      Get.snackbar("Error", "Email is required");
+      Get.snackbar("Error", "Email is required", colorText: Colors.red);
       return;
     }
 
     try {
-      isLoading.value = true;
+      isSentOtp.value = true;
 
       final response = await dioClient.post(
         "/auth/forget",
@@ -238,17 +262,23 @@ class AuthController extends GetxController {
         Get.snackbar(
           "Success",
           response.data["message"] ?? "OTP sent successfully",
+          colorText: AppColors.appColor,
         );
         Get.to(() => OtpCodeScreenView(email: emailController.text));
       } else {
-        Get.snackbar("Error", response.data["message"] ?? "Failed to send OTP");
+        Get.snackbar(
+          "Error",
+          response.data["message"] ?? "Failed to send OTP",
+          colorText: Colors.red,
+        );
+        isSentOtp.value = false;
       }
     } catch (e) {
       /*   print("Exception: $e");
       final errorMessage = getErrorMessage(e);
       Get.snackbar("Error", errorMessage); */
     } finally {
-      isLoading.value = false;
+      isSentOtp.value = false;
     }
   }
 
@@ -259,7 +289,7 @@ class AuthController extends GetxController {
     required Function onSuccess,
   }) async {
     try {
-      isLoading.value = true;
+      isOTPverified.value = true;
 
       final response = await dioClient.post(
         "/auth/verify-otp",
@@ -270,7 +300,7 @@ class AuthController extends GetxController {
         ),
       );
 
-      isLoading.value = false;
+      isOTPverified.value = false;
 
       // print("VERIFY OTP STATUS: ${response.statusCode}");
       // print("VERIFY OTP DATA: ${response.data}");
@@ -279,20 +309,30 @@ class AuthController extends GetxController {
         Get.snackbar(
           "Success",
           response.data["message"] ?? "OTP Verified Successfully",
+          colorText: AppColors.appColor,
         );
         onSuccess(); // navigate to Reset Password
       } else if (response.statusCode == 400) {
         Get.snackbar(
           "Error",
           response.data["message"] ?? "Invalid OTP or Bad Request",
+          colorText: Colors.red,
         );
+        isOTPverified.value = false;
       } else {
-        Get.snackbar("Error", "Unexpected error: ${response.statusCode}");
+        Get.snackbar(
+          "Error",
+          "Unexpected error: ${response.statusCode}",
+          colorText: Colors.red,
+        );
+        isOTPverified.value = false;
       }
     } catch (e) {
       /*  isLoading.value = false;
       final errorMessage = getErrorMessage(e);
       Get.snackbar("Error", errorMessage); */
+    } finally {
+      isOTPverified.value = false;
     }
   }
 
@@ -304,11 +344,11 @@ class AuthController extends GetxController {
     required Function onSuccess,
   }) async {
     try {
-    /*  if (passwordController.text.length < 6 && confirmPasswordController.text.length &&passwordController.text.) {
+      /*  if (passwordController.text.length < 6 && confirmPasswordController.text.length &&passwordController.text.) {
         Get.snackbar("Error", "Password must be at least 6 characters long");
         return;
       }*/
-      isLoading.value = true;
+      isResetPassword.value = true;
       final response = await dioClient.post(
         "/auth/reset-password",
         data: {"email": email, "password": newPassword, "otp": otp},
@@ -318,24 +358,28 @@ class AuthController extends GetxController {
         ),
       );
 
-      isLoading.value = false;
+      isResetPassword.value = false;
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar(
+        /*  Get.snackbar(
           "Success",
           response.data["message"] ?? "Password reset successfully",
-        );
+          colorText: AppColors.appColor,
+        ); */
         onSuccess();
       } else {
         Get.snackbar(
           "Error",
           response.data["message"] ?? "Failed to reset password",
+          colorText: Colors.red,
         );
       }
     } catch (e) {
-      isLoading.value = false;
+      isResetPassword.value = false;
 
       /*     final errorMessage = getErrorMessage(e);
       Get.snackbar("Error", errorMessage); */
+    } finally {
+      isResetPassword.value = false;
     }
   }
 
@@ -348,30 +392,37 @@ class AuthController extends GetxController {
     try {
       //
       if (currentPassword.isEmpty) {
-        Get.snackbar("Error", "Current Password is required");
+        Get.snackbar(
+          "Error",
+          "Current Password is required",
+          colorText: Colors.red,
+        );
         return;
       }
       if (newPassword.length < 6) {
         Get.snackbar(
           "Error",
           "New Password must be at least 6 characters long",
+          colorText: Colors.red,
         );
         return;
       }
       if (newPassword != confirmPassword) {
-        Get.snackbar("Error", "New Password and Confirm Password do not match");
+        Get.snackbar(
+          "Error",
+          "New Password and Confirm Password do not match",
+          colorText: Colors.red,
+        );
         return;
       }
 
       isLoading.value = true;
 
-
       final token = await TokenManager.getAccessToken();
       if (token == null) {
-        Get.snackbar("Error", "User not logged in");
+        Get.snackbar("Error", "User not logged in", colorText: Colors.red);
         return;
       }
-
 
       final response = await dioClient.post(
         "/user/change-password",
@@ -389,9 +440,12 @@ class AuthController extends GetxController {
         ),
       );
 
-
       if (response.statusCode == 200) {
-        Get.snackbar("Success", "Password changed successfully");
+        Get.snackbar(
+          "Success",
+          "Password changed successfully",
+          colorText: AppColors.appColor,
+        );
         CustomDialog(
           buttonTitle: "Done",
           title: "Password Changed",
@@ -401,20 +455,23 @@ class AuthController extends GetxController {
       } else {
         //  Show server error (like current password mismatch)
         final message = response.data?["message"] ?? "Something went wrong";
-        Get.snackbar("Error", message);
-        print("Change Password Error: $message"); // debug log
+        Get.snackbar("Error", message, colorText: Colors.red);
       }
+      isLoading.value = false;
     } catch (e, stacktrace) {
       //  Show actual exception if API fails
-      print("Exception changing password: $e");
-      print(stacktrace);
-      Get.snackbar("Error", "An unexpected error occurred");
+      isLoading.value = false;
+      Get.snackbar(
+        "Error",
+        "An unexpected error occurred",
+        colorText: Colors.red,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> profileUpdate({
+  /*   Future<void> profileUpdate({
     required String name,
     required String email,
     required String phone,
@@ -448,26 +505,89 @@ class AuthController extends GetxController {
         ),
       );
 
-      isLoading.value = false;
+      isUpdateingProfile.value = true;
 
       if (response.statusCode == 200) {
-        print("Profile updated successfully");
-
-        Get.snackbar("Success", "Profile updated successfully 🎉");
+        Get.snackbar(
+          "Success",
+          "Profile updated successfully 🎉",
+          colorText: AppColors.appColor,
+        );
 
         Get.to(() => AppGroundView());
         // refresh profile data
         await fetchProfile();
       } else {
         //Get.snackbar("Error", response.data["message"] ?? "Update failed");
+        final msg = response.data['message'] ?? "Something went wrong";
+        Get.snackbar("Error", msg, colorText: Colors.red);
+        isUpdateingProfile.value = false;
       }
     } catch (e) {
       print(
         "Error: Profile not updated ->====================================== $e",
       );
 
-      isLoading.value = false;
+      isUpdateingProfile.value = false;
       // Get.snackbar("not updated" );
+    } finally {
+      isUpdateingProfile.value = false;
+    }
+  }
+
+
+ */
+  Future<void> profileUpdate({
+    required String name,
+    required String email,
+    required String phone,
+    String? gender,
+    required String address,
+    File? imageFile,
+  }) async {
+    isUpdateingProfile.value = true;
+
+    try {
+      final token = await TokenManager.getAccessToken();
+
+      dio.FormData formData = dio.FormData.fromMap({
+        "name": name,
+        "phone": phone,
+        "address": address,
+        if (imageFile != null)
+          "avatar": await dio.MultipartFile.fromFile(imageFile.path),
+      });
+
+      final response = await dioClient.patch(
+        "/user/update-profile",
+        data: formData,
+        options: dio.Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "multipart/form-data",
+          },
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Get.snackbar(
+          "Success",
+          "Profile updated successfully 🎉",
+          colorText: AppColors.appColor,
+        );
+
+        await fetchProfile();
+        Get.to(() => AppGroundView());
+      } else {
+        final msg = response.data['message'] ?? "Something went wrong";
+        Get.snackbar("Error", msg, colorText: Colors.red);
+      }
+    } catch (e) {
+     
+      Get.snackbar("Error", "Profile update failed", colorText: Colors.red);
+    } finally {
+      isUpdateingProfile.value = false;
     }
   }
 
@@ -478,7 +598,7 @@ class AuthController extends GetxController {
       final token = await TokenManager.getAccessToken();
       if (token == null) {
         profileData.value = null;
-        print("No token found");
+
         return;
       }
 
@@ -492,23 +612,15 @@ class AuthController extends GetxController {
 
       if (response.data != null) {
         profileData.value = UserProfileModel.fromJson(response.data!);
-        print("Profile fetched successfully: ${profileData.value?.toJson()}");
       } else {
         profileData.value = null;
-        print(
-          "Failed to fetch profile: ${response.data?["message"] ?? "Unknown error"}",
-        );
       }
     } catch (e) {
       profileData.value = null;
-      print("==============================Exception fetching profile: $e");
     } finally {
       isLoading.value = false;
-      print("Profile data: ${profileData.value?.toJson()}");
     }
   }
-
-
 
   //=================== Delete Account (Server-side only) =========================
   Future<void> deleteAccount() async {
@@ -518,7 +630,7 @@ class AuthController extends GetxController {
       // Get user token from local storage
       final token = await TokenManager.getAccessToken();
       if (token == null) {
-        Get.snackbar("Error", "User not logged in");
+        Get.snackbar("Error", "User not logged in", colorText: Colors.red);
         isLoading.value = false;
         return;
       }
@@ -541,19 +653,22 @@ class AuthController extends GetxController {
         Get.snackbar(
           "Success",
           response.data?["message"] ?? "Account deleted successfully 🎉",
+          colorText: AppColors.appColor,
         );
         TokenManager.clear();
         Get.to(() => SplashScreen());
-
-
       } else {
         final msg = response.data?['message'] ?? "Failed to delete account";
-        Get.snackbar("Error", msg);
+        Get.snackbar("Error", msg, colorText: Colors.red);
       }
     } catch (e) {
       isLoading.value = false;
-      print("❌ Exception deleting account: $e");
-      Get.snackbar("Error", "Something went wrong while deleting account");
+
+      Get.snackbar(
+        "Error",
+        "Something went wrong while deleting account",
+        colorText: Colors.red,
+      );
     }
   }
 }
