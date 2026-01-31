@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/common/widgets/custom_text_field.dart';
-import '../../../../../core/common/widgets/save_botton.dart';
-import '../../../core/common/widgets/app_icon.dart';
-import '../../../core/utils/app_colors.dart';
+import '../../../../../../core/common/widgets/custom_text_field.dart';
+import '../../../../../../core/common/widgets/save_botton.dart';
+import '../../../../core/common/widgets/app_icon.dart';
+import '../../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
 
 import 'forget_password_view.dart';

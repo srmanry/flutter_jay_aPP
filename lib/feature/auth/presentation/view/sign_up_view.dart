@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../../../core/common/widgets/app_icon.dart';
-import '../../../core/common/widgets/custom_text_field.dart';
-import '../../../core/common/widgets/save_botton.dart';
+import '../../../../core/common/widgets/app_icon.dart';
+import '../../../../core/common/widgets/custom_text_field.dart';
+import '../../../../core/common/widgets/save_botton.dart';
 import '../controller/auth_controller.dart';
 
 import 'sign_in_view.dart';

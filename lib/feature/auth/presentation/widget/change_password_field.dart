@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../profile/controller/theme_controller.dart';
+import '../../../profile/controller/theme_controller.dart';
 
 class ChangePasswordField extends StatelessWidget {
   final TextEditingController? controller;

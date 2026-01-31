@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 
 import '../../../core/common/widgets/app_icon.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../auth/controller/auth_controller.dart';
-import '../../auth/view/change_password_view.dart';
+import '../../auth/presentation/controller/auth_controller.dart';
+import '../../auth/presentation/view/change_password_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_botton_widget.dart';
 import 'personal_info_view.dart';

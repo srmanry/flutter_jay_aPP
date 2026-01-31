@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-import '../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
 
 class ByRegistation extends StatelessWidget {

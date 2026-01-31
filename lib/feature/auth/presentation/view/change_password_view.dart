@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_colors.dart';
 import '../controller/auth_controller.dart';
 import '../widget/change_password_field.dart';
 

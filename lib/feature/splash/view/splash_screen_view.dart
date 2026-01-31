@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../../app_ground.dart';
 import '../../../core/common/widgets/app_icon.dart';
 import '../../../core/service/local/token_manager.dart';
-import '../../auth/view/sign_in_view.dart';
+import '../../auth/presentation/view/sign_in_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

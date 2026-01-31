@@ -28,7 +28,8 @@ class HomeController extends GetxController {
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
       //baseUrl: "https://api.spotem365.com/api/v1",
-      baseUrl: "https://api.spotem365.com/api/v1",
+      //baseUrl: "https://api.spotem365.com/api/v1",
+      baseUrl: "https://backend-jay.onrender.com/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
     ),
@@ -40,10 +41,7 @@ class HomeController extends GetxController {
       final token = await TokenManager.getAccessToken();
       final response = await dioClient.get(
         '/report',
-        options: dio.Options(
-          headers: {"Authorization": "Bearer $token"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
+        options: dio.Options(headers: {"Authorization": "Bearer $token"}, validateStatus: (status) => status != null && status < 500),
       );
       if (response.statusCode == 200 && response.data["success"] == true) {
         final List<dynamic> reportList = response.data["data"];
