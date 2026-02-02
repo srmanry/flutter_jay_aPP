@@ -9,7 +9,7 @@ import 'feature/alert/controller/alert_controller.dart';
 import 'feature/home/view/home_view.dart';
 import 'feature/map/view/map_view.dart';
 import 'feature/profile/view/profile_view.dart';
-import 'feature/report/view/report_create_view.dart';
+import 'feature/report/presentation/view/report_create_view.dart';
 
 class AppGroundView extends StatefulWidget {
   const AppGroundView({super.key});

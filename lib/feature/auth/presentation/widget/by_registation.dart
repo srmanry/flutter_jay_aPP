@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 
 import '../../../../core/utils/app_colors.dart';
-import '../controller/auth_controller.dart';
+import '../../controller/auth_controller.dart';
 
 class ByRegistation extends StatelessWidget {
   const ByRegistation({super.key});

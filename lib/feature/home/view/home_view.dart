@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/internet_controller.dart';
 import '../../alert/ui/view/alert_view.dart';
-import '../../auth/presentation/controller/auth_controller.dart';
+import '../../auth/controller/auth_controller.dart';
 import '../../profile/controller/theme_controller.dart';
 import '../controller/home_controller.dart';
 import 'view_report_screen.dart';

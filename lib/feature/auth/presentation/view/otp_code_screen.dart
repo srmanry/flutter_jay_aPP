@@ -4,7 +4,7 @@ import 'package:pinput/pinput.dart';
 
 import '../../../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
-import '../controller/auth_controller.dart';
+import '../../controller/auth_controller.dart';
 import 'forget_password_view.dart';
 import 'reset_password.dart';
 

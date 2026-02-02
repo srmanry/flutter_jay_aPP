@@ -1,7 +1,8 @@
 // lib/core/network/api_endpoints.dart
 
 const String apiVersion = "api/v1";
-const String baseUrl = "http://localhost:8001"; // Postman baseURL থেকে
+//const String baseUrl = "http://localhost:8001"; // Postman baseURL থেকে
+const String baseUrl = "https://backend-sonko.onrender.com/api/v1";
 String get baseApiUrl => "$baseUrl/$apiVersion";
 
 // ================= AUTH MODULE =================
@@ -37,8 +38,7 @@ class ReportEndpoints {
 class AdminEndpoints {
   static String getUsers = "$baseApiUrl/admin/users";
   static String deleteUser(String id) => "$baseApiUrl/admin/users/$id";
-  static String getMonthlyStatus({required int year, required int month}) =>
-      "$baseApiUrl/admin/stats/monthly?year=$year&month=$month";
+  static String getMonthlyStatus({required int year, required int month}) => "$baseApiUrl/admin/stats/monthly?year=$year&month=$month";
 }
 
 // ================= SETTINGS MODULE =================

@@ -5,7 +5,7 @@ import 'package:spotem/core/utils/app_colors.dart';
 import '../../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/common/widgets/app_icon.dart';
-import '../controller/auth_controller.dart';
+import '../../controller/auth_controller.dart';
 import 'sign_in_view.dart';
 
 class SetResetPasswordView extends StatelessWidget {

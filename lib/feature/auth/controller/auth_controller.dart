@@ -4,15 +4,15 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:spotem/core/utils/app_colors.dart';
-import '../../../../app_ground.dart';
-import '../../../../core/common/widgets/dialog_widget.dart';
-import '../../../../core/service/local/token_manager.dart';
-import '../../../profile/view/about_app_screen.dart';
-import '../../../profile/view/pricacy_screen.dart';
-import '../../../splash/view/splash_screen_view.dart';
-import '../../model/profile.dart';
-import '../view/otp_code_screen.dart';
-import '../view/sign_in_view.dart';
+import '../../../app_ground.dart';
+import '../../../core/common/widgets/dialog_widget.dart';
+import '../../../core/service/local/token_manager.dart';
+import '../../profile/view/about_app_screen.dart';
+import '../../profile/view/pricacy_screen.dart';
+import '../../splash/view/splash_screen_view.dart';
+import '../model/profile.dart';
+import '../presentation/view/otp_code_screen.dart';
+import '../presentation/view/sign_in_view.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
