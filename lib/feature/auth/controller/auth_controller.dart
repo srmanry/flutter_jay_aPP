@@ -1,9 +1,12 @@
-import 'dart:io';
+/* import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
+import 'package:http/http.dart' as dioClient;
 import 'package:spotem/core/utils/app_colors.dart';
+import 'package:spotem/feature/auth/repo/auth_repo.dart';
 import '../../../app_ground.dart';
 import '../../../core/common/widgets/dialog_widget.dart';
 import '../../../core/service/local/token_manager.dart';
@@ -15,6 +18,7 @@ import '../presentation/view/otp_code_screen.dart';
 import '../presentation/view/sign_in_view.dart';
 
 class AuthController extends GetxController {
+  final AuthRepository _authRepository;
   var isLoading = false.obs;
   var isUpdateingProfile = false.obs;
   var isLogin = false.obs;
@@ -36,6 +40,7 @@ class AuthController extends GetxController {
 
   final otpController = TextEditingController();
 
+  AuthController(this._authRepository);
   void toggleRemember(bool value) => rememberMe.value = value;
 
   void toggleRegister(bool value) => rememberMe.value = value;
@@ -61,7 +66,7 @@ class AuthController extends GetxController {
   }
 
   //================================================== Dio
-  final dio.Dio dioClient = dio.Dio(
+/*   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
       // baseUrl: "https://api.spotem365.com/api/v1",
       baseUrl: "https://backend-jay.onrender.com/api/v1",
@@ -69,10 +74,10 @@ class AuthController extends GetxController {
       receiveTimeout: const Duration(seconds: 30),
     ),
   );
-
+ */
   //==================================================Login function
 
-  Future<void> login() async {
+/*   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
@@ -92,7 +97,7 @@ class AuthController extends GetxController {
     try {
       isLogin.value = true;
 
-      final response = await dioClient.post(
+      final response = await _authRepository.login(email: email, password: password);
         "/auth/login",
         data: {"email": email, "password": password},
         options: dio.Options(headers: {"Content-Type": "application/json"}, validateStatus: (status) => true),
@@ -121,6 +126,96 @@ class AuthController extends GetxController {
       Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
     }
   }
+ */
+
+  // ====================== LOGIN ======================
+  Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty) {
+      Get.snackbar(backgroundColor: Colors.white, "Error", "Email is required");
+    }
+    if (password.isEmpty) {
+      Get.snackbar(
+        backgroundColor: Colors.white,
+        
+        "Error",
+        "Password is required",
+      );
+    }
+
+    try {
+      isLoading.value = true;
+      final result = await _authRepository.login( email: email, password: password);
+
+      isLoading.value = false;
+
+      if (result["success"] as bool == true) {
+        debugPrint("Saving auth token");
+        final refreshToken = result["data"]["user"]["refreshToken"];
+        final accessToken = result["data"]["accessToken"];
+        await TokenManager.saveToken(
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          role: result["data"]["user"]["role"],
+        );
+        Get.snackbar(
+          backgroundColor: Colors.white,
+          "Success",
+          "Login Successful",
+        );
+        Get.to(() => AppGroundView());
+      } else {
+        Get.snackbar(
+          backgroundColor: Colors.white,
+          "Error",
+          result["message"] ?? "Invalid credentials",
+        );
+        isLoading.value = false;
+      }
+    } catch (e) {
+      String errorMessage = "Something went wrong";
+
+      if (e is DioException) {
+        // Bad response with server message
+        if (e.response != null && e.response?.data != null) {
+          final data = e.response!.data;
+
+          if (data is Map<String, dynamic> && data.containsKey('message')) {
+            errorMessage = data['message'];
+            isLoading.value = false;
+          }
+          // Bad response without server message
+          else {
+            errorMessage = e.message ?? errorMessage;
+            isLoading.value = false;
+          }
+        }
+        // Optional: else set generic Dio error
+        else {
+          errorMessage = e.message ?? errorMessage;
+          isLoading.value = false;
+        }
+      } else {
+        errorMessage = e.toString();
+        isLoading.value = false;
+      }
+
+      Get.snackbar(
+        'Error',
+        errorMessage,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.white,
+        colorText: Colors.black,
+      );
+
+      print("Error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 
   Future<void> signUp() async {
     final email = emailController.text.trim();
@@ -161,7 +256,7 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await dioClient.post(
+      final response = await .post(
         "/auth/register",
         data: {
           "name": nameController.text,
@@ -535,5 +630,390 @@ class AuthController extends GetxController {
 
       Get.snackbar("Error", "Something went wrong while deleting account", colorText: Colors.red);
     }
+  }
+}
+ */
+
+
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:spotem/app_ground.dart';
+import 'package:spotem/core/network/api_service/token_meneger.dart';
+import 'package:spotem/core/utils/app_colors.dart';
+import 'package:spotem/feature/auth/presentation/view/otp_code_screen.dart';
+import 'package:spotem/feature/auth/repo/auth_repo.dart';
+import 'package:spotem/feature/splash/view/splash_screen_view.dart';
+
+import '../../profile/view/about_app_screen.dart';
+import '../../profile/view/pricacy_screen.dart';
+
+class AuthController extends GetxController {
+  final AuthRepository _authRepository;
+
+  // Loading & State variables
+  final isLoading = false.obs;
+  final isLogin = false.obs;
+  final isSignup = false.obs;
+  final sentOtp = false.obs;
+  final isVerfiyOtp = false.obs;
+  final isResetPassword = false.obs;
+  final rememberMe = false.obs;
+  final iAgree = false.obs;
+
+  var isUpdateingProfile = false.obs;
+
+  var isSentOtp = false.obs;
+  var isOTPverified = false.obs;
+
+  // Text Controllers
+  final emailController = TextEditingController();
+  final singinemailcontroller = TextEditingController();
+  final passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final signupPassword = TextEditingController();
+  final confirmPassword = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  AuthController(this._authRepository);
+
+  void toggleRemember(bool value) => rememberMe.value = value;
+
+  void toggleRegister(bool value) => rememberMe.value = value;
+
+  void termOfService() {
+    Get.to(() => PrivacyPolicyView());
+  }
+
+  void privacyPolicy() {
+    Get.to(() => AboutAppScreen());
+  }
+
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  void clearLoginFields() {
+    emailController.clear();
+    passwordController.clear();
+  }
+
+  void clearSignupFields() {
+    nameController.clear();
+    singinemailcontroller.clear();
+    signupPassword.clear();
+    confirmPassword.clear();
+  }
+
+  // ──────────────────────────────────────────────
+  //                  LOGIN
+  // ──────────────────────────────────────────────
+  Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    // Validation
+    if (email.isEmpty) {
+      Get.snackbar("Error", "Email is required", colorText: Colors.red);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Get.snackbar("Error", "Invalid email format", colorText: Colors.red);
+      return;
+    }
+    if (password.isEmpty) {
+      Get.snackbar("Error", "Password is required", colorText: Colors.red);
+      return;
+    }
+    if (password.length < 6) {
+      Get.snackbar("Error", "Password must be at least 6 characters", colorText: Colors.red);
+      return;
+    }
+
+    try {
+      isLogin.value = true;
+
+      final result = await _authRepository.login(email, password);
+
+      if (result["success"] == true) {
+        final accessToken = result["data"]["accessToken"];
+        final refreshToken = result["data"]["refreshToken"] ?? "";
+
+        await TokenManager.saveToken(accessToken: accessToken, refreshToken: refreshToken);
+
+        Get.snackbar("Success", "Login Successful", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
+
+        clearLoginFields();
+        Get.offAll(() => AppGroundView());
+      } else {
+        final message = result["message"] ?? "Invalid credentials";
+        Get.snackbar("Error", message, colorText: Colors.red, snackPosition: SnackPosition.TOP);
+      }
+    } on DioException catch (e) {
+      String errorMsg = "Network error";
+
+      if (e.response?.data != null && e.response?.data is Map) {
+        errorMsg = e.response?.data["message"] ?? "Login failed";
+      }
+
+      Get.snackbar("Error", errorMsg, colorText: Colors.red, snackPosition: SnackPosition.TOP);
+    } catch (e) {
+      Get.snackbar("Error", "An unexpected error occurred", colorText: Colors.red);
+    } finally {
+      isLogin.value = false;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  //                  SIGNUP
+  // ──────────────────────────────────────────────
+  Future<void> signup() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPass = confirmPasswordController.text.trim();
+
+    // Validation
+    if (name.isEmpty) {
+      Get.snackbar("Error", "Name is required", colorText: Colors.red);
+      return;
+    }
+    if (email.isEmpty) {
+      Get.snackbar("Error", "Email is required", colorText: Colors.red);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Get.snackbar("Error", "Invalid email format", colorText: Colors.red);
+      return;
+    }
+    if (password.isEmpty) {
+      Get.snackbar("Error", "Password is required", colorText: Colors.red);
+      return;
+    }
+    if (password.length < 6) {
+      Get.snackbar("Error", "Password must be at least 6 characters", colorText: Colors.red);
+      return;
+    }
+    if (password != confirmPass) {
+      Get.snackbar("Error", "Passwords do not match", colorText: Colors.red);
+      return;
+    }
+
+    try {
+      isSignup.value = true;
+
+      final result = await _authRepository.signup(name, email, password);
+
+      if (result["success"] == true) {
+        Get.snackbar("Success", "Signup Successful! Please login", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
+
+        clearSignupFields();
+        //Get.off(() => LoginScreenView());
+      } else {
+        String message = result["message"] ?? "Signup failed";
+
+        if (message.toLowerCase().contains("already") || message.toLowerCase().contains("exist")) {
+          Get.snackbar("Error", "User already registered", colorText: Colors.red);
+        } else {
+          Get.snackbar("Error", message, colorText: Colors.red);
+        }
+      }
+    } on DioException catch (e) {
+      String errorMsg = "Signup failed";
+
+      if (e.response?.data != null && e.response?.data is Map) {
+        errorMsg = e.response?.data["message"] ?? errorMsg;
+      }
+
+      if (errorMsg.toLowerCase().contains("already") || errorMsg.toLowerCase().contains("exist")) {
+        Get.snackbar("Error", "User already registered", colorText: Colors.red);
+      } else {
+        Get.snackbar("Error", errorMsg, colorText: Colors.red);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "An unexpected error occurred", colorText: Colors.red);
+    } finally {
+      isSignup.value = false;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  //                  SEND OTP
+  // ──────────────────────────────────────────────
+  Future<void> sendOtp(String email) async {
+    if (email.isEmpty) {
+      Get.snackbar("Error", "Email is required", colorText: Colors.red);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Get.snackbar("Error", "Invalid email format", colorText: Colors.red);
+      return;
+    }
+
+    try {
+      sentOtp.value = true;
+
+      final result = await _authRepository.sendOtp(email);
+
+      if (result["success"] == true) {
+        Get.snackbar(
+          "Success",
+          result["message"] ?? "OTP sent successfully",
+          colorText: AppColors.appColor,
+          snackPosition: SnackPosition.TOP,
+        );
+
+        Get.to(() => OtpCodeScreenView(email: email));
+      } else {
+        Get.snackbar("Error", result["message"] ?? "Failed to send OTP", colorText: Colors.red);
+      }
+    } on DioException catch (e) {
+      String msg = "Failed to send OTP";
+      if (e.response?.data != null && e.response?.data["message"] != null) {
+        msg = e.response!.data["message"];
+      }
+      Get.snackbar("Error", msg, colorText: Colors.red);
+    } catch (e) {
+      Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
+    } finally {
+      sentOtp.value = false;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  //                  VERIFY OTP
+  // ──────────────────────────────────────────────
+  Future<void> verifyOtp({required String email, required String otp, required VoidCallback onSuccess}) async {
+    if (otp.isEmpty) {
+      Get.snackbar("Error", "OTP is required", colorText: Colors.red);
+      return;
+    }
+
+    try {
+      isVerfiyOtp.value = true;
+
+      final result = await _authRepository.verifyOtp(otp, email);
+
+      if (result["success"] == true) {
+        Get.snackbar("Success", result["message"] ?? "OTP verified successfully", colorText: AppColors.appColor);
+
+        onSuccess();
+      } else {
+        Get.snackbar("Error", result["message"] ?? "Invalid OTP", colorText: Colors.red);
+      }
+    } on DioException catch (e) {
+      String msg = "OTP verification failed";
+      if (e.response?.data != null && e.response?.data["message"] != null) {
+        msg = e.response!.data["message"];
+      }
+      Get.snackbar("Error", msg, colorText: Colors.red);
+    } catch (e) {
+      Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
+    } finally {
+      isVerfiyOtp.value = false;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  //                  RESET PASSWORD
+  // ──────────────────────────────────────────────
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+    required VoidCallback onSuccess,
+  }) async {
+    if (newPassword.length < 6) {
+      Get.snackbar("Error", "Password must be at least 6 characters", colorText: Colors.red);
+      return;
+    }
+
+    try {
+      isResetPassword.value = true;
+
+      final result = await _authRepository.resetPassword(email, otp, newPassword);
+
+      if (result["success"] == true) {
+        Get.snackbar("Success", result["message"] ?? "Password reset successfully", colorText: AppColors.appColor);
+
+        onSuccess();
+      } else {
+        Get.snackbar("Error", result["message"] ?? "Failed to reset password", colorText: Colors.red);
+      }
+    } on DioException catch (e) {
+      String msg = "Failed to reset password";
+      if (e.response?.data != null && e.response?.data["message"] != null) {
+        msg = e.response!.data["message"];
+      }
+      Get.snackbar("Error", msg, colorText: Colors.red);
+    } catch (e) {
+      Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
+    } finally {
+      isResetPassword.value = false;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  //                  CHANGE PASSWORD
+  // ──────────────────────────────────────────────
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    if (oldPassword.isEmpty) {
+      Get.snackbar("Error", "Old password is required", colorText: Colors.red);
+      return;
+    }
+    if (newPassword.isEmpty) {
+      Get.snackbar("Error", "New password is required", colorText: Colors.red);
+      return;
+    }
+    if (newPassword.length < 6) {
+      Get.snackbar("Error", "New password must be at least 6 characters", colorText: Colors.red);
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final result = await _authRepository.changePassword(oldPassword, newPassword);
+
+      if (result["success"] == true) {
+        Get.snackbar("Success", result["message"] ?? "Password changed successfully", colorText: AppColors.appColor);
+      } else {
+        Get.snackbar("Error", result["message"] ?? "Failed to change password", colorText: Colors.red);
+      }
+    } on DioException catch (e) {
+      String msg = "Failed to change password";
+      if (e.response?.data != null && e.response?.data["message"] != null) {
+        msg = e.response!.data["message"];
+      }
+      Get.snackbar("Error", msg, colorText: Colors.red);
+    } catch (e) {
+      Get.snackbar("Error", "An unexpected error occurred", colorText: Colors.red);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> logout() async {
+    await TokenManager.clearToken();
+    Get.snackbar(colorText: AppColors.appColor, "Success", "Logged out");
+    Get.offAll(() => SplashScreen());
+  }
+
+  // ──────────────────────────────────────────────
+  //                  LOGOUT
+  // ──────────────────────────────────────────────
+  //                  FETCH PROFILE
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    singinemailcontroller.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    signupPassword.dispose();
+    confirmPassword.dispose();
+    super.onClose();
   }
 }

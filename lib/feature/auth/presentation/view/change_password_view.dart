@@ -7,10 +7,12 @@ import '../widget/change_password_field.dart';
 
 class ChangePasswordView extends StatelessWidget {
   ChangePasswordView({super.key});
-  final AuthController authController = Get.put(AuthController());
+  //final AuthController authController = Get.put(AuthController());
+  final authController = Get.find<AuthController>();
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,11 +27,7 @@ class ChangePasswordView extends StatelessWidget {
         centerTitle: true,
         title: Text(
           "Change Password",
-          style: TextStyle(
-            color: AppColors.appColor,
-            fontWeight: FontWeight.w700,
-            fontSize: 24,
-          ),
+          style: TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24),
         ),
         elevation: 0,
       ),
@@ -42,24 +40,12 @@ class ChangePasswordView extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 20),
-                  ChangePasswordField(
-                    fieldName: "Current Password",
-                    hinText: "Current Password",
-                    controller: currentPasswordController,
-                  ),
+                  ChangePasswordField(fieldName: "Current Password", hinText: "Current Password", controller: currentPasswordController),
 
                   // ChangePasswordField(fieldName: "New Password",
                   //   hinText: "",),
-                  ChangePasswordField(
-                    fieldName: "New Password",
-                    hinText: "New Password",
-                    controller: newPasswordController,
-                  ),
-                  ChangePasswordField(
-                    fieldName: "Confirm Password",
-                    hinText: "Confirm Password",
-                    controller: confirmPasswordController,
-                  ),
+                  ChangePasswordField(fieldName: "New Password", hinText: "New Password", controller: newPasswordController),
+                  ChangePasswordField(fieldName: "Confirm Password", hinText: "Confirm Password", controller: confirmPasswordController),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 30),
@@ -68,25 +54,19 @@ class ChangePasswordView extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.appColor,
                           minimumSize: Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                         onPressed: () {
                           authController.changePassword(
                             currentPasswordController.text.trim(),
                             newPasswordController.text.trim(),
-                            confirmPasswordController.text.trim(),
+                           // confirmPasswordController.text.trim(),
                           );
                         },
 
                         child: Text(
                           authController.isLoading.value ? "Please wait..." : "Save",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
                         ),
                         //label: Icon(Icons.arrow_forward, color: Colors.white,size: 20,),
                       ),

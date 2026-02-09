@@ -13,8 +13,8 @@ import 'sign_up_view.dart';
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
 
-  final AuthController authController = Get.put(AuthController());
-
+  //final AuthController authController = Get.find(AuthController());
+  final authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

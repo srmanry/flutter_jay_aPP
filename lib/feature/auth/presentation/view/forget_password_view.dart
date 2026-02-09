@@ -49,7 +49,7 @@ class ForgetPasswordView extends StatelessWidget {
                     ? "Sending OTP..."
                     : "Send OTP",
                 onTap: () {
-                  authController.sendOtp();
+                  //authController.sendOtp();
                 },
               ),
 

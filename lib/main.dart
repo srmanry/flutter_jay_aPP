@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import 'app_dependenci copy.dart';
 import 'core/utils/app_colors.dart';
 
 import 'feature/profile/controller/theme_controller.dart';
@@ -12,7 +13,7 @@ void main() async {
 
   //Get.put(AlertController(), permanent: true);
   Get.put(ThemeController(), permanent: true);
-
+  AppDependencies.init();
   runApp(const MyApp());
 
   FlutterError.onError = (FlutterErrorDetails details) {

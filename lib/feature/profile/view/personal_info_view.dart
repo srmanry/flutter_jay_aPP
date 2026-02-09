@@ -1,4 +1,4 @@
-
+/* 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +12,7 @@ import '../widgets/profile_card.dart';
 class PersonalInfoScreenView extends StatelessWidget {
   PersonalInfoScreenView({super.key});
 
-  AuthController authController = Get.put(AuthController());
+  AuthController authController = Get.find<AuthController>();
 
   ThemeController themeController = Get.put(ThemeController());
   @override
@@ -40,7 +40,7 @@ class PersonalInfoScreenView extends StatelessWidget {
       ),
       body: RefreshIndicator.adaptive(
         onRefresh: () async {
-          await authController.fetchProfile();
+         await authController.fetchProfile();
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -122,3 +122,4 @@ class PersonalInfoScreenView extends StatelessWidget {
     );
   }
 }
+ */

@@ -63,7 +63,7 @@ class AuthRepository {
     String newPassword,
   ) async {
     final response = await _apiClient.patch(
-      ProfileEndpoints.changePassword,
+      AuthEndpoints.forgotPassword,
       data: {"currentPassword": oldPassword, "newPassword": newPassword},
     );
     return response.data;

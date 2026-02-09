@@ -15,8 +15,8 @@ class SetResetPasswordView extends StatelessWidget {
 
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final AuthController authController = Get.put(AuthController());
-
+  //final AuthController authController = Get.put(AuthController());
+  final authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

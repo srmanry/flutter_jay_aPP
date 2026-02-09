@@ -1,9 +1,8 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-
+import 'package:spotem/feature/profile/controller/profile_controller.dart';
+import 'package:spotem/feature/profile/model/profile.dart';
 
 import '../../../core/common/widgets/app_icon.dart';
 import '../../../core/utils/app_colors.dart';
@@ -18,7 +17,9 @@ import 'pricacy_screen.dart';
 class ProfileScreenView extends StatelessWidget {
   ProfileScreenView({super.key});
 
-  AuthController authController = Get.put(AuthController());
+  ProfileController profileController = Get.find<ProfileController>();
+
+  final authController = Get.find<AuthController>();
   final ThemeController themeController = Get.put(ThemeController());
 
   @override
@@ -29,23 +30,24 @@ class ProfileScreenView extends StatelessWidget {
         automaticallyImplyLeading: false,
         toolbarHeight: 80,
         title: Obx(() {
-          final profile = authController.profileData.value;
+          final profile = profileController.userData.value;
           if (profile == null) {
-
             return Row(
               children: [
                 CircleAvatar(
-                  radius: 30, backgroundColor: Colors.grey[400],
-                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,),),
+                  radius: 30,
+                  backgroundColor: Colors.grey[400],
+                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                ),
                 SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(height: 20, width: 100, color: Colors.grey[300],),
+                      Container(height: 20, width: 100, color: Colors.grey[300]),
                       SizedBox(height: 5),
-                      Container(height: 14, width: 150, color: Colors.grey[300],),
+                      Container(height: 14, width: 150, color: Colors.grey[300]),
                     ],
                   ),
                 ),
@@ -54,18 +56,18 @@ class ProfileScreenView extends StatelessWidget {
               ],
             );
           } else {
-
-            final avatarUrl = profile.data.avatar.url ?? '';
+            final avatarUrl = profile.avatar?.url ?? '';
             return Row(
               children: [
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.appColor, width: 2,),),
+                    border: Border.all(color: AppColors.appColor, width: 2),
+                  ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
                     child: CachedNetworkImage(
-                      imageUrl:  avatarUrl,
+                      imageUrl: avatarUrl,
                       fit: BoxFit.cover,
                       height: 60,
                       width: 60,
@@ -81,18 +83,16 @@ class ProfileScreenView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        profile.data.name,
+                        profile.name,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: themeController.isDarkMode.value
-                              ? Colors.white
-                              : AppColors.appColor,
+                          color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        profile.data.email,
+                        profile.email,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -107,7 +107,7 @@ class ProfileScreenView extends StatelessWidget {
                   () => Switch(
                     value: themeController.isDarkMode.value,
                     onChanged: (_) => themeController.toggleTheme(),
-                   // activeColor: Colors.white,
+                    // activeColor: Colors.white,
                   ),
                 ),
               ],
@@ -121,16 +121,9 @@ class ProfileScreenView extends StatelessWidget {
           children: [
             profileButtonWidget(
               onTap: () {
-                Get.to(PersonalInfoScreenView());
+                // Get.to(PersonalInfoScreenView());
               },
-              bottomIcon: Obx(
-                () => Icon(
-                  Icons.payment_rounded,
-                  color: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.black,
-                ),
-              ),
+              bottomIcon: Obx(() => Icon(Icons.payment_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
 
               name: "Personal Info",
             ),
@@ -139,17 +132,12 @@ class ProfileScreenView extends StatelessWidget {
                 Get.to(ChangePasswordView());
               },
               bottomIcon: Obx(
-                () => Icon(
-                  Icons.lock_outline_rounded,
-                  color: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.black,
-                ),
+                () => Icon(Icons.lock_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
               ),
 
               name: "Change Password",
             ),
-           /* profileButtonWidget(
+            /* profileButtonWidget(
               onTap: () {
                 Get.to(NotificataionScreenView());
               },
@@ -167,10 +155,9 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(AboutAppScreen());
               },
-              bottomIcon: Obx(()=>Icon(
-                Icons.help_outline_rounded,
-                color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-              ),),
+              bottomIcon: Obx(
+                () => Icon(Icons.help_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+              ),
               name: "About",
             ),
 
@@ -178,13 +165,11 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(PrivacyPolicyView());
               },
-              bottomIcon: Obx(()=>Icon(
-                Icons.privacy_tip_outlined,
-                color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-              ),),
+              bottomIcon: Obx(
+                () => Icon(Icons.privacy_tip_outlined, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+              ),
               name: "Privacy Policy",
             ),
-
 
             profileButtonWidget(
               onTap: () {
@@ -199,11 +184,7 @@ class ProfileScreenView extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Are you sure to account Delete?",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.red
-                            ),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.red),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -213,7 +194,7 @@ class ProfileScreenView extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                             authController.deleteAccount();
+                              //  authController.deleteAccount();
                             },
                             child: Container(
                               width: 100,
@@ -221,19 +202,12 @@ class ProfileScreenView extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                                 color: Colors.red,
-                                border: Border.all(
-                                  color: Colors.red,
-                                  width: 1,
-                                ),
+                                border: Border.all(color: Colors.red, width: 1),
                               ),
                               child: Center(
                                 child: Text(
                                   "Yes",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
                                 ),
                               ),
                             ),
@@ -246,18 +220,11 @@ class ProfileScreenView extends StatelessWidget {
                             child: Container(
                               width: 100,
                               height: 35,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                color: AppColors.appColor,
-                              ),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: AppColors.appColor),
                               child: Center(
                                 child: Text(
                                   "No",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
                                 ),
                               ),
                             ),
@@ -272,7 +239,6 @@ class ProfileScreenView extends StatelessWidget {
               name: "Delete Account",
             ),
 
-
             profileButtonWidget(
               onTap: () {
                 Get.defaultDialog(
@@ -286,10 +252,7 @@ class ProfileScreenView extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Are You Sure To Log Out?",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -307,19 +270,12 @@ class ProfileScreenView extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                                 color: Colors.white,
-                                border: Border.all(
-                                  color: AppColors.appColor,
-                                  width: 1,
-                                ),
+                                border: Border.all(color: AppColors.appColor, width: 1),
                               ),
                               child: Center(
                                 child: Text(
                                   "Yes",
-                                  style: TextStyle(
-                                    color: AppColors.appColor,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                  style: TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w600, fontSize: 16),
                                 ),
                               ),
                             ),
@@ -332,18 +288,11 @@ class ProfileScreenView extends StatelessWidget {
                             child: Container(
                               width: 100,
                               height: 35,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                color: AppColors.appColor,
-                              ),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: AppColors.appColor),
                               child: Center(
                                 child: Text(
                                   "No",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
                                 ),
                               ),
                             ),

@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart'; // image picker
 import '../../../../../core/common/widgets/save_botton.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../auth/controller/auth_controller.dart';
-import '../../auth/model/profile.dart';
+import '../model/profile.dart';
 import '../../auth/presentation/widget/change_password_field.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -19,7 +19,7 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  final AuthController authController = Get.put(AuthController());
+ final AuthController authController = Get.find<AuthController>();
 
   final imageController = TextEditingController();
   final nameController = TextEditingController();
@@ -43,9 +43,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   Future<void> pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -66,9 +64,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
         iconTheme: IconThemeData(color: AppColors.appColor, size: 30),
         centerTitle: true,
-        title: authController.rememberMe.value == true
-            ? const Text("Profile")
-            : const Text("Edit Profile"),
+        title: authController.rememberMe.value == true ? const Text("Profile") : const Text("Edit Profile"),
 
         elevation: 0,
       ),
@@ -88,10 +84,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.appColor,
-                              width: 2,
-                            ),
+                            border: Border.all(color: AppColors.appColor, width: 2),
                           ),
                           child: CircleAvatar(
                             radius: 50,
@@ -100,21 +93,13 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 ? FileImage(pickedImage!)
                                 // ignore: unnecessary_null_comparison
                                 : (widget.profile.data.avatar.url != null
-                                      ? NetworkImage(
-                                              widget.profile.data.avatar.url
-                                                  .toString(),
-                                            )
-                                            as ImageProvider
+                                      ? NetworkImage(widget.profile.data.avatar.url.toString()) as ImageProvider
                                       : null),
                             child:
                                 (pickedImage == null &&
                                     // ignore: unnecessary_null_comparison
                                     widget.profile.data.avatar.url == null)
-                                ? const Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  )
+                                ? const Icon(Icons.person, size: 40, color: Colors.grey)
                                 : null,
                           ),
                         ),
@@ -126,11 +111,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             child: CircleAvatar(
                               radius: 18,
                               backgroundColor: AppColors.appColor,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 20,
-                              ),
+                              child: Icon(Icons.edit, color: Colors.white, size: 20),
                             ),
                           ),
                         ),
@@ -139,11 +120,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
 
                   // ==== Fields ====
-                  ChangePasswordField(
-                    fieldName: "Full Name",
-                    hinText: "full name",
-                    controller: nameController,
-                  ),
+                  ChangePasswordField(fieldName: "Full Name", hinText: "full name", controller: nameController),
                   /*   ChangePasswordField(
                       fieldName: "Date of Birth",
                       hinText: "date off birth",
@@ -177,11 +154,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                       );
                     },
                   ), */
-                  Obx(
-                    () => buttonWidget(
-                      text: authController.isUpdateingProfile.value
-                          ? "Please wait..."
-                          : "Save",
+                  //Obx(
+              /*       () => buttonWidget(
+                      text: authController.isUpdateingProfile.value ? "Please wait..." : "Save",
                       onTap: authController.isUpdateingProfile.value
                           ? null
                           : () async {
@@ -193,8 +168,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 imageFile: pickedImage,
                               );
                             },
-                    ),
-                  ),
+                    ), */
+                    
+                 // ),
                 ],
               ),
             ),

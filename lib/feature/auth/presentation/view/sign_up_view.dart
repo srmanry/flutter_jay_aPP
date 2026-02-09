@@ -10,8 +10,8 @@ import '../../controller/auth_controller.dart';
 import 'sign_in_view.dart';
 
 class SignupScreen extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController());
-
+  //final AuthController authController = Get.put(AuthController());
+  final authController = Get.find<AuthController>();
   SignupScreen({super.key});
 
   @override
@@ -25,10 +25,7 @@ class SignupScreen extends StatelessWidget {
             SizedBox(height: 50),
             Center(child: AppIconWidget()),
             const SizedBox(height: 30),
-            const Text(
-              "Create Your Account",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+            const Text("Create Your Account", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
 
             // fieldName("Name"),
@@ -102,11 +99,9 @@ class SignupScreen extends StatelessWidget {
 
             Obx(() {
               return buttonWidget(
-                text: authController.isLoading.value
-                    ? "Please wait ..."
-                    : "Sign Up",
+                text: authController.isLoading.value ? "Please wait ..." : "Sign Up",
                 onTap: () {
-                  authController.signUp();
+                  authController.signup();
                 },
               );
             }),
@@ -118,10 +113,7 @@ class SignupScreen extends StatelessWidget {
                 const Text("Already have an account? "),
                 GestureDetector(
                   onTap: () => Get.to(() => SignInScreen()),
-                  child: const Text(
-                    "Sign In Here",
-                    style: TextStyle(color: Colors.blue),
-                  ),
+                  child: const Text("Sign In Here", style: TextStyle(color: Colors.blue)),
                 ),
               ],
             ),
