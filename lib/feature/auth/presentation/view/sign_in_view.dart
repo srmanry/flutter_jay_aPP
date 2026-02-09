@@ -18,11 +18,7 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: AppBar(automaticallyImplyLeading: false, backgroundColor: Colors.white, elevation: 0),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -32,10 +28,7 @@ class SignInScreen extends StatelessWidget {
           children: [
             AppIconWidget(),
             const SizedBox(height: 40),
-            const Text(
-              "Welcome Back",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-            ),
+            const Text("Welcome Back", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
             const SizedBox(height: 20),
 
             // Email field
@@ -96,12 +89,17 @@ class SignInScreen extends StatelessWidget {
 
             Obx(() {
               return buttonWidget(
-                text: authController.isLogin.value
-                    ? "Please wait..."
-                    : "Sign In",
+                child: authController.isLogin.value
+                    ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    : const Text(
+                        "Sign In",
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                // text: authController.isLogin.value ? "Please wait..." : "Sign In",
                 onTap: () {
                   authController.login();
                 },
+                text: 'kjkj',
               );
             }),
 
@@ -112,10 +110,7 @@ class SignInScreen extends StatelessWidget {
                 const Text("New to our platform? "),
                 InkWell(
                   onTap: () => Get.to(() => SignupScreen()),
-                  child: const Text(
-                    "Sign Up Here",
-                    style: TextStyle(color: Colors.blue),
-                  ),
+                  child: const Text("Sign Up Here", style: TextStyle(color: Colors.blue)),
                 ),
               ],
             ),

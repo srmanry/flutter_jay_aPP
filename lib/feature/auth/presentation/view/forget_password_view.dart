@@ -25,32 +25,29 @@ class ForgetPasswordView extends StatelessWidget {
               AppIconWidget(),
               const SizedBox(height: 40),
 
-              const Text(
-                'Reset Password',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
+              const Text('Reset Password', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text(
-                'Enter your email to receive the OTP',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
+              const Text('Enter your email to receive the OTP', style: TextStyle(fontSize: 16, color: Colors.grey)),
               const SizedBox(height: 30),
 
               // Use controller from AuthController
-              CustomTextField(
-                controller: authController.emailController,
-                hintText: "Enter your email",
-                prefixIcon: Icons.email_outlined,
-              ),
+              CustomTextField(controller: authController.emailController, hintText: "Enter your email", prefixIcon: Icons.email_outlined),
 
               const SizedBox(height: 30),
               buttonWidget(
-                text: authController.isSentOtp.value
-                    ? "Sending OTP..."
-                    : "Send OTP",
+                child: Obx(
+                  () => authController.isSentOtp.value
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Send OTP",
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                ),
+                //  text: authController.isSentOtp.value ? "Sending OTP..." : "Send OTP",
                 onTap: () {
-                  //authController.sendOtp();
+                  authController.sendOtp(authController.emailController.text.trim());
                 },
+                text: '',
               ),
 
               /* Obx(() => authController.isLoading.value

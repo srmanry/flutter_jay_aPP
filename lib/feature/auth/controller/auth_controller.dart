@@ -634,12 +634,11 @@ class AuthController extends GetxController {
 }
  */
 
-
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/app_ground.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/core/network/api_service/token_meneger.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/auth/presentation/view/otp_code_screen.dart';
@@ -742,14 +741,14 @@ class AuthController extends GetxController {
         final refreshToken = result["data"]["refreshToken"] ?? "";
 
         await TokenManager.saveToken(accessToken: accessToken, refreshToken: refreshToken);
-
-        Get.snackbar("Success", "Login Successful", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
+        CustomShowMessage.success(message: "Login Successful");
+        //Get.snackbar("Success", "Login Successful", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
 
         clearLoginFields();
         Get.offAll(() => AppGroundView());
       } else {
         final message = result["message"] ?? "Invalid credentials";
-        Get.snackbar("Error", message, colorText: Colors.red, snackPosition: SnackPosition.TOP);
+        CustomShowMessage.error(message: message);
       }
     } on DioException catch (e) {
       String errorMsg = "Network error";
@@ -758,9 +757,9 @@ class AuthController extends GetxController {
         errorMsg = e.response?.data["message"] ?? "Login failed";
       }
 
-      Get.snackbar("Error", errorMsg, colorText: Colors.red, snackPosition: SnackPosition.TOP);
+      CustomShowMessage.error(message: errorMsg);
     } catch (e) {
-      Get.snackbar("Error", "An unexpected error occurred", colorText: Colors.red);
+      CustomShowMessage.error(message: "An unexpected error occurred");
     } finally {
       isLogin.value = false;
     }
@@ -807,7 +806,8 @@ class AuthController extends GetxController {
       final result = await _authRepository.signup(name, email, password);
 
       if (result["success"] == true) {
-        Get.snackbar("Success", "Signup Successful! Please login", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
+        CustomShowMessage.success(message: "Signup Successful");
+        // Get.snackbar("Success", "Signup Successful! Please login", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
 
         clearSignupFields();
         //Get.off(() => LoginScreenView());
@@ -815,7 +815,9 @@ class AuthController extends GetxController {
         String message = result["message"] ?? "Signup failed";
 
         if (message.toLowerCase().contains("already") || message.toLowerCase().contains("exist")) {
-          Get.snackbar("Error", "User already registered", colorText: Colors.red);
+          //  Get.snackbar("Error", "User already registered", colorText: Colors.red);
+
+          CustomShowMessage.error(message: "User already registered");
         } else {
           Get.snackbar("Error", message, colorText: Colors.red);
         }
@@ -874,7 +876,8 @@ class AuthController extends GetxController {
       if (e.response?.data != null && e.response?.data["message"] != null) {
         msg = e.response!.data["message"];
       }
-      Get.snackbar("Error", msg, colorText: Colors.red);
+      CustomShowMessage.error(message: msg);
+      // Get.snackbar("Error", msg, colorText: Colors.red);
     } catch (e) {
       Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
     } finally {

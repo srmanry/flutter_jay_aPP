@@ -99,7 +99,17 @@ class SignupScreen extends StatelessWidget {
 
             Obx(() {
               return buttonWidget(
-                text: authController.isLoading.value ? "Please wait ..." : "Sign Up",
+                child: authController.isSignup.value
+                    ? Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: SizedBox(height: 25, width: 25, child: const CircularProgressIndicator(color: Colors.white)),
+                      )
+                    : const Text(
+                        "Sign Up",
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+
+                text: '',
                 onTap: () {
                   authController.signup();
                 },
@@ -110,10 +120,13 @@ class SignupScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account? "),
+                const Text("Already have an account? ", style: TextStyle(fontSize: 14)),
                 GestureDetector(
                   onTap: () => Get.to(() => SignInScreen()),
-                  child: const Text("Sign In Here", style: TextStyle(color: Colors.blue)),
+                  child: const Text(
+                    "Sign In Here",
+                    style: TextStyle(color: Colors.blue, fontSize: 14, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                  ),
                 ),
               ],
             ),

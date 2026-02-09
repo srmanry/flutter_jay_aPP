@@ -4,12 +4,11 @@
 
 const String apiVersion = "api/v1";
 
-// Local / Production যেটা দরকার সেটায় switch করবে
+
 // const String baseUrl = "http://localhost:8001";
 const String baseUrl = "https://shyfinance-backend.onrender.com";
 
 String get baseApiUrl => "$baseUrl/$apiVersion";
-
 
 // ================= AUTH MODULE =================
 
@@ -25,7 +24,6 @@ class AuthEndpoints {
   static String logout = "$baseApiUrl/auth/logout";
 }
 
-
 // ================= PROFILE / USER MODULE =================
 
 class UserEndpoints {
@@ -35,7 +33,6 @@ class UserEndpoints {
   static String deleteAccount = "$baseApiUrl/user/delete-account";
 }
 
-
 // ================= REPORT MODULE =================
 
 class ReportEndpoints {
@@ -44,29 +41,20 @@ class ReportEndpoints {
   static String getCoordinates = "$baseApiUrl/report/coordinates";
   static String getAlerts = "$baseApiUrl/report/alerts";
 
-  static String alertById(String alertId) =>
-      "$baseApiUrl/report/alerts/$alertId";
+  static String alertById(String alertId) => "$baseApiUrl/report/alerts/$alertId";
 
-  static String markAlertAsRead(String alertId) =>
-      "$baseApiUrl/report/alerts/$alertId/read";
+  static String markAlertAsRead(String alertId) => "$baseApiUrl/report/alerts/$alertId/read";
 }
-
 
 // ================= ADMIN MODULE =================
 
 class AdminEndpoints {
   static String getUsers = "$baseApiUrl/admin/users";
 
-  static String deleteUser(String userId) =>
-      "$baseApiUrl/admin/users/$userId";
+  static String deleteUser(String userId) => "$baseApiUrl/admin/users/$userId";
 
-  static String monthlyStats({
-    required int year,
-    required int month,
-  }) =>
-      "$baseApiUrl/admin/stats/monthly?year=$year&month=$month";
+  static String monthlyStats({required int year, required int month}) => "$baseApiUrl/admin/stats/monthly?year=$year&month=$month";
 }
-
 
 // ================= SETTINGS MODULE =================
 
@@ -75,7 +63,6 @@ class SettingsEndpoints {
   static String updateSettings = "$baseApiUrl/settings";
 }
 
-
 // ================= TRIP ROUTES MODULE =================
 
 class TripEndpoints {
@@ -83,10 +70,8 @@ class TripEndpoints {
   static String myTrips = "$baseApiUrl/trip/me";
   static String activeTrip = "$baseApiUrl/trip/me/active";
 
-  static String markReached(String tripRouteId) =>
-      "$baseApiUrl/trip/$tripRouteId/reach";
+  static String markReached(String tripRouteId) => "$baseApiUrl/trip/$tripRouteId/reach";
 }
-
 
 // ================= OCCURRENCE POINTS =================
 
@@ -95,24 +80,19 @@ class OccurrenceEndpoints {
   static String getAll = "$baseApiUrl/occurrence";
 }
 
-
 // ================= SUBSCRIPTION MODULE =================
 
 class SubscriptionEndpoints {
   static String getAll = "$baseApiUrl/subscription";
 
-  static String byId(String subscriptionId) =>
-      "$baseApiUrl/subscription/$subscriptionId";
+  static String byId(String subscriptionId) => "$baseApiUrl/subscription/$subscriptionId";
 
   static String create = "$baseApiUrl/subscription";
 
-  static String update(String subscriptionId) =>
-      "$baseApiUrl/subscription/$subscriptionId";
+  static String update(String subscriptionId) => "$baseApiUrl/subscription/$subscriptionId";
 
-  static String delete(String subscriptionId) =>
-      "$baseApiUrl/subscription/$subscriptionId";
+  static String delete(String subscriptionId) => "$baseApiUrl/subscription/$subscriptionId";
 }
-
 
 // ================= PAYMENT MODULE =================
 
