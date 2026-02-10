@@ -2,12 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:spotem/feature/alert/ui/view/alert_view.dart';
+import 'package:spotem/feature/auth/controller/auth_controller.dart';
 import 'package:spotem/feature/profile/controller/profile_controller.dart';
-import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/internet_controller.dart';
-import '../../alert/ui/view/alert_view.dart';
-import '../../auth/controller/auth_controller.dart';
-import '../../profile/controller/theme_controller.dart';
+import 'package:spotem/feature/profile/controller/theme_controller.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../../core/utils/internet_controller.dart';
+
 import '../controller/home_controller.dart';
 import 'view_report_screen.dart';
 

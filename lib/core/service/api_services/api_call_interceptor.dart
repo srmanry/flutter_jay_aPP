@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:spotem/core/network/api_service/token_meneger.dart';
 
 
 import '../local/token_manager.dart';
@@ -20,7 +21,7 @@ class ApiCallInterceptor extends Interceptor {
 
   ApiCallInterceptor();
 
-  Future<String?> _currentAccessToken() async=> await TokenManager.getAccessToken();
+  Future<String?> _currentAccessToken() async=> await TokenManager.getToken();
 
   bool _refreshingToken = false;
 
@@ -57,14 +58,14 @@ class ApiCallInterceptor extends Interceptor {
       try {
         _refreshingToken = true;
         refreshTokenResponse = await refreshTokenManager.refreshToken(
-          refreshToken: await TokenManager.getrefreshToken() ?? ""
+          refreshToken: await TokenManager.getRefreshToken() ?? ""
         );
         _refreshingToken = false;
 
         await TokenManager.saveToken(
           accessToken: refreshTokenResponse.accessToken,
           refreshToken: refreshTokenResponse.refreshToken,
-          role: refreshTokenResponse.role,
+          //role: refreshTokenResponse.role,
         );
         
         // Wait a second to receive changes from secure storage.
@@ -88,7 +89,7 @@ class ApiCallInterceptor extends Interceptor {
           }
         });
       } catch (e) {
-        TokenManager.clear();
+        TokenManager.clearToken();
         _refreshingToken = false;
         return handler.reject(DioException(requestOptions: err.requestOptions, error: "Error finding your identity! You need to login!"));
       }

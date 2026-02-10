@@ -1,10 +1,12 @@
-import 'package:dio/dio.dart' as dio;
+ import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
+import 'package:spotem/core/network/api_service/token_meneger.dart';
+import 'package:spotem/feature/home/data/model/reports_model.dart';
 
-import '../../../core/service/local/token_manager.dart';
-import '../model/reports_model.dart';
+import '../../../../core/service/local/token_manager.dart';
+
 
 class HomeController extends GetxController {
   final RxInt currentIndex = 0.obs;
@@ -38,7 +40,7 @@ class HomeController extends GetxController {
   Future<void> fetchReports() async {
     try {
       isLoading.value = true;
-      final token = await TokenManager.getAccessToken();
+      final token = await TokenManager.getToken();
       final response = await dioClient.get(
         '/report',
         options: dio.Options(headers: {"Authorization": "Bearer $token"}, validateStatus: (status) => status != null && status < 500),
@@ -103,9 +105,11 @@ class HomeController extends GetxController {
     } else {
       filteredReports.assignAll(
         reports.where((r) {
-          return r.type.toLowerCase().contains(query.toLowerCase());
+       
+        return r.type.toLowerCase().contains(query.toLowerCase());
         }).toList(),
       );
     }
   }
 }
+ 

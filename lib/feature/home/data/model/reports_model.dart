@@ -22,11 +22,11 @@ class ReportModel {
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
     return ReportModel(
-      id: json["_id"],
+      id: json["_id"]?.toString() ?? "",
       user: UserModel.fromJson(json["user"]),
       type: json["type"],
-      title: json["title"],
-      description: json["description"],
+      title: json["title"]?.toString() ?? "",
+      description: json["description"]?.toString() ?? "",
       location: LocationModel.fromJson(json["location"]),
       createdAt: DateTime.parse(json["createdAt"]),
     );
@@ -46,11 +46,7 @@ class UserModel {
   UserModel({required this.id, required this.name, required this.avatar});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json["_id"],
-      name: json["name"],
-      avatar: AvatarModel.fromJson(json["avatar"]),
-    );
+    return UserModel(id: json["_id"], name: json["name"], avatar: AvatarModel.fromJson(json["avatar"]));
   }
 }
 
@@ -61,10 +57,7 @@ class AvatarModel {
   AvatarModel({required this.publicId, required this.url});
 
   factory AvatarModel.fromJson(Map<String, dynamic> json) {
-    return AvatarModel(
-      publicId: json["public_id"] ?? "",
-      url: json["url"] ?? "",
-    );
+    return AvatarModel(publicId: json["public_id"] ?? "", url: json["url"] ?? "");
   }
 }
 
@@ -75,9 +68,6 @@ class LocationModel {
   LocationModel({required this.lat, required this.lng});
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
-    return LocationModel(
-      lat: (json['coordinates'][1] as num).toDouble(),
-      lng: (json['coordinates'][0] as num).toDouble(),
-    );
+    return LocationModel(lat: (json['coordinates'][1] as num).toDouble(), lng: (json['coordinates'][0] as num).toDouble());
   }
 }

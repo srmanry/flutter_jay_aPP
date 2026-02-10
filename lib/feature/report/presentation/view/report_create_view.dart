@@ -5,7 +5,7 @@ import '../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../map/controller/map_controller.dart';
 import '../../../profile/controller/theme_controller.dart';
-import '../controller/report_controller.dart';
+import '../../controller/report_controller.dart';
 
 class ReportScreenView extends StatelessWidget {
   ReportScreenView({super.key});
@@ -27,11 +27,7 @@ class ReportScreenView extends StatelessWidget {
           children: [
             Text(
               "Report",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.appColor,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.appColor),
             ),
             const SizedBox(width: 10),
             Icon(Icons.report_outlined, size: 30, color: AppColors.appColor),
@@ -45,26 +41,15 @@ class ReportScreenView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(
-                "Event",
-                "Title",
-                reportController.titleController,
-              ),
+              _buildTextField("Event", "Title", reportController.titleController),
               const SizedBox(height: 15),
-              _buildTextField(
-                "Description",
-                "Write description here",
-                reportController.descriptionController,
-                maxLines: 5,
-              ),
+              _buildTextField("Description", "Write description here", reportController.descriptionController, maxLines: 5),
               const SizedBox(height: 20),
 
               Text(
                 'Report Type',
                 style: TextStyle(
-                  color: themeController.isDarkMode.value
-                      ? Colors.white
-                      : Colors.black,
+                  color: themeController.isDarkMode.value ? Colors.white : Colors.black,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
@@ -91,27 +76,20 @@ class ReportScreenView extends StatelessWidget {
                           Radio<String>(
                             value: label,
                             //activeColor: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,
-                            fillColor: WidgetStateProperty.all(
-                              themeController.isDarkMode.value
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
+                            fillColor: WidgetStateProperty.all(themeController.isDarkMode.value ? Colors.white : Colors.black),
                             groupValue: reportController.selectedOption.value,
                             onChanged: (value) {
                               if (value != null) {
                                 reportController.selectedOption.value = value;
                               }
                             },
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           const SizedBox(width: 10),
                           Text(
                             label,
                             style: TextStyle(
-                              color: themeController.isDarkMode.value
-                                  ? Colors.white
-                                  : Colors.black,
+                              color: themeController.isDarkMode.value ? Colors.white : Colors.black,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
@@ -133,14 +111,17 @@ class ReportScreenView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
         child: Obx(
           () => buttonWidget(
-            text: reportController.isCreateingReport.value
-                ? "Please wait..."
-                : "Report",
+            child: reportController.isCreateingReport.value
+                ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : const Text(
+                    "Submit Report",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+            text: 'kjkj',
             onTap: reportController.isCreateingReport.value
                 ? null
                 : () async {
-                    if (reportController.titleController.text.isEmpty &&
-                        reportController.descriptionController.text.isEmpty) {
+                    if (reportController.titleController.text.isEmpty && reportController.descriptionController.text.isEmpty) {
                       Get.snackbar(
                         "Error",
                         "Title is required",
@@ -178,21 +159,14 @@ class ReportScreenView extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(
-    String label,
-    String hint,
-    TextEditingController controller, {
-    int maxLines = 1,
-  }) {
+  Widget _buildTextField(String label, String hint, TextEditingController controller, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: TextStyle(
-            color: themeController.isDarkMode.value
-                ? Colors.white
-                : Colors.black,
+            color: themeController.isDarkMode.value ? Colors.white : Colors.black,
             fontSize: 14,
             fontWeight: FontWeight.w400,
           ),
@@ -205,21 +179,11 @@ class ReportScreenView extends StatelessWidget {
           decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(
-                color: themeController.isDarkMode.value
-                    ? Colors.white
-                    : Colors.black,
-                width: 1.0,
-              ),
+              borderSide: BorderSide(color: themeController.isDarkMode.value ? Colors.white : Colors.black, width: 1.0),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(
-                color: themeController.isDarkMode.value
-                    ? Colors.white
-                    : Colors.black,
-                width: 1.0,
-              ),
+              borderSide: BorderSide(color: themeController.isDarkMode.value ? Colors.white : Colors.black, width: 1.0),
             ),
 
             border: OutlineInputBorder(

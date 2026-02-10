@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import '../../../app_ground.dart';
 import '../../../core/common/widgets/app_icon.dart';
-import '../../../core/service/local/token_manager.dart';
+import '../../../core/network/api_service/token_meneger.dart';
 import '../../auth/presentation/view/sign_in_view.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,30 +14,26 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  //final locationController = Get.find<LocationController>();
-  //final locationController = Get.put(LocationController());
 
   @override
   void initState() {
     super.initState();
-    _initFlow();
+    _navigateBasedOnAuth();
   }
 
-  Future<void> _initFlow() async {
-    await Future.delayed(const Duration(seconds: 3)); // splash delay
 
-
-    //await locationController.requestLocationPermission(context);
-
-
+  Future<void> _navigateBasedOnAuth() async {
+    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(milliseconds: 200));
     bool loggedIn = await TokenManager.isLoggedIn();
 
     if (!mounted) return;
+   
 
-    if (loggedIn ) {
-      Get.offAll(() => AppGroundView());
+    if (loggedIn) {
+      Get.offAll(() => AppGroundView()); // must be offAll
     } else {
-      Get.to(() => SignInScreen());
+      Get.offAll(() => SignInScreen());
     }
   }
 

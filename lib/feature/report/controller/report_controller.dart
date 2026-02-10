@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/network/api_service/token_meneger.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 
-import '../../../../core/service/local/token_manager.dart';
+
 
 class ReportController extends GetxController {
   final titleController = TextEditingController();
@@ -31,7 +32,7 @@ class ReportController extends GetxController {
   Future<void> createReport(double lat, double lng) async {
     try {
       isCreateingReport.value = true;
-      final token = await TokenManager.getAccessToken();
+      final token = await TokenManager.getToken();
 
       final body = {
         "type": selectedOption.value,
@@ -48,10 +49,7 @@ class ReportController extends GetxController {
         "/report/",
         data: body,
         options: Options(
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "application/json",
-          },
+          headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
           validateStatus: (status) => status != null && status < 500,
         ),
       );
@@ -59,30 +57,15 @@ class ReportController extends GetxController {
       isCreateingReport.value = false;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar(
-          " Success",
-          "Report created successfully",
-          colorText: AppColors.appColor,
-          backgroundColor: Colors.black12,
-        );
+        Get.snackbar(" Success", "Report created successfully", colorText: AppColors.appColor, backgroundColor: Colors.black12);
         titleController.clear();
         descriptionController.clear();
       } else {
-        Get.snackbar(
-          backgroundColor: Colors.black12,
-          "Failed to create report",
-          "Try again",
-          colorText: Colors.white,
-        );
+        Get.snackbar(backgroundColor: Colors.black12, "Failed to create report", "Try again", colorText: Colors.white);
       }
     } catch (e) {
       isCreateingReport.value = false;
-      Get.snackbar(
-        "",
-        "Something went wrong",
-        backgroundColor: Colors.black12,
-        colorText: Colors.white,
-      );
+      Get.snackbar("", "Something went wrong", backgroundColor: Colors.black12, colorText: Colors.white);
     }
   }
 }

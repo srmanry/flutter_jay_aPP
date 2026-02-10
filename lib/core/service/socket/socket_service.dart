@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/rendering.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:spotem/core/network/api_service/token_meneger.dart';
 
 import '../local/token_manager.dart';
 
@@ -34,7 +35,7 @@ class SocketService {
   bool get isConnected => _socket?.connected ?? false;
 
   Future<void> init() async{
-    final token = await TokenManager.getAccessToken();
+    final token = await TokenManager.getToken();
     // Dispose previous socket, if exists
     _disposeSocket();
     if (_socket != null) {
