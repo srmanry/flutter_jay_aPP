@@ -9,7 +9,7 @@ import 'core/network/api_service/api_client.dart';
 import 'feature/auth/controller/auth_controller.dart';
 import 'feature/auth/repo/auth_repo.dart';
 
-import 'feature/profile/controller/profile_controller.dart';
+import 'feature/profile/presentation/controller/profile_controller.dart';
 
 class AppDependencies {
   static void init() {

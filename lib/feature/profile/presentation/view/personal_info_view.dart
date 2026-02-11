@@ -3,8 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/utils/app_colors.dart';
-import '../../auth/controller/auth_controller.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../auth/controller/auth_controller.dart';
 import 'edit_profile_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_card.dart';
@@ -76,7 +76,8 @@ class PersonalInfoScreenView extends StatelessWidget {
                         height: 80,
                         width: 80,
                         fit: BoxFit.cover,
-                        imageUrl: "${authController.profileData.value?.data.avatar.url}",
+                          imageUrl: '',
+                       // imageUrl: "${authController.profileData.value?.data.avatar.url}",
                         placeholder: (context, url) => CircularProgressIndicator(strokeWidth: 2, color: AppColors.appColor,),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
@@ -122,4 +123,4 @@ class PersonalInfoScreenView extends StatelessWidget {
     );
   }
 }
- */
+  */

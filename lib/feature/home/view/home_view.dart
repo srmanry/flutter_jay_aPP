@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:spotem/feature/alert/ui/view/alert_view.dart';
 import 'package:spotem/feature/auth/controller/auth_controller.dart';
-import 'package:spotem/feature/profile/controller/profile_controller.dart';
-import 'package:spotem/feature/profile/controller/theme_controller.dart';
+import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
+import 'package:spotem/feature/profile/presentation/controller/theme_controller.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/internet_controller.dart';
 

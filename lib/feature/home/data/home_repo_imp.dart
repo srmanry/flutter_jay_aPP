@@ -7,21 +7,6 @@ class HomeRepositoryImpl implements HomeRepo {
   final ApiClient apiClient;
 
   HomeRepositoryImpl(this.apiClient);
-  /* 
-  @override
-  Future<List<ReportModel>> getReports() async {
-    try {
-      final response = await apiClient.get(ReportEndpoints.getAll);
-
-      final List list = response.data['data'];
-
-      return list
-          .map((e) => ReportModel.fromJson(e))
-          .toList();
-    } catch (e) {
-      throw Exception("Failed to load transactions");
-    }
-  } */
 
   @override
   Future<List<ReportModel>> getReports() async {
@@ -30,8 +15,8 @@ class HomeRepositoryImpl implements HomeRepo {
 
       final response = await apiClient.get(ReportEndpoints.getAll);
 
-      print("API স্ট্যাটাস কোড: ${response.statusCode}");
-      print("API রেসপন্স (raw): ${response.data}");
+      /* print("API স্ট্যাটাস কোড: ${response.statusCode}");
+      print("API রেসপন্স (raw): ${response.data}"); */
 
       // response চেক করা
       if (response.data == null) {

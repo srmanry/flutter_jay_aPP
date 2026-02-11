@@ -9,7 +9,7 @@ import 'core/utils/app_colors.dart';
 import 'feature/alert/controller/alert_controller.dart';
 
 import 'feature/map/view/map_view.dart';
-import 'feature/profile/view/profile_view.dart';
+import 'feature/profile/presentation/view/profile_view.dart';
 import 'feature/report/presentation/view/report_create_view.dart';
 
 class AppGroundView extends StatefulWidget {

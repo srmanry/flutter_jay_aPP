@@ -22,7 +22,7 @@ class ProfileRepository {
  */
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:spotem/feature/profile/model/profile.dart';
+import 'package:spotem/feature/profile/data/model/profile.dart';
 
 
 import '../../../core/network/api_service/api_client.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_colors.dart';
 import '../controller/theme_controller.dart';
 
 class PrivacyPolicyView extends StatelessWidget {

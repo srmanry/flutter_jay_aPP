@@ -32,7 +32,7 @@ class ReportModel {
     );
   }
 
-  // 🔹 Helper to set placeName after reverse geocoding
+  //  Helper to set placeName after reverse geocoding
   void setPlaceName(String name) {
     placeName = name;
   }

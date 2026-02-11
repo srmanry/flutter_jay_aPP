@@ -645,8 +645,8 @@ import 'package:spotem/feature/auth/presentation/view/otp_code_screen.dart';
 import 'package:spotem/feature/auth/repo/auth_repo.dart';
 import 'package:spotem/feature/splash/view/splash_screen_view.dart';
 
-import '../../profile/view/about_app_screen.dart';
-import '../../profile/view/pricacy_screen.dart';
+import '../../profile/presentation/view/about_app_screen.dart';
+import '../../profile/presentation/view/pricacy_screen.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository;

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotem/feature/profile/repo/profile_repo.dart';
 
-import '../model/profile.dart';
+import '../../data/model/profile.dart';
 
 
 class ProfileController extends GetxController {

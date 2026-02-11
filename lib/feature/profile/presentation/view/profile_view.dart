@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/feature/profile/controller/profile_controller.dart';
-import 'package:spotem/feature/profile/model/profile.dart';
+import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
+import 'package:spotem/feature/profile/data/model/profile.dart';
 
-import '../../../core/common/widgets/app_icon.dart';
-import '../../../core/utils/app_colors.dart';
-import '../../auth/controller/auth_controller.dart';
-import '../../auth/presentation/view/change_password_view.dart';
+import '../../../../core/common/widgets/app_icon.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../auth/controller/auth_controller.dart';
+import '../../../auth/presentation/view/change_password_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_botton_widget.dart';
 import 'personal_info_view.dart';
@@ -121,7 +121,7 @@ class ProfileScreenView extends StatelessWidget {
           children: [
             profileButtonWidget(
               onTap: () {
-                // Get.to(PersonalInfoScreenView());
+               // Get.to(PersonalInfoScreenView());
               },
               bottomIcon: Obx(() => Icon(Icons.payment_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
 

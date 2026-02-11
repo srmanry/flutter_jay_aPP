@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart'; // image picker
 
-import '../../../../../core/common/widgets/save_botton.dart';
-import '../../../core/utils/app_colors.dart';
-import '../../auth/controller/auth_controller.dart';
-import '../model/profile.dart';
-import '../../auth/presentation/widget/change_password_field.dart';
+import '../../../../../../core/common/widgets/save_botton.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../auth/controller/auth_controller.dart';
+import '../../data/model/profile.dart';
+import '../../../auth/presentation/widget/change_password_field.dart';
 
 class EditProfileView extends StatefulWidget {
   final UserProfileModel profile;

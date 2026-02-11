@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'app_dependenci copy.dart';
 import 'core/utils/app_colors.dart';
 
-import 'feature/profile/controller/theme_controller.dart';
+import 'feature/profile/presentation/controller/theme_controller.dart';
 import 'feature/splash/view/splash_screen_view.dart';
 
 void main() async {

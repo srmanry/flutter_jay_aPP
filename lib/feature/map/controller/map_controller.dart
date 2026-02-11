@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:spotem/core/network/api_service/token_meneger.dart';
-import '../../../core/service/local/token_manager.dart';
+
 import '../service/location_services.dart';
 
 class LocationController extends GetxController {

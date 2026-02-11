@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-import '../../feature/profile/controller/theme_controller.dart';
+import '../../feature/profile/presentation/controller/theme_controller.dart';
 
 class AppColors {
   ThemeController   themeController = Get.put(ThemeController());

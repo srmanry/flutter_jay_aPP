@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../map/controller/map_controller.dart';
-import '../../../profile/controller/theme_controller.dart';
+import '../../../profile/presentation/controller/theme_controller.dart';
 import '../../controller/report_controller.dart';
 
 class ReportScreenView extends StatelessWidget {
