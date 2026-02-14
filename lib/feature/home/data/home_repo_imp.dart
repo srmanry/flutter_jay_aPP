@@ -15,22 +15,19 @@ class HomeRepositoryImpl implements HomeRepo {
 
       final response = await apiClient.get(ReportEndpoints.getAll);
 
-      /* print("API স্ট্যাটাস কোড: ${response.statusCode}");
-      print("API রেসপন্স (raw): ${response.data}"); */
-
-      // response চেক করা
+      
       if (response.data == null) {
-        throw Exception("API থেকে কোনো ডাটা আসেনি (response.data null)");
+        throw Exception("API (response.data null)");
       }
 
       final data = response.data as Map<String, dynamic>?;
       if (data == null) {
-        throw Exception("response.data ম্যাপ নয়");
+        throw Exception("response.data ");
       }
 
       final list = data['data'];
       if (list == null) {
-        throw Exception("'data' ফিল্ড পাওয়া যায়নি");
+        throw Exception("'data' Data not found in API response → ${response.data}");
       }
       if (list is! List) {
         throw Exception("'data' ফিল্ড লিস্ট নয় → ${list.runtimeType}");
@@ -41,11 +38,11 @@ class HomeRepositoryImpl implements HomeRepo {
 
       //return list.map((e) => ReportModel.fromJson(e as Map<String, dynamic>)).toList();
     } catch (e, stackTrace) {
-      print("API কল ফেইল করেছে:");
+   
       print("Error: $e");
       print("Stack trace: $stackTrace");
 
-      rethrow; // ← controller-এ catch করতে পারে
+      rethrow; 
     }
   }
 }

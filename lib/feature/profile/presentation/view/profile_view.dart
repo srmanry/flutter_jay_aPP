@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
-import 'package:spotem/feature/profile/data/model/profile.dart';
+
 
 import '../../../../core/common/widgets/app_icon.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -121,7 +121,7 @@ class ProfileScreenView extends StatelessWidget {
           children: [
             profileButtonWidget(
               onTap: () {
-               // Get.to(PersonalInfoScreenView());
+                Get.to(() => PersonalInfoScreenView());
               },
               bottomIcon: Obx(() => Icon(Icons.payment_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
 

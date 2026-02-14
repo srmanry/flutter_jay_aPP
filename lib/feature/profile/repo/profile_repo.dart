@@ -23,7 +23,7 @@ class ProfileRepository {
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:spotem/feature/profile/data/model/profile.dart';
-
+/* 
 
 import '../../../core/network/api_service/api_client.dart';
 import '../../../core/network/api_service/api_endpoints.dart';
@@ -49,8 +49,10 @@ class ProfileRepository {
     }
   }
 
+ */
+/* 
   /// Update profile with optional avatar
-  Future<UserData> updateProfile({required String name, File? avatar}) async {
+  Future<UserData> updateProfile({required String name, File? avatar, String? address, String? phone}) async {
     try {
       final formData = FormData();
 
@@ -76,5 +78,5 @@ class ProfileRepository {
       print("updateProfile error: $e");
       rethrow;
     }
-  }
-}
+  } */
+//}
