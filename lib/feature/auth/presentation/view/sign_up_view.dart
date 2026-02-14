@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../core/common/widgets/app_icon.dart';
 import '../../../../core/common/widgets/custom_text_field.dart';
@@ -10,7 +11,7 @@ import '../../controller/auth_controller.dart';
 import 'sign_in_view.dart';
 
 class SignupScreen extends StatelessWidget {
-  //final AuthController authController = Get.put(AuthController());
+  //final AuthController authController = Get.put(AuthController());  e1@gmail.com
   final authController = Get.find<AuthController>();
   SignupScreen({super.key});
 
@@ -112,6 +113,7 @@ class SignupScreen extends StatelessWidget {
                 text: '',
                 onTap: () {
                   authController.signup();
+                  print("=====Signup result: ${authController.isSignup.value}");
                 },
               );
             }),

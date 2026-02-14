@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/common/widgets/app_icon.dart';
-import '../../controller/auth_controller.dart';
+
 
 class ForgetPasswordView extends StatelessWidget {
   ForgetPasswordView({super.key});

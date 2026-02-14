@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:spotem/feature/alert/ui/view/alert_view.dart';
-import 'package:spotem/feature/auth/controller/auth_controller.dart';
+
 import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 import 'package:spotem/feature/profile/presentation/controller/theme_controller.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/internet_controller.dart';
 
+import '../../auth/presentation/contro/contro.dart';
 import '../controller/home_controller.dart';
 import 'view_report_screen.dart';
 

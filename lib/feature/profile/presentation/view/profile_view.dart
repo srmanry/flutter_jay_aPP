@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 
 
 import '../../../../core/common/widgets/app_icon.dart';
 import '../../../../core/utils/app_colors.dart';
-import '../../../auth/controller/auth_controller.dart';
+
 import '../../../auth/presentation/view/change_password_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_botton_widget.dart';

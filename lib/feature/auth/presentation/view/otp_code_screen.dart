@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
-import '../../controller/auth_controller.dart';
+
 import 'forget_password_view.dart';
 import 'reset_password.dart';
 
@@ -79,7 +80,7 @@ class OtpCodeScreenView extends StatelessWidget {
                     // Verify OTP button
                     Obx(
                       () => buttonWidget(
-                        text: authController.isOTPverified.value
+                              text: authController.isVerifyOtp.value
                             ? "Loading..."
                             : "Verify OTP",
                         onTap: () {

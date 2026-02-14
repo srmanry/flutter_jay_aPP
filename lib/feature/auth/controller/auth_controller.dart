@@ -1,12 +1,11 @@
-
-
-import 'package:dio/dio.dart';
+/* import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/app_ground.dart';
 import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/core/network/api_service/token_meneger.dart';
 import 'package:spotem/core/utils/app_colors.dart';
+import 'package:spotem/feature/auth/domain/auth_repo.dart';
 import 'package:spotem/feature/auth/presentation/view/otp_code_screen.dart';
 import 'package:spotem/feature/auth/repo/auth_repo.dart';
 import 'package:spotem/feature/splash/view/splash_screen_view.dart';
@@ -111,7 +110,7 @@ class AuthController extends GetxController {
         //Get.snackbar("Success", "Login Successful", colorText: AppColors.appColor, snackPosition: SnackPosition.TOP);
 
         clearLoginFields();
-        Get.offAll(() => AppGroundView());
+        Get.offAll(() => AppGroundView(currentIndex: 0));
       } else {
         final message = result["message"] ?? "Invalid credentials";
         CustomShowMessage.error(message: message);
@@ -386,3 +385,4 @@ class AuthController extends GetxController {
     super.onClose();
   }
 }
+ */

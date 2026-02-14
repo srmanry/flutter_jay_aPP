@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/app_ground.dart';
 import 'package:spotem/feature/profile/data/model/profile.dart';
 import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 
@@ -23,7 +24,7 @@ class PersonalInfoScreenView extends StatelessWidget {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Get.to(() => ProfileScreenView());
+            Get.to(() => AppGroundView(currentIndex: 3));
           },
           child: Icon(Icons.arrow_back_ios_rounded),
         ),

@@ -13,7 +13,8 @@ import 'feature/profile/presentation/view/profile_view.dart';
 import 'feature/report/presentation/view/report_create_view.dart';
 
 class AppGroundView extends StatefulWidget {
-  const AppGroundView({super.key});
+  final int currentIndex; 
+  const AppGroundView({super.key, required this.currentIndex});
 
 
 
@@ -31,6 +32,7 @@ class _AppGroundViewState extends State<AppGroundView> {
 
     Get.put(AlertController(), permanent: true);
     // TODO: implement initState
+     _currentIndex = widget.currentIndex; 
     super.initState();
   }
 

@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
    
 
     if (loggedIn) {
-      Get.offAll(() => AppGroundView()); // must be offAll
+      Get.offAll(() => AppGroundView(currentIndex: 0)); // must be offAll
     } else {
       Get.offAll(() => SignInScreen());
     }

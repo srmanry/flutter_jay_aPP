@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controller/auth_controller.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
+
 
 
 class RememberForgotRow extends StatelessWidget {

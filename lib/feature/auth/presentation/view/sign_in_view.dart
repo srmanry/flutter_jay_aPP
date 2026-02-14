@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/common/widgets/app_icon.dart';
 import '../../../../core/utils/app_colors.dart';
-import '../../controller/auth_controller.dart';
-
+// a1@gmail.com
 import 'forget_password_view.dart';
 import 'sign_up_view.dart';
 
