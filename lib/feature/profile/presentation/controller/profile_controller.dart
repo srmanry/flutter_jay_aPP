@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/feature/profile/domain/repo/profile_repo.dart';
+import 'package:spotem/feature/profile/presentation/view/personal_info_view.dart';
+import 'package:spotem/feature/profile/presentation/view/profile_view.dart';
 
 import '../../data/model/profile.dart';
 
@@ -54,17 +57,19 @@ class ProfileController extends GetxController {
 
   Future<void> updateProfile({required String name, required String address, File? avatar}) async {
     try {
-      isLoading.value = true;
+      isUpdating.value = true;
 
       final response = await _repository.updateProfile(name: name, address: address, avatar: avatar);
 
       userData.value = response.data;
-
-      Get.snackbar("Success", response.message);
+      CustomShowMessage.success(message: response.message);
+      //Get.snackbar("Success", response.message);
+      refresh();
+      Get.to(() => PersonalInfoScreenView()); // Close the edit screen
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
-      isLoading.value = false;
+      isUpdating.value = false;
     }
   }
 }

@@ -5,10 +5,11 @@ import 'package:spotem/feature/profile/data/model/profile.dart';
 import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 
 import '../../../../core/utils/app_colors.dart';
-import '../../../auth/controller/auth_controller.dart';
+
 import 'edit_profile_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_card.dart';
+import 'profile_view.dart';
 
 class PersonalInfoScreenView extends StatelessWidget {
   PersonalInfoScreenView({super.key});
@@ -22,7 +23,7 @@ class PersonalInfoScreenView extends StatelessWidget {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Get.back();
+            Get.to(() => ProfileScreenView());
           },
           child: Icon(Icons.arrow_back_ios_rounded),
         ),
@@ -88,8 +89,8 @@ class PersonalInfoScreenView extends StatelessWidget {
                         height: 80,
                         width: 80,
                         fit: BoxFit.cover,
-                        imageUrl: '',
-                        // imageUrl: "${authController.profileData.value?.data.avatar.url}",
+
+                        imageUrl: "${profileController.userData.value?.avatar.url}",
                         placeholder: (context, url) => CircularProgressIndicator(strokeWidth: 2, color: AppColors.appColor),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
