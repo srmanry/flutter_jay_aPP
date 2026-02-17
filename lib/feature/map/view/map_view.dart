@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:spotem/feature/home/controller/home_controller.dart';
 
 import '../../report/presentation/view/create_report_by_map_view.dart';
+import '../../report/presentation/view/view_report_by_map.dart';
 import '../controller/map_controller.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -243,11 +244,22 @@ class GoogleMapScreen extends StatelessWidget {
                     SizedBox(height: 10),
                     Text("Tap on a marker to see details.", style: TextStyle(color: Colors.black54)),
 
-                    TextButton(
-                      onPressed: () {
-                        Get.to(() => const CreateReportByMapView());
-                      },
-                      child: Text("View All Reports"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Get.to(() => ViewReportByMap());
+                          },
+                          child: Text("View All Reports"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.to(() => const CreateReportByMapView());
+                          },
+                          child: Row(children: [Text("Create Reports"), Icon(Icons.add_location_alt_rounded)]),
+                        ),
+                      ],
                     ),
                   ],
                 ),
