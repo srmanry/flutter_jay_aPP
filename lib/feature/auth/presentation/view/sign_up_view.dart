@@ -6,7 +6,6 @@ import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 import '../../../../core/common/widgets/app_icon.dart';
 import '../../../../core/common/widgets/custom_text_field.dart';
 import '../../../../core/common/widgets/save_botton.dart';
-import '../../controller/auth_controller.dart';
 
 import 'sign_in_view.dart';
 
@@ -54,12 +53,13 @@ class SignupScreen extends StatelessWidget {
             // const SizedBox(height: 15),
 
             // fieldName("Phone Number"),
-            /*       CustomTextField(
+            /*  CustomTextField(
               controller: authController.phoneController,
               hintText: "Enter Phone Number",
               prefixIcon: Icons.phone,
               keyboardType: TextInputType.phone,
-            ),*/
+            ),
+              */
             // const SizedBox(height: 15),
             /*     CustomTextField(
               controller: authController.address,

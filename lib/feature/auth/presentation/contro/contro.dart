@@ -31,6 +31,7 @@ class AuthController extends GetxController {
   // ─── Text Controllers ─────────────
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final phoneController = TextEditingController();
   final nameController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final otpController = TextEditingController();
