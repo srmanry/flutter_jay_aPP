@@ -30,8 +30,9 @@ class LocationController extends GetxController {
 
   final Dio dioClient = Dio(
     BaseOptions(
-      baseUrl: "https://api.spotem365.com/api/v1",
+      //baseUrl: "https://api.spotem365.com/api/v1",
       // baseUrl: "https://api.spotem365.com/api/v1",
+      baseUrl: "http://localhost:8001/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
     ),
@@ -43,9 +44,7 @@ class LocationController extends GetxController {
 
   Future<void> moveCamera() async {
     if (mapController != null) {
-      mapController!.animateCamera(
-        CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16),
-      );
+      mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
     }
   }
 
@@ -66,10 +65,7 @@ class LocationController extends GetxController {
 
       final response = await dioClient.get(
         "/report/coordinates",
-        options: Options(
-          headers: {"Authorization": "Bearer $token"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
+        options: Options(headers: {"Authorization": "Bearer $token"}, validateStatus: (status) => status != null && status < 500),
       );
 
       if (response.statusCode == 200) {
@@ -107,9 +103,7 @@ class LocationController extends GetxController {
         }
 
         if (markers.isNotEmpty) {
-          mapController?.animateCamera(
-            CameraUpdate.newLatLngZoom(markers.first.position, 16),
-          );
+          mapController?.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 16));
         }
       } else {
         //Get.snackbar("Error", "Failed to fetch report markers");
@@ -129,9 +123,7 @@ class LocationController extends GetxController {
       case "Police":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
       case "Ambulance":
-        return BitmapDescriptor.defaultMarkerWithHue(
-          BitmapDescriptor.hueOrange,
-        );
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
       case "ICE":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
       default:
@@ -139,10 +131,7 @@ class LocationController extends GetxController {
     }
   }
 
-  Future<BitmapDescriptor> getMarkerFromIcon(
-    IconData iconData,
-    Color color,
-  ) async {
+  Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
     const size = 40.0;
 
     final recorder = ui.PictureRecorder();
@@ -151,11 +140,7 @@ class LocationController extends GetxController {
 
     textPainter.text = TextSpan(
       text: String.fromCharCode(iconData.codePoint),
-      style: TextStyle(
-        fontSize: size,
-        fontFamily: iconData.fontFamily,
-        color: color,
-      ),
+      style: TextStyle(fontSize: size, fontFamily: iconData.fontFamily, color: color),
     );
 
     textPainter.layout();
@@ -168,9 +153,8 @@ class LocationController extends GetxController {
     return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
   }
 
-
   Future<void> fetchNearbyPlaces() async {
-    const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI"; 
+    const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI";
     final types = ["hospital", "police", "fire_station"];
 
     for (var type in types) {
@@ -188,23 +172,16 @@ class LocationController extends GetxController {
             final placeLat = geometry["lat"];
             final placeLng = geometry["lng"];
 
-      
             BitmapDescriptor icon;
             switch (type) {
               case "hospital":
-                icon = await getMarkerFromIcon(
-                  Icons.local_hospital_outlined,
-                  Colors.pink,
-                );
+                icon = await getMarkerFromIcon(Icons.local_hospital_outlined, Colors.pink);
                 break;
               case "police":
                 icon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
                 break;
               case "fire_station":
-                icon = await getMarkerFromIcon(
-                  Icons.local_fire_department,
-                  Colors.red,
-                );
+                icon = await getMarkerFromIcon(Icons.local_fire_department, Colors.red);
                 break;
               default:
                 icon = BitmapDescriptor.defaultMarker;
@@ -237,16 +214,13 @@ class LocationController extends GetxController {
     markers.refresh();
   }
 
-  // 🔹 Permission check + load location
+  //  Permission check + load location
   Future<void> checkPermissionAndLoadLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
       permission = await Geolocator.requestPermission();
     }
-    hasPermission.value =
-        permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse;
+    hasPermission.value = permission == LocationPermission.always || permission == LocationPermission.whileInUse;
 
     if (hasPermission.value) {
       await loadLocation();

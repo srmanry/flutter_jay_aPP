@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:spotem/feature/home/view/home_view.dart';
-
-
+import 'package:spotem/feature/new_featuer/presentation/view/new_feature_screen_view.dart';
+import 'package:spotem/feature/report/presentation/view/create_report_by_map_view.dart';
 
 import 'core/utils/app_colors.dart';
 import 'feature/alert/controller/alert_controller.dart';
@@ -13,26 +13,19 @@ import 'feature/profile/presentation/view/profile_view.dart';
 import 'feature/report/presentation/view/report_create_view.dart';
 
 class AppGroundView extends StatefulWidget {
-  final int currentIndex; 
+  final int currentIndex;
   const AppGroundView({super.key, required this.currentIndex});
-
-
 
   @override
   State<AppGroundView> createState() => _AppGroundViewState();
 }
 
-
-
 class _AppGroundViewState extends State<AppGroundView> {
-
-
   @override
   void initState() {
-
     Get.put(AlertController(), permanent: true);
     // TODO: implement initState
-     _currentIndex = widget.currentIndex; 
+    _currentIndex = widget.currentIndex;
     super.initState();
   }
 
@@ -43,7 +36,7 @@ class _AppGroundViewState extends State<AppGroundView> {
 
     GoogleMapScreen(),
     //MapScreen(),
-
+    NewFeatureScreenView(),
     ReportScreenView(),
 
     ProfileScreenView(),
@@ -52,28 +45,41 @@ class _AppGroundViewState extends State<AppGroundView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: _pages[_currentIndex],
       bottomNavigationBar: SizedBox(
-        child: BottomNavigationBar(selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14,),
+        child: BottomNavigationBar(
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
 
           type: BottomNavigationBarType.fixed,
           unselectedItemColor: Colors.white,
           selectedItemColor: AppColors.appColor,
           backgroundColor: AppColors.navBarColor,
           currentIndex: _currentIndex,
-          onTap: (index) {setState(() {_currentIndex = index;});},
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
           items: const [
             BottomNavigationBarItem(
-              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.home_outlined),), label: "Home",),
-            BottomNavigationBarItem(icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.location_on_outlined),), label: "Map",),
-            BottomNavigationBarItem(icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.report_gmailerrorred_outlined),), label: "Report",),
+              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.home_outlined)),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.location_on_outlined)),
+              label: "Map",
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.local_activity)),
+              label: "Acticity",
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.report_gmailerrorred_outlined)),
+              label: "Report",
+            ),
 
             BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child: Icon(Icons.account_circle_outlined),
-              ),
+              icon: Padding(padding: EdgeInsets.only(top: 10.0), child: Icon(Icons.account_circle_outlined)),
               label: "Profile",
             ),
           ],

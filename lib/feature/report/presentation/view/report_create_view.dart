@@ -5,7 +5,8 @@ import '../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../map/controller/map_controller.dart';
 import '../../../profile/presentation/controller/theme_controller.dart';
-import '../../controller/report_controller.dart';
+import '../controller/report_controller.dart';
+import 'create_report_by_map_view.dart';
 
 class ReportScreenView extends StatelessWidget {
   ReportScreenView({super.key});
@@ -101,6 +102,16 @@ class ReportScreenView extends StatelessWidget {
                     );
                   });
                 },
+              ),
+
+              Align(
+                alignment: AlignmentGeometry.bottomRight,
+                child: InkWell(
+                  onTap: () {
+                    Get.to(() => CreateReportByMapView());
+                  },
+                  child: Text("Create Report by Map "),
+                ),
               ),
             ],
           ),
