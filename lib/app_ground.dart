@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/feature/home/view/home_view.dart';
 import 'package:spotem/feature/new_featuer/presentation/view/new_feature_screen_view.dart';
-import 'package:spotem/feature/report/presentation/view/create_report_by_map_view.dart';
 
 import 'core/utils/app_colors.dart';
 import 'feature/alert/controller/alert_controller.dart';

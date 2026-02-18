@@ -30,9 +30,9 @@ class LocationController extends GetxController {
 
   final Dio dioClient = Dio(
     BaseOptions(
-      //baseUrl: "https://api.spotem365.com/api/v1",
+      baseUrl: "https://backend-jay-xeye.onrender.com",
       // baseUrl: "https://api.spotem365.com/api/v1",
-      baseUrl: "http://localhost:8001/api/v1",
+      // baseUrl: "http://localhost:8001/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
     ),
