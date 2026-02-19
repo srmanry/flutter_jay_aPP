@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 
@@ -6,7 +6,7 @@ import '../../domain/repo/report_repo.dart';
 
 
 class NewFeatureController extends GetxController {
-  final ReportRepository reportRepository;
+  final ReportRepo reportRepository;
 
   NewFeatureController({required this.reportRepository});
 
@@ -57,3 +57,4 @@ class NewFeatureController extends GetxController {
     }
   }
 }
+ */

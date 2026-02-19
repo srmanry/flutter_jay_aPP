@@ -1,44 +1,60 @@
-import 'package:dio/dio.dart';
 
-import '../../../../core/network/api_service/api_client.dart';
-import '../../../../core/network/api_service/token_meneger.dart';
+
+import 'package:spotem/feature/home/data/model/reports_model.dart';
+
 import '../../domain/repo/report_repo.dart';
 
+import '../../../../core/network/api_service/api_client.dart';
 
-class ReportRepositoryImpl implements ReportRepository {
+class ReportRepoImpl implements ReportRepo {
   final ApiClient apiClient;
 
-  ReportRepositoryImpl({required this.apiClient});
+  ReportRepoImpl(this.apiClient);
 
   @override
-  Future<bool> createReport({
+  Future<ReportModel> createReport({
+    required String title,
     required String type,
     required String description,
     required double latitude,
     required double longitude,
   }) async {
+    final body = {
+      "title": title,
+      "type": type,
+      "description": description,
+      "location": {
+        "type": "Point",
+        "coordinates": [longitude, latitude],
+      },
+    };
+
+    final response = await apiClient.post("/report/", data: body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return ReportModel.fromJson(response.data);
+    } else {
+      throw Exception("Failed to create report");
+    }
+  }
+
+
+
+
+
+  @override
+  Future<List<ReportModel>> getReports() async {
     try {
-      final token = await TokenManager.getToken();
-      if (token == null) throw Exception("Token missing");
+      final response = await apiClient.get("/report/");
 
-      final body = {
-        "type": type,
-        "description": description,
-        "location": {
-          "type": "Point",
-          "coordinates": [longitude, latitude],
-        },
-      };
-
-      final response = await apiClient.post(
-        "/report/",
-        data: body,
-      );
-
-      return response.statusCode == 200 || response.statusCode == 201;
+      if (response.statusCode == 200) {
+        final data = response.data['data'] as List; // API data list
+        return data.map((e) => ReportModel.fromJson(e)).toList();
+      } else {
+        throw Exception("Failed to fetch reports");
+      }
     } catch (e) {
-      print("Repository error: $e");
-      return false;
+      throw Exception("Error fetching reports: $e");
     }
   }
 }

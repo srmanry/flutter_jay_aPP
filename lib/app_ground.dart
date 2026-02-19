@@ -35,7 +35,7 @@ class _AppGroundViewState extends State<AppGroundView> {
 
     GoogleMapScreen(),
     //MapScreen(),
-    NewFeatureScreenView(),
+    NewFeatureScreen(),
     ReportScreenView(),
 
     ProfileScreenView(),

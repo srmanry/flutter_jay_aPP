@@ -1,68 +1,106 @@
-import 'package:dio/dio.dart';
+/* 
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/network/api_service/token_meneger.dart';
-import 'package:spotem/core/utils/app_colors.dart';
+
+import '../../domain/repo/report_repo.dart';
+
 
 class NewFeatureController extends GetxController {
+  final ReportRepo reportRepo;
+
+  NewFeatureController(this.reportRepo);
+
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  var selectedOption = "ICE".obs;
-  var isCreateingReport = false.obs;
+  var selectedType = "Fire".obs;
+  var isLoading = false.obs;
+  var report = <ReportModel>[].obs,
 
-  final Dio dioClient = Dio(
-    BaseOptions(
-      //baseUrl: "https://api.spotem365.com/api/v1",
-      baseUrl: "https://backend-jay-xeye.onrender.com/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
-
-  Future<bool> createReport(double lat, double lng) async {
+  Future<ReportModel?> createReport(double latitude, double longitude) async {
     try {
-      isCreateingReport.value = true;
-      final token = await TokenManager.getToken();
+      isLoading.value = true;
 
-      final body = {
-        "type": selectedOption.value,
-//"title": titleController.text.trim(),
-        "description": descriptionController.text.trim(),
-        "location": {
-          "type": "Point",
-          "coordinates": [lng, lat],
-        },
-      };
-
-      final response = await dioClient.post(
-        "/report/",
-        data: body,
-        options: Options(
-          headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
+      final report = await reportRepo.createReport(
+        title: titleController.text.trim(),
+        type: selectedType.value,
+        description: descriptionController.text.trim(),
+        latitude: latitude,
+        longitude: longitude,
       );
 
-      isCreateingReport.value = false;
+      titleController.clear();
+      descriptionController.clear();
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar("Success", "Report created successfully", colorText: AppColors.appColor, backgroundColor: Colors.black12);
-
-        titleController.clear();
-        descriptionController.clear();
-
-        return true;
-      } else {
-        print("================$response");
-        Get.snackbar("Failed", "Try again", colorText: Colors.white, backgroundColor: Colors.black12);
-        return false;
-      }
+      return report;
     } catch (e) {
-      print("---------------------- $e");
-      isCreateingReport.value = false;
-      Get.snackbar("Error", "Something went wrong", colorText: Colors.white, backgroundColor: Colors.black12);
-      return false;
+      Get.snackbar("Error", e.toString());
+      return null;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+ */
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:spotem/feature/home/data/model/reports_model.dart';
+
+import '../../domain/repo/report_repo.dart';
+
+
+class NewFeatureController extends GetxController {
+  final ReportRepo reportRepo;
+
+  NewFeatureController(this.reportRepo);
+
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+
+  var selectedType = "Fire".obs;
+  var isLoading = false.obs;
+
+  // ✅ List of fetched reports
+  var reports = <ReportModel>[].obs;
+
+  // Create report (POST)
+  Future<ReportModel?> createReport(double latitude, double longitude) async {
+    try {
+      isLoading.value = true;
+
+      final report = await reportRepo.createReport(
+        title: titleController.text.trim(),
+        type: selectedType.value,
+        description: descriptionController.text.trim(),
+        latitude: latitude,
+        longitude: longitude,
+      );
+
+      titleController.clear();
+      descriptionController.clear();
+
+      return report;
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+      return null;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Fetch all reports (GET)
+  Future<void> fetchReports() async {
+    try {
+      isLoading.value = true;
+      final result = await reportRepo.getReports();
+      reports.assignAll(result);
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 }

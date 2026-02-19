@@ -1,26 +1,23 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:spotem/feature/new_featuer/presentation/controller/new_feature_controller.dart';
+import '../controller/new_feature_controller.dart';
 
-class NewFeatureScreenView extends StatefulWidget {
-  const NewFeatureScreenView({super.key});
+class NewFeatureScreen extends StatefulWidget {
+  const NewFeatureScreen({super.key});
 
   @override
-  State<NewFeatureScreenView> createState() => _NewFeatureScreenViewState();
+  State<NewFeatureScreen> createState() => _NewFeatureScreenState();
 }
 
-class _NewFeatureScreenViewState extends State<NewFeatureScreenView> {
-  final newFeatureController = Get.put(NewFeatureController());
+class _NewFeatureScreenState extends State<NewFeatureScreen> {
+  final controller = Get.find<NewFeatureController>();
 
-  Set<Marker> _markers = {};
-  String selectedType = "Fire";
+  Set<Marker> markers = {};
   LatLng? selectedPosition;
 
-  BitmapDescriptor _getMarkerIcon() {
-    switch (selectedType) {
+  BitmapDescriptor _getMarkerIcon(String type) {
+    switch (type) {
       case "Fire":
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
       case "Police":
@@ -35,155 +32,87 @@ class _NewFeatureScreenViewState extends State<NewFeatureScreenView> {
   }
 
   void _onMapTap(LatLng position) {
-    setState(() {
-      selectedPosition = position;
-    });
-
-    _showReportBottomSheet();
+    selectedPosition = position;
+    _showBottomSheet();
   }
 
-  void _showReportBottomSheet() {
+  void _showBottomSheet() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: _buildReportContent(),
-        );
-      },
-    );
-  }
-
-  Widget _buildReportContent() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 12),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Report $selectedType Incident", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 24),
-
-                // Description field
-                TextField(
-                  controller: newFeatureController.descriptionController,
-                  decoration: InputDecoration(
-                    labelText: "Description",
-                    hintText: "Describe what happened, location details, severity etc...",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  ),
-                  maxLines: 6,
-                  minLines: 4,
-                  textCapitalization: TextCapitalization.sentences,
-                ),
-
-                const SizedBox(height: 32),
-
-                // Buttons
-                Obx(
-                  () => SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: newFeatureController.isCreateingReport.value
-                          ? null
-                          : () async {
-                              newFeatureController.selectedOption.value = selectedType;
-
-                              final success = await newFeatureController.createReport(
-                                selectedPosition!.latitude,
-                                selectedPosition!.longitude,
-                              );
-
-                              if (success) {
-                                setState(() {
-                                  _markers.add(
-                                    Marker(
-                                      markerId: MarkerId(DateTime.now().toString()),
-                                      position: selectedPosition!,
-                                      icon: _getMarkerIcon(),
-                                      infoWindow: InfoWindow(
-                                        title: selectedType,
-                                        snippet: newFeatureController.descriptionController.text.trim(),
-                                      ),
-                                    ),
-                                  );
-                                });
-                                if (mounted) Navigator.pop(context);
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _getButtonColor(),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 2,
-                      ),
-                      child: newFeatureController.isCreateingReport.value
-                          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3))
-                          : Text("Submit $selectedType Report", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel", style: TextStyle(fontSize: 16)),
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-        ],
+      builder: (_) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: _buildBottomSheet(),
       ),
     );
   }
 
-  Color _getButtonColor() {
-    switch (selectedType) {
-      case "Fire":
-        return Colors.red.shade700;
-      case "Police":
-        return Colors.blue.shade700;
-      case "Ambulance":
-        return Colors.orange.shade700;
-      case "ICE":
-        return Colors.green.shade700;
-      default:
-        return Theme.of(context).colorScheme.primary;
-    }
+  Widget _buildBottomSheet() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: controller.titleController,
+              decoration: const InputDecoration(labelText: "Title"),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: controller.descriptionController,
+              decoration: const InputDecoration(labelText: "Description"),
+              maxLines: 4,
+            ),
+            const SizedBox(height: 20),
+            Obx(
+              () => SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : () async {
+                          if (selectedPosition == null) return;
+
+                          final report = await controller.createReport(selectedPosition!.latitude, selectedPosition!.longitude);
+
+                          if (report != null) {
+                            setState(() {
+                              markers.add(
+                                Marker(
+                                  markerId: MarkerId(report.title),
+                                  position: LatLng(report.location.lat, report.location.lng),
+                                  icon: _getMarkerIcon(report.type),
+                                  infoWindow: InfoWindow(title: report.title, snippet: report.description),
+                                ),
+                              );
+                            });
+
+                            Navigator.pop(context);
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: controller.isLoading.value ? const CircularProgressIndicator(color: Colors.white) : const Text("Submit"),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildTypeButton(String type, Color color) {
-    final isSelected = selectedType == type;
+    final isSelected = controller.selectedType.value == type;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedType = type;
-        });
-      },
+      onTap: () => controller.selectedType.value = type,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-
-        //margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
           color: isSelected ? color.withOpacity(0.15) : null,
           borderRadius: BorderRadius.circular(10),
@@ -201,13 +130,11 @@ class _NewFeatureScreenViewState extends State<NewFeatureScreenView> {
         children: [
           GoogleMap(
             initialCameraPosition: const CameraPosition(target: LatLng(23.8103, 90.4125), zoom: 12),
-            markers: _markers,
+            markers: markers,
             onTap: _onMapTap,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
           ),
-
-          // Type selector panel
           Positioned(
             right: 16,
             top: 100,
@@ -217,12 +144,14 @@ class _NewFeatureScreenViewState extends State<NewFeatureScreenView> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: Column(
-                  spacing: 20,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildTypeButton("Fire", Colors.red),
+                    const SizedBox(height: 8),
                     _buildTypeButton("Police", Colors.blue),
+                    const SizedBox(height: 8),
                     _buildTypeButton("Ambulance", Colors.orange),
+                    const SizedBox(height: 8),
                     _buildTypeButton("ICE", Colors.green),
                   ],
                 ),

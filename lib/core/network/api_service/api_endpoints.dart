@@ -5,7 +5,7 @@
 const String apiVersion = "api/v1";
 
 //const String baseUrl = "http://localhost:8001";
-const String baseUrl = "https://backend-jay-xeye.onrender.com";
+const String baseUrl = "https://backend-jay-xeye.onrender.com/api/v1";
 
 String get baseApiUrl => "$baseUrl/$apiVersion";
 
