@@ -4,7 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:spotem/feature/home/controller/home_controller.dart';
 
-
 import '../controller/map_controller.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -43,7 +42,6 @@ class GoogleMapScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-      
           Obx(() {
             if (!locationController.hasPermission.value) {
               return const SizedBox.shrink();
@@ -69,21 +67,17 @@ class GoogleMapScreen extends StatelessWidget {
           }),
 
           ///
-          Positioned(
-            bottom: 220,
-            right: 16,
-            child: FloatingActionButton(
-              backgroundColor: Colors.white,
-              onPressed: () {
-                if (locationController.lat.value != 0.0 && locationController.lng.value != 0.0) {
-                  locationController.mapController?.animateCamera(
-                    CameraUpdate.newLatLngZoom(LatLng(locationController.lat.value, locationController.lng.value), 16),
-                  );
-                }
-              },
-              child: const Icon(Icons.my_location, color: Colors.blue, size: 28),
-            ),
-          ),
+          /*   FloatingActionButton(
+            backgroundColor: Colors.white,
+            onPressed: () {
+              if (locationController.lat.value != 0.0 && locationController.lng.value != 0.0) {
+                locationController.mapController?.animateCamera(
+                  CameraUpdate.newLatLngZoom(LatLng(locationController.lat.value, locationController.lng.value), 16),
+                );
+              }
+            },
+            child: const Icon(Icons.my_location, color: Colors.blue, size: 28),
+          ), */
         ],
       ),
     );

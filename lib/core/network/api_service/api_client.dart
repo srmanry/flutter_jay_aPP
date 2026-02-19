@@ -8,8 +8,10 @@ import 'token_meneger.dart';
 class ApiClient {
   final Dio _dio;
 
-  ApiClient(String baseUrl)
-    : _dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: const Duration(seconds: 30), receiveTimeout: const Duration(seconds: 30))) {
+  ApiClient(String baseApiUrl)
+    : _dio = Dio(
+        BaseOptions(baseUrl: baseApiUrl, connectTimeout: const Duration(seconds: 30), receiveTimeout: const Duration(seconds: 30)),
+      ) {
     _dio.interceptors.add(
       PrettyDioLogger(requestHeader: true, requestBody: true, responseBody: true, responseHeader: false, error: true, compact: true),
     );

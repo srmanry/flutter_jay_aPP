@@ -104,7 +104,7 @@ class ReportScreenView extends StatelessWidget {
                 },
               ),
 
-              Align(
+              /*     Align(
                 alignment: AlignmentGeometry.bottomRight,
                 child: InkWell(
                   onTap: () {
@@ -112,7 +112,7 @@ class ReportScreenView extends StatelessWidget {
                   },
                   child: Text("Create Report by Map "),
                 ),
-              ),
+              ), */
             ],
           ),
         ),
