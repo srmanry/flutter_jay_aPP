@@ -134,6 +134,7 @@ class _NewFeatureScreenState extends State<NewFeatureScreen> {
             onTap: _onMapTap,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
+            compassEnabled: true,
           ),
           Positioned(
             right: 16,
@@ -162,6 +163,16 @@ class _NewFeatureScreenState extends State<NewFeatureScreen> {
       ),
     );
   }
+
+
+
+
+
+
+
+
+
+  
 
   Widget _buildBottomSheet() {
     return Container(
@@ -266,76 +277,4 @@ class _NewFeatureScreenState extends State<NewFeatureScreen> {
       ),
     );
   }
-
-  /* Widget _buildBottomSheet() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Obx(() {
-          
-          Color textColor;
-          switch (controller.selectedType.value) {
-            case "Fire":
-              textColor = Colors.red;
-              break;
-            case "Police":
-              textColor = Colors.blue;
-              break;
-            case "Ambulance":
-              textColor = Colors.orange;
-              break;
-            case "ICE":
-              textColor = Colors.green;
-              break;
-            default:
-              textColor = Colors.black;
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Create ${controller.selectedType.value} Report",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: textColor, // type অনুযায়ী color
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: controller.titleController,
-                decoration: const InputDecoration(labelText: "Title", border: OutlineInputBorder()),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: controller.descriptionController,
-                decoration: const InputDecoration(labelText: "Description", border: OutlineInputBorder()),
-                maxLines: 4,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : () async {
-                          if (selectedPosition == null) return;
-                          final report = await controller.createReport(selectedPosition!.latitude, selectedPosition!.longitude);
-                          if (report != null && mounted) Navigator.pop(context);
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // button color fixed
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: controller.isLoading.value ? const CircularProgressIndicator(color: Colors.white) : const Text("Submit"),
-                ),
-              ),
-            ],
-          );
-        }),
-      ),
-    ); */
-  // }
 }

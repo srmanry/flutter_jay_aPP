@@ -8,6 +8,7 @@ import 'core/utils/app_colors.dart';
 import 'feature/alert/controller/alert_controller.dart';
 
 import 'feature/map/view/map_view.dart';
+import 'feature/new_featuer/presentation/view/cleancode_new_feature_screen_view.dart';
 import 'feature/profile/presentation/view/profile_view.dart';
 import 'feature/report/presentation/view/report_create_view.dart';
 
@@ -34,8 +35,10 @@ class _AppGroundViewState extends State<AppGroundView> {
     HomeScreenView(),
 
     GoogleMapScreen(),
+
     //MapScreen(),
-    NewFeatureScreen(),
+    CleancodeNewFeatureScreenView(),
+    // NewFeatureScreen(),
     ReportScreenView(),
 
     ProfileScreenView(),

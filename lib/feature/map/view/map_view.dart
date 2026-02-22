@@ -54,7 +54,7 @@ class GoogleMapScreen extends StatelessWidget {
             return GoogleMap(
               padding: const EdgeInsets.only(bottom: 220),
               initialCameraPosition: CameraPosition(target: LatLng(locationController.lat.value, locationController.lng.value), zoom: 13),
-              markers: Set<Marker>.from(locationController.markers),
+              // markers: Set<Marker>.from(locationController.markers),
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: true,

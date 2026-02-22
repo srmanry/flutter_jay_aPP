@@ -180,12 +180,7 @@ class HomeScreenView extends StatelessWidget {
               return internetController.isConnected == true
                   ? Obx(
                       () => homeController.isLoading.value
-                          ? Center(
-                              child: Text(
-                                "Loading....",
-                                style: TextStyle(fontSize: 24, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
-                              ),
-                            )
+                          ? Center(child: CircularProgressIndicator())
                           : Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: homeController.filteredReports.isEmpty
