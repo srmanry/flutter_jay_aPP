@@ -8,7 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:spotem/core/network/api_service/token_meneger.dart';
 
-import '../service/location_services.dart';
+
 
 class LocationController extends GetxController {
   var lat = 0.0.obs;
@@ -42,20 +42,20 @@ class LocationController extends GetxController {
     mapController = controller;
   }
 
-  Future<void> moveCamera() async {
+  /*   Future<void> moveCamera() async {
     if (mapController != null) {
       mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
     }
-  }
+  } */
 
-  Future<void> loadLocation() async {
+  /*  Future<void> loadLocation() async {
     final position = await LocationServices().getUserLocation();
     if (position != null) {
       lat.value = position.latitude;
       lng.value = position.longitude;
       await moveCamera();
     }
-  }
+  } */
 
   Future<void> fetchReportMarker() async {
     try {
@@ -223,7 +223,7 @@ class LocationController extends GetxController {
     hasPermission.value = permission == LocationPermission.always || permission == LocationPermission.whileInUse;
 
     if (hasPermission.value) {
-      await loadLocation();
+      // await loadLocation();
     }
   }
 }

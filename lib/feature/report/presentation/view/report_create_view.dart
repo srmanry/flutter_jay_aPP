@@ -156,7 +156,7 @@ class ReportScreenView extends StatelessWidget {
 
                     reportController.isCreateingReport.value = true;
                     try {
-                      await locationController.loadLocation();
+                      // await locationController.loadLocation();
                       final lat = locationController.lat.value;
                       final lng = locationController.lng.value;
                       await reportController.createReport(lat, lng);

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../core/utils/app_colors.dart';
-import '../../controller/auth_controller.dart';
+
 import '../widget/change_password_field.dart';
 
 class ChangePasswordView extends StatelessWidget {

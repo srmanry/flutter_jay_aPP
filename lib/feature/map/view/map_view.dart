@@ -31,7 +31,7 @@ class GoogleMapScreen extends StatelessWidget {
     }
     locationController.hasPermission.value = permission == LocationPermission.always || permission == LocationPermission.whileInUse;
     if (locationController.hasPermission.value) {
-      await locationController.loadLocation();
+     // await locationController.loadLocation();
     }
   }
 
