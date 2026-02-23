@@ -252,6 +252,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:spotem/feature/new_featuer/presentation/widgets/report_view_bottom_sheet_widget.dart';
 
 import '../../../home/data/model/reports_model.dart';
 import '../../domain/repo/report_repo.dart';
@@ -270,7 +271,7 @@ class NewFeatureController extends GetxController {
 
   var reports = <ReportModel>[].obs;
   final filterReports = FilterReportsByDistance();
-
+  var selectedReport = Rxn<ReportModel>();
   // Custom Marker Icons
   BitmapDescriptor? fireIcon;
   BitmapDescriptor? policeIcon;
@@ -379,7 +380,11 @@ class NewFeatureController extends GetxController {
           markerId: MarkerId("${report.id}-${report.title}"),
           position: LatLng(report.location.lat, report.location.lng),
           icon: _getMarkerIcon(report.type),
-          infoWindow: InfoWindow(title: report.title, snippet: report.description),
+          //infoWindow: InfoWindow(title: report.title, snippet: report.description),
+          onTap: () {
+            selectedReport.value = report;
+            Get.bottomSheet(reportViewCustomBottomSheet(report), isScrollControlled: true, backgroundColor: Colors.transparent);
+          },
         ),
       );
     }
