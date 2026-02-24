@@ -30,7 +30,7 @@ class HomeController extends GetxController {
   final dio.Dio dioClient = dio.Dio(
     dio.BaseOptions(
       //baseUrl: "https://api.spotem365.com/api/v1",
-      //baseUrl: "https://api.spotem365.com/api/v1",
+      
       baseUrl: "https://backend-jay.onrender.com/api/v1",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),

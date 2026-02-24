@@ -98,7 +98,7 @@ class ReportBottomSheet extends StatelessWidget {
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
-                      onPressed: controller.isLoading.value
+                      onPressed: controller.isCreating.value
                           ? null
                           : () async {
                               final report = await controller.createReport(position.latitude, position.longitude);
@@ -106,7 +106,7 @@ class ReportBottomSheet extends StatelessWidget {
                                 Navigator.pop(context);
                               }
                             },
-                      child: controller.isLoading.value
+                      child: controller.isCreating.value
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text("Submit Report"),
                     ),

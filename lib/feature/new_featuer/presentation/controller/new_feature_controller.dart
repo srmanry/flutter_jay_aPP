@@ -251,6 +251,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:spotem/feature/new_featuer/presentation/widgets/report_view_bottom_sheet_widget.dart';
 
@@ -268,6 +269,8 @@ class NewFeatureController extends GetxController {
 
   var selectedType = "Fire".obs;
   var isLoading = false.obs;
+  var isSubscrib = false.obs;
+  var isCreating = false.obs;
 
   var reports = <ReportModel>[].obs;
   final filterReports = FilterReportsByDistance();
@@ -364,6 +367,24 @@ class NewFeatureController extends GetxController {
     }
   }
 
+  // ==============================
+  // Calculate distance between two points (in meters)
+  // ==============================
+  double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
+    return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
+  }
+
+  // ==============================
+  // Format distance for display
+  // ==============================
+  String formatDistance(double distanceInMeters) {
+    if (distanceInMeters < 1000) {
+      return "${distanceInMeters.toStringAsFixed(0)} মি";
+    } else {
+      return "${(distanceInMeters / 1000).toStringAsFixed(1)} কি.মি";
+    }
+  }
+
   // ===============================
   // Generate Markers
   // ===============================
@@ -375,6 +396,10 @@ class NewFeatureController extends GetxController {
     final Set<Marker> markers = {};
 
     for (var report in typeFilteredReports.take(50)) {
+      // Calculate distance from user location to this report
+      final distance = calculateDistance(userLocation.latitude, userLocation.longitude, report.location.lat, report.location.lng);
+      final formattedDistance = formatDistance(distance);
+
       markers.add(
         Marker(
           markerId: MarkerId("${report.id}-${report.title}"),
@@ -383,7 +408,11 @@ class NewFeatureController extends GetxController {
           //infoWindow: InfoWindow(title: report.title, snippet: report.description),
           onTap: () {
             selectedReport.value = report;
-            Get.bottomSheet(reportViewCustomBottomSheet(report), isScrollControlled: true, backgroundColor: Colors.transparent);
+            Get.bottomSheet(
+              reportViewCustomBottomSheet(report, distance: formattedDistance),
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+            );
           },
         ),
       );

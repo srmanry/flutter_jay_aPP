@@ -8,8 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:spotem/core/network/api_service/token_meneger.dart';
 
-
-
 class LocationController extends GetxController {
   var lat = 0.0.obs;
   var lng = 0.0.obs;
@@ -42,20 +40,26 @@ class LocationController extends GetxController {
     mapController = controller;
   }
 
-  /*   Future<void> moveCamera() async {
-    if (mapController != null) {
-      mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
-    }
-  } */
-
-  /*  Future<void> loadLocation() async {
-    final position = await LocationServices().getUserLocation();
-    if (position != null) {
+  Future<void> loadLocation() async {
+    try {
+      isLoading.value = true;
+      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       lat.value = position.latitude;
       lng.value = position.longitude;
-      await moveCamera();
+
+      // Move camera to user location
+      if (mapController != null) {
+        mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
+      }
+    } catch (e) {
+      print("Error loading location: $e");
+      // Use default location (Dhaka, Bangladesh) if unable to get location
+      lat.value = 23.8103;
+      lng.value = 90.4125;
+    } finally {
+      isLoading.value = false;
     }
-  } */
+  }
 
   Future<void> fetchReportMarker() async {
     try {
@@ -89,6 +93,8 @@ class LocationController extends GetxController {
               icon: _getMarkerIcon(type),
               infoWindow: const InfoWindow(title: ''),
               onTap: () {
+                // Calculate distance from current location to this marker
+                final distance = calculateDistance(lat.value, lng.value, latValue, lngValue);
                 selectedMarkerData.value = {
                   "title": title,
                   "type": type,
@@ -96,6 +102,8 @@ class LocationController extends GetxController {
                   "time": time,
                   "lat": latValue,
                   "lng": lngValue,
+                  "distance": formatDistance(distance),
+                  "distanceMeters": distance,
                 };
               },
             ),
@@ -194,12 +202,16 @@ class LocationController extends GetxController {
                 icon: icon,
                 infoWindow: InfoWindow(title: name),
                 onTap: () {
+                  // Calculate distance from current location to this marker
+                  final distance = calculateDistance(lat.value, lng.value, placeLat, placeLng);
                   selectedMarkerData.value = {
                     "title": name,
                     "type": type.capitalizeFirst,
                     "lat": placeLat,
                     "lng": placeLng,
                     "time": DateTime.now().toString(),
+                    "distance": formatDistance(distance),
+                    "distanceMeters": distance,
                   };
                 },
               ),
@@ -212,6 +224,20 @@ class LocationController extends GetxController {
     }
 
     markers.refresh();
+  }
+
+  // Calculate distance between two points in meters
+  double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
+    return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
+  }
+
+  // Format distance for display
+  String formatDistance(double distanceInMeters) {
+    if (distanceInMeters < 1000) {
+      return "${distanceInMeters.toStringAsFixed(0)} মি";
+    } else {
+      return "${(distanceInMeters / 1000).toStringAsFixed(1)} কি.মি";
+    }
   }
 
   //  Permission check + load location

@@ -5,7 +5,7 @@ import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 
 import '../../../../core/utils/app_colors.dart';
-import '../../controller/auth_controller.dart';
+
 
 class ByRegistation extends StatelessWidget {
   const ByRegistation({super.key});
