@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:spotem/app_ground.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 
 import '../controller/new_feature_controller.dart';
 
-class ReportBottomSheet extends StatelessWidget {
+class ReportCreateBottomSheet extends StatelessWidget {
   final LatLng position;
 
-  ReportBottomSheet({super.key, required this.position});
+  ReportCreateBottomSheet({super.key, required this.position});
 
   final controller = Get.find<NewFeatureController>();
 
@@ -39,7 +40,7 @@ class ReportBottomSheet extends StatelessWidget {
                       child: Obx(
                         () => Text(
                           "Create ${controller.selectedType.value} Report",
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -93,7 +94,8 @@ class ReportBottomSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 25),
-                Obx(
+
+                /*      Obx(
                   () => SizedBox(
                     width: double.infinity,
                     height: 55,
@@ -107,8 +109,42 @@ class ReportBottomSheet extends StatelessWidget {
                               }
                             },
                       child: controller.isCreating.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("Submit Report"),
+                          ? SizedBox(child: const CircularProgressIndicator(color: Colors.white))
+                          : const Text("Submit Report", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ), */
+                Obx(
+                  () => SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.appColor, disabledBackgroundColor: AppColors.appColor),
+                      onPressed: controller.isCreating.value
+                          ? null
+                          : () async {
+                              final report = await controller.createReport(position.latitude, position.longitude);
+
+                              if (report != null && context.mounted) {
+                                Get.snackbar(
+                                  "Success",
+                                  "Report created successfully!",
+                                  backgroundColor: Colors.green.shade600,
+                                  colorText: Colors.white,
+                                  snackPosition: SnackPosition.TOP,
+                                  margin: const EdgeInsets.all(16),
+                                  borderRadius: 12,
+                                  icon: const Icon(Icons.check_circle, color: Colors.white),
+                                  duration: const Duration(seconds: 2),
+                                );
+
+                                // ✅ Close Bottom Sheet
+                                Get.to(() => AppGroundView(currentIndex: 2));
+                              }
+                            },
+                      child: controller.isCreating.value
+                          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                          : const Text("Submit Report", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ),

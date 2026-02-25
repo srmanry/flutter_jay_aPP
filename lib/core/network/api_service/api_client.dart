@@ -1,97 +1,140 @@
-import 'dart:io';
+
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import 'api_endpoints.dart';
 import 'token_meneger.dart';
 
 class ApiClient {
-  final Dio _dio;
+  final Dio dio;
+  bool _isRefreshing = false;
+  final List<Completer<void>> _refreshCompleters = [];
 
-  ApiClient(String baseApiUrl)
-    : _dio = Dio(
-        BaseOptions(baseUrl: baseApiUrl, connectTimeout: const Duration(seconds: 30), receiveTimeout: const Duration(seconds: 30)),
+  ApiClient(String baseUrl)
+    : dio = Dio(
+        BaseOptions(
+          baseUrl: baseUrl,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 90),
+          validateStatus: (status) => status != null && status < 500,
+        ),
       ) {
-    _dio.interceptors.add(
-      PrettyDioLogger(requestHeader: true, requestBody: true, responseBody: true, responseHeader: false, error: true, compact: true),
-    );
+    if (kDebugMode) {
+      dio.interceptors.add(
+        PrettyDioLogger(requestHeader: true, requestBody: true, responseBody: true, responseHeader: false, error: true, compact: true),
+      );
+    }
 
-    _dio.interceptors.add(
+    dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await TokenManager.getToken();
           if (token != null) {
-            options.headers['Authorization'] = "Bearer $token";
+            options.headers['Authorization'] = 'Bearer $token';
           }
 
-          print("➡ [REQUEST] ${options.method} ${options.uri}");
+          if (kDebugMode) {
+            print("➡ [REQUEST] ${options.method} ${options.uri}");
+          }
           return handler.next(options);
         },
         onResponse: (response, handler) {
+          if (kDebugMode) {
+            print("[RESPONSE] ${response.statusCode} ${response.data}");
+          }
           return handler.next(response);
         },
-        onError: (DioException e, handler) async {
-          /*  if (Get.isSnackbarOpen) {
-            Get.closeAllSnackbars();
-          } */
+        onError: (DioException err, ErrorInterceptorHandler handler) async {
+          if (err.response?.statusCode == 401) {
+            final currentToken = await TokenManager.getToken();
+            if (currentToken != null) {
+              try {
+                await _handleRefresh();
 
-          final token = await TokenManager.getToken();
+                final clonedRequest = err.requestOptions;
+                final newToken = await TokenManager.getToken();
+                clonedRequest.headers['Authorization'] = 'Bearer $newToken';
 
-          // Token missing → force logout
-          if (token == null) {
-            await TokenManager.clearToken();
-
-            return handler.reject(e);
-          }
-
-          // Token expired → refresh and retry
-          if (e.response?.statusCode == 401) {
-            try {
-              await _refreshToken();
-              final retryResponse = await _dio.fetch(e.requestOptions);
-              return handler.resolve(retryResponse);
-            } catch (err) {
-              await TokenManager.clearToken();
-
-              return handler.reject(e);
+                final clonedResponse = await dio.fetch(clonedRequest);
+                return handler.resolve(clonedResponse);
+              } catch (refreshError) {
+                // Refresh fail → clear token & reject
+                await TokenManager.clearToken();
+                // Optional: Get.offAll(LoginScreen());
+                return handler.reject(err);
+              }
             }
           }
 
-          return handler.reject(e);
+          return handler.reject(err);
         },
       ),
     );
   }
 
-  // --- Refresh token logic ---
-  Future<void> _refreshToken() async {
-    final refreshToken = await TokenManager.getRefreshToken();
-    if (refreshToken != null) {
-      final response = await _dio.post("$baseApiUrl/auth/refresh-token", data: {"refreshToken": refreshToken}, cancelToken: CancelToken());
-      final data = response.data["data"];
-      await TokenManager.accessToken(data["accessToken"]);
-      await TokenManager.refreshToken(data["refreshToken"]);
-    } else {}
+  /// Refresh token logic – race condition prevent
+  Future<void> _handleRefresh() async {
+    if (_isRefreshing) {
+      // Already refreshing → wait for it to finish
+      final completer = Completer<void>();
+      _refreshCompleters.add(completer);
+      await completer.future;
+      return;
+    }
+
+    _isRefreshing = true;
+    try {
+      final refreshToken = await TokenManager.getRefreshToken();
+      if (refreshToken == null) {
+        throw Exception('No refresh token available');
+      }
+
+      final response = await dio.post('/auth/refresh-token', data: {'refreshToken': refreshToken}, cancelToken: CancelToken());
+
+      final data = response.data['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw Exception('Invalid refresh token response');
+      }
+
+      await TokenManager.accessToken(data['accessToken'] as String);
+      final newRefreshToken = data['refreshToken'] as String?;
+      await TokenManager.refreshToken(newRefreshToken ?? refreshToken);
+
+      // Complete all waiting requests
+      for (var completer in _refreshCompleters) {
+        completer.complete();
+      }
+      _refreshCompleters.clear();
+    } catch (e) {
+
+      await TokenManager.clearToken();
+      // Optional: logout logic here
+      rethrow;
+    } finally {
+      _isRefreshing = false;
+    }
   }
 
-  // --- HTTP methods ---
+  // API methods
   Future<Response> get(String path, {Map<String, dynamic>? query}) async {
-    return await _dio.get(path, queryParameters: query);
+    return await dio.get(path, queryParameters: query);
   }
 
-  Future<Response> post(String path, {dynamic data, Options? options}) async {
-    return await _dio.post(path, data: data, options: options);
+  Future<Response> post(String path, {dynamic data}) async {
+    return await dio.post(path, data: data);
   }
 
   Future<Response> put(String path, {dynamic data}) async {
-    return await _dio.put(path, data: data);
+    return await dio.put(path, data: data);
   }
 
-  Future<Response> patch(String url, {dynamic data, File? file}) async {
-    return await _dio.patch(url, data: data);
+  Future<Response> patch(String path, {dynamic data}) async {
+    return await dio.patch(path, data: data);
   }
 
   Future<Response> delete(String path, {dynamic data}) async {
-    return _dio.delete(path, data: data);
+    return await dio.delete(path, data: data);
   }
 }

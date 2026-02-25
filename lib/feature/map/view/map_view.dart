@@ -70,13 +70,14 @@ class GoogleMapScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 220),
               initialCameraPosition: CameraPosition(target: LatLng(displayLat, displayLng), zoom: 13),
               markers: Set<Marker>.from(locationController.markers),
+              polylines: Set<Polyline>.from(locationController.polylines),
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: true,
               onMapCreated: (controller) async {
                 locationController.setMapController(controller);
                 await locationController.fetchReportMarker();
-                await locationController.fetchNearbyPlaces();
+               // await locationController.fetchNearbyPlaces();
               },
             );
           }),

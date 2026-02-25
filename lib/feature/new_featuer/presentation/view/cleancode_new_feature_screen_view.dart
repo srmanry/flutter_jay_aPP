@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:spotem/core/utils/app_colors.dart';
 
+import '../../../map/controller/map_controller.dart';
 import '../controller/new_feature_controller.dart';
-import '../widgets/report_Bottom_sheet.dart';
+
+import '../widgets/report_create_Bottom_sheet.dart';
 import '../widgets/type_selector_widget.dart';
 
 class CleancodeNewFeatureScreenView extends StatelessWidget {
@@ -30,14 +31,18 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
               markers: markers,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
+              polylines: Get.find<LocationController>().polylines.value,
+              /* onMapCreated: (GoogleMapController googleController) {
+                controller.setMapController(googleController); // <-- এটা অ্যাড করো
+              }, */
               onTap: (pos) {
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (_) => ReportBottomSheet(position: pos),
+                  builder: (_) => ReportCreateBottomSheet(position: pos),
                 ).whenComplete(() {
-                  controller.fetchReports(); 
+                  controller.fetchReports();
                 });
               },
             ),

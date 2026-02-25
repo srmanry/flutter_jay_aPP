@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:spotem/feature/map/controller/map_controller.dart';
 import '../controller/new_feature_controller.dart';
 import 'dart:math';
 
@@ -13,20 +14,59 @@ class NewFeatureScreen extends StatefulWidget {
 
 class _NewFeatureScreenState extends State<NewFeatureScreen> {
   final controller = Get.find<NewFeatureController>();
+  final locationController = Get.put(LocationController());
   Set<Marker> markers = {};
+  Set<Polyline> polylines = {};
   LatLng? selectedPosition;
 
-  // User location
+  // User location - will be updated with actual device location
   LatLng userLocation = const LatLng(23.8103, 90.4125); // default Dhaka
 
   @override
   void initState() {
     super.initState();
+    // Load user location first before anything else
+    _loadUserLocation();
+
     controller.fetchReports().then((_) => _addMarkers());
     controller.reports.listen((_) {
       if (!mounted) return;
       _addMarkers();
     });
+
+    // Listen to polylines changes
+    ever(locationController.polylines, (Set<Polyline> newPolylines) {
+      if (!mounted) return;
+      setState(() {
+        polylines = newPolylines;
+      });
+    });
+
+    // Listen to location changes and update userLocation
+    ever(locationController.lat, (double lat) {
+      if (!mounted) return;
+      if (lat != 0.0) {
+        setState(() {
+          userLocation = LatLng(lat, locationController.lng.value);
+        });
+      }
+    });
+  }
+
+  // Load user's actual device location
+  Future<void> _loadUserLocation() async {
+    try {
+      await locationController.loadLocation();
+      // Update userLocation with actual device coordinates
+      if (locationController.lat.value != 0.0 && locationController.lng.value != 0.0) {
+        setState(() {
+          userLocation = LatLng(locationController.lat.value, locationController.lng.value);
+        });
+      }
+    } catch (e) {
+      print('Error loading user location: $e');
+      // Keep default location if loading fails
+    }
   }
 
   // Haversine formula for distance in meters
@@ -128,13 +168,16 @@ class _NewFeatureScreenState extends State<NewFeatureScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(target: userLocation, zoom: 14),
-            markers: markers,
-            onTap: _onMapTap,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: true,
-            compassEnabled: true,
+          Obx(
+            () => GoogleMap(
+              initialCameraPosition: CameraPosition(target: userLocation, zoom: 14),
+              markers: markers,
+              polylines: locationController.polylines.toSet(),
+              onTap: _onMapTap,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              compassEnabled: true,
+            ),
           ),
           Positioned(
             right: 16,
@@ -163,16 +206,6 @@ class _NewFeatureScreenState extends State<NewFeatureScreen> {
       ),
     );
   }
-
-
-
-
-
-
-
-
-
-  
 
   Widget _buildBottomSheet() {
     return Container(
@@ -278,3 +311,4 @@ class _NewFeatureScreenState extends State<NewFeatureScreen> {
     );
   }
 }
+ */

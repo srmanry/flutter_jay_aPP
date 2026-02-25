@@ -4,8 +4,8 @@
 
 const String apiVersion = "api/v1";
 
-const String baseUrl = "http://localhost:8001";
-//const String baseUrl = "https://backend-jay-xeye.onrender.com";
+//const String baseUrl = "http://localhost:8001";
+const String baseUrl = "https://backend-jay-xeye.onrender.com";
 
 String get baseApiUrl => "$baseUrl/$apiVersion";
 
@@ -98,4 +98,10 @@ class SubscriptionEndpoints {
 class PaymentEndpoints {
   static String createPayment = "$baseApiUrl/payment/create-payment";
   static String confirmPayment = "$baseApiUrl/payment/confirm-payment";
+}
+
+// ================= LOCATION MODULE =================
+
+class LocationEndpoints {
+  static String getCurrentLocation = "$baseApiUrl/location/current";
 }
