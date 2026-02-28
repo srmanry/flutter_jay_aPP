@@ -484,7 +484,7 @@ class NewFeatureController extends GetxController {
 
   @override
   void onClose() {
-    mapController?.dispose(); // মেমরি লিক এড়ানোর জন্য
+    mapController?.dispose(); 
     super.onClose();
   }
 }

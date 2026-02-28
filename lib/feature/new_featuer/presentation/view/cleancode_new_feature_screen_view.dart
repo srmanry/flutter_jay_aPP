@@ -33,7 +33,7 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
               myLocationButtonEnabled: true,
               polylines: Get.find<LocationController>().polylines.value,
               /* onMapCreated: (GoogleMapController googleController) {
-                controller.setMapController(googleController); // <-- এটা অ্যাড করো
+                controller.setMapController(googleController); 
               }, */
               onTap: (pos) {
                 showModalBottomSheet(

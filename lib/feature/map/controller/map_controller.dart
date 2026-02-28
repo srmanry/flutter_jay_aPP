@@ -1,266 +1,4 @@
-/* import 'dart:ui' as ui;
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:spotem/core/network/api_service/token_meneger.dart';
 
-class LocationController extends GetxController {
-  var lat = 0.0.obs;
-  var lng = 0.0.obs;
-  var markers = <Marker>{}.obs;
-
-  var isLoading = false.obs;
-  var hasPermission = false.obs;
-
-  var selectedMarkerData = Rx<Map<String, dynamic>?>(null);
-  var polylines = <Polyline>{}.obs;
-  GoogleMapController? mapController;
-
-  // Add this function
-/* Future<void> drawRoute(double destLat, double destLng) async {
-    if (lat.value == 0.0 || lng.value == 0.0) {
-      await loadLocation();  // যদি লোকেশন না থাকে
-      if (lat.value == 0.0) return;
-    }
-
-    polylines.clear();
-
-    try {
-      final String url =
-          "https://maps.googleapis.com/maps/api/directions/json?"
-          "origin=${lat.value},${lng.value}&"
-          "destination=$destLat,$destLng&"
-          "key=YOUR_GOOGLE_MAPS_API_KEY"; // Replace with your key
-
-      final response = await Dio().get(url);
-
-      if (response.data["status"] == "OK") {
-        final points = response.data["routes"][0]["overview_polyline"]["points"];
-        final polylinePoints = _decodePolyline(points);
-
-        final routePolyline = Polyline(polylineId: const PolylineId('route'), points: polylinePoints, color: Colors.blue, width: 5);
-        polylines.add(routePolyline);
-        polylines.refresh();
-      }
-    } catch (e) {
-      print("Error drawing route: $e");
-      // Fallback: straight line
-      final polyline = Polyline(
-        polylineId: const PolylineId('route'),
-        points: [LatLng(lat.value, lng.value), LatLng(destLat, destLng)],
-        color: Colors.blue,
-        width: 5,
-      );
-      polylines.add(polyline);
-      polylines.refresh();
-    }
-  } */
-
-
-  // Decode polyline helper
-  List<LatLng> _decodePolyline(String encoded) {
-    List<LatLng> points = [];
-    int index = 0, lat = 0, lng = 0;
-
-    while (index < encoded.length) {
-      int b, shift = 0, result = 0;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lng += dlng;
-
-      points.add(LatLng(lat / 1e5, lng / 1e5));
-    }
-    return points;
-  }
-
-  final Dio dioClient = Dio(
-    BaseOptions(
-      baseUrl: "https://backend-jay-xeye.onrender.com/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
-
-  void setMapController(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  @override
-  void onClose() {
-    mapController = null;
-    super.onClose();
-  }
-
-  // Format timestamp
-  String formatTimestamp(String timestamp) {
-    try {
-      DateTime dateTime = DateTime.parse(timestamp).toLocal();
-      return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
-    } catch (e) {
-      return "Invalid Date";
-    }
-  }
-
-  Future<void> loadLocation() async {
-    try {
-      isLoading.value = true;
-
-      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      lat.value = position.latitude;
-      lng.value = position.longitude;
-
-      if (mapController != null) {
-        mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
-      }
-    } catch (e) {
-      print("Error fetching current location: $e");
-      // Do not use default location, just leave lat/lng as 0.0
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> checkPermissionAndLoadLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-      permission = await Geolocator.requestPermission();
-    }
-    hasPermission.value = permission == LocationPermission.always || permission == LocationPermission.whileInUse;
-
-    if (hasPermission.value) {
-      await loadLocation(); // Current location load
-    }
-  }
- 
- 
-  // ===== Marker Icon =====
-  BitmapDescriptor _getMarkerIcon(String type) {
-    switch (type) {
-      case "Fire":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-      case "Police":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-      case "Ambulance":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
-      case "ICE":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
-      default:
-        return BitmapDescriptor.defaultMarker;
-    }
-  }
-
-  Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
-    const size = 40.0;
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-    final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
-
-    textPainter.text = TextSpan(
-      text: String.fromCharCode(iconData.codePoint),
-      style: TextStyle(fontSize: size, fontFamily: iconData.fontFamily, color: color),
-    );
-
-    textPainter.layout();
-    textPainter.paint(canvas, Offset.zero);
-
-    final picture = recorder.endRecording();
-    final img = await picture.toImage(size.toInt(), size.toInt());
-    final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
-
-    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
-  }
-
-  // ===== Fetch Report Markers =====
-  Future<void> fetchReportMarker() async {
-    isLoading.value = true;
-
-    try {
-      final token = await TokenManager.getToken();
-      final response = await dioClient.get(
-        "/report/coordinates",
-        options: Options(headers: {"Authorization": "Bearer $token"}, validateStatus: (status) => status != null && status < 500),
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data['data'] as List;
-        markers.clear();
-
-        for (var report in data) {
-          final coords = report['coordinates'];
-          final latValue = coords[1];
-          final lngValue = coords[0];
-          final type = report['type'] ?? "Report";
-          final title = report['title'] ?? "Report";
-          final description = report['description'] ?? "Report";
-          final time = report['timestamp'] ?? "Report";
-
-          markers.add(
-            Marker(
-              markerId: MarkerId("${type}_${latValue}_${lngValue}"),
-              position: LatLng(latValue, lngValue),
-              icon: _getMarkerIcon(type),
-              infoWindow: const InfoWindow(title: ''),
-              onTap: () {
-                final distance = calculateDistance(lat.value, lng.value, latValue, lngValue);
-                selectedMarkerData.value = {
-                  "title": title,
-                  "type": type,
-                  "description": description,
-                  "time": time,
-                  "lat": latValue,
-                  "lng": lngValue,
-                  "distance": formatDistance(distance),
-                  "distanceMeters": distance,
-                };
-              },
-            ),
-          );
-        }
-
-        if (markers.isNotEmpty) {
-          mapController?.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 16));
-        }
-      }
-    } catch (e) {
-      print("Error fetching report markers: $e");
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
-    if (startLat == 0.0 && startLng == 0.0) return 0.0; // No location yet
-    return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
-  }
-
-  // Format distance
-  String formatDistance(double distanceInMeters) {
-    if (distanceInMeters == 0.0) return "Calculating...";
-    if (distanceInMeters < 1000) {
-      return "${distanceInMeters.toStringAsFixed(0)} মি";
-    } else {
-      return "${(distanceInMeters / 1000).toStringAsFixed(1)} কি.মি";
-    }
-  }
-}
- */
 
 import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
@@ -278,11 +16,11 @@ class LocationController extends GetxController {
   var markers = <Marker>{}.obs;
   var polylines = <Polyline>{}.obs; // RxSet<Polyline>
 
-  // তোমার Google Maps API Key এখানে দাও (অথবা .env থেকে লোড করো)
+ 
   static const String googleApiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI";
 
   final PolylinePoints polylinePoints = PolylinePoints(
-    apiKey: googleApiKey, // এখানে apiKey দিয়ে ইনিশিয়ালাইজ করা হয়েছে
+    apiKey: googleApiKey,
   );
 
   var isLoading = false.obs;
@@ -300,7 +38,7 @@ class LocationController extends GetxController {
       }
     }
 
-    // পুরানো পলিলাইন ক্লিয়ার
+    
     polylines.clear();
 
     try {
@@ -317,8 +55,8 @@ class LocationController extends GetxController {
       );
 
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        request: request, // <-- এটা required
-        // timeout: Duration(seconds: 30), // অপশনাল
+        request: request,
+        // timeout: Duration(seconds: 30),
       );
 
       if (result.points.isNotEmpty) {
@@ -326,7 +64,7 @@ class LocationController extends GetxController {
 
         final Polyline routePolyline = Polyline(
           polylineId: PolylineId('route_${DateTime.now().millisecondsSinceEpoch}'),
-          color: Colors.blue,
+          color: Colors.purpleAccent,
           width: 5,
           points: polylineCoordinates,
           geodesic: true,
