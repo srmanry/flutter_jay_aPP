@@ -17,7 +17,6 @@ import 'package:spotem/feature/report/data/repo/report_repo_impl.dart';
 import 'package:spotem/feature/report/domain/repo/repo.dart';
 import 'package:spotem/feature/report/presentation/controller/create_report_map_controller.dart';
 import 'package:spotem/feature/report/presentation/controller/report_controller.dart';
-import 'package:spotem/feature/report/presentation/controller/view_report_by_map_controller.dart';
 
 import 'package:spotem/feature/profile/domain/repo/profile_repo.dart';
 import 'package:spotem/feature/profile/data/repo/profile_repo_impl.dart';
@@ -49,7 +48,7 @@ class AppDependencies {
     Get.put<NewFeatureController>(NewFeatureController(Get.find<ReportRepo>()));
     Get.put<ReportController>(ReportController(Get.find<ReportRepository>()));
     Get.put<ReportControllerByMap>(ReportControllerByMap(Get.find<ReportRepository>()));
-    Get.put<ViewReportByMapController>(ViewReportByMapController(Get.find<ReportRepository>()));
-    Get.lazyPut<LocationController>(() => LocationController(Get.find<ReportRepository>()));
+    // Get.put<ViewReportByMapController>(ViewReportByMapController(Get.find<ReportRepository>()));
+    Get.put<LocationController>(LocationController(Get.find<ReportRepository>()), permanent: true);
   }
 }

@@ -278,7 +278,6 @@ class NewFeatureController extends GetxController {
   final filterReports = FilterReportsByDistance();
   var selectedReport = Rxn<ReportModel>();
 
-  // Map Controller যোগ করা হয়েছে
   GoogleMapController? mapController;
 
   // Custom Marker Icons
@@ -298,7 +297,6 @@ class NewFeatureController extends GetxController {
     await fetchReports();
   }
 
-  // Map Controller সেট করার মেথড (ম্যাপ স্ক্রিন থেকে কল করবে)
   void setMapController(GoogleMapController controller) {
     mapController = controller;
   }
@@ -343,9 +341,7 @@ class NewFeatureController extends GetxController {
         longitude: longitude,
       );
 
-      if (report != null) {
-        reports.insert(0, report);
-      }
+     
 
       titleController.clear();
       descriptionController.clear();
@@ -374,7 +370,6 @@ class NewFeatureController extends GetxController {
     }
   }
 
-
   // ==============================
   double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
     return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
@@ -385,9 +380,9 @@ class NewFeatureController extends GetxController {
   // ==============================
   String formatDistance(double distanceInMeters) {
     if (distanceInMeters < 1000) {
-      return "${distanceInMeters.toStringAsFixed(0)} মি";
+      return "${distanceInMeters.toStringAsFixed(0)} M";
     } else {
-      return "${(distanceInMeters / 1000).toStringAsFixed(1)} কি.মি";
+      return "${(distanceInMeters / 1000).toStringAsFixed(1)} K.M";
     }
   }
 
@@ -412,17 +407,12 @@ class NewFeatureController extends GetxController {
           onTap: () async {
             final locationController = Get.find<LocationController>();
 
-            // Current location লোড করা
+           
             if (locationController.lat.value == 0.0 && locationController.lng.value == 0.0) {
               await locationController.checkPermissionAndLoadLocation();
             }
 
-            final distance = locationController.calculateDistance(
-              locationController.lat.value,
-              locationController.lng.value,
-              report.location.lat,
-              report.location.lng,
-            );
+            final distance = locationController.calculateDistance(locationController.lat.value, locationController.lng.value, report.location.lat, report.location.lng);
             final formattedDistance = locationController.formatDistance(distance);
 
             selectedReport.value = report;
@@ -432,19 +422,19 @@ class NewFeatureController extends GetxController {
                 report,
                 distance: formattedDistance,
                 onGoPressed: () {
-                  // "Go" প্রেস করলে মানচিত্র অ্যানিমেট করবে
+              
                   if (mapController != null) {
                     mapController!.animateCamera(
                       CameraUpdate.newLatLngZoom(
                         LatLng(report.location.lat, report.location.lng),
-                        16.0, // জুম লেভেল – প্রয়োজনে চেঞ্জ করো
+                        16.0, 
                       ),
                     );
                   } else {
                     print("MapController is null!");
                   }
 
-                  // রুট ড্র করা (যদি চাও)
+               
                   try {
                     locationController.drawRoute(report.location.lat, report.location.lng);
                   } catch (e) {
@@ -483,7 +473,7 @@ class NewFeatureController extends GetxController {
 
   @override
   void onClose() {
-    mapController?.dispose(); 
+    mapController?.dispose();
     super.onClose();
   }
 }

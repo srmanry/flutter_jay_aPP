@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -50,6 +51,7 @@ class LocationController extends GetxController {
     polylines.clear();
 
     try {
+      // ignore: deprecated_member_use
       final request = PolylineRequest(
         origin: PointLatLng(lat.value, lng.value),
         destination: PointLatLng(destLat, destLng),
@@ -84,15 +86,21 @@ class LocationController extends GetxController {
           mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
         }
       } else {
-        print("================  map  No route found: ${result.errorMessage}");
+        debugPrint("================  map  No route found: ${result.errorMessage}");
 
         _drawStraightLine(destLat, destLng);
       }
     } catch (e) {
-      print("===================== map       Route draw error: $e");
+      debugPrint("===================== map       Route draw error: $e");
 
       _drawStraightLine(destLat, destLng);
     }
+  }
+
+  void clearRoute() {
+    polylines.clear();
+    polylines.refresh();
+    selectedMarkerData.value = null;
   }
 
   void _drawStraightLine(double destLat, double destLng) {
@@ -122,35 +130,6 @@ class LocationController extends GetxController {
     return LatLngBounds(southwest: LatLng(south, west), northeast: LatLng(north, east));
   }
 
-  List<LatLng> _decodePolyline(String encoded) {
-    List<LatLng> points = [];
-    int index = 0, lat = 0, lng = 0;
-
-    while (index < encoded.length) {
-      int b, shift = 0, result = 0;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lng += dlng;
-
-      points.add(LatLng(lat / 1e5, lng / 1e5));
-    }
-    return points;
-  }
-
   void setMapController(GoogleMapController controller) {
     mapController = controller;
   }
@@ -175,7 +154,7 @@ class LocationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
       lat.value = position.latitude;
       lng.value = position.longitude;
 
@@ -183,7 +162,7 @@ class LocationController extends GetxController {
         mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
       }
     } catch (e) {
-      print("Error fetching current location: $e");
+      debugPrint("Error fetching current location: $e");
     } finally {
       isLoading.value = false;
     }
@@ -205,10 +184,11 @@ class LocationController extends GetxController {
 
   Future<void> loadMarkerIcons() async {
     try {
-      fireIcon = await _resizeMarker('assets/icons/fire.png', 95);
-      policeIcon = await _resizeMarker('assets/icons/polic.png', 95);
-      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 110);
-      iceIcon = await _resizeMarker('assets/icons/siren.png', 90);
+      // Marker icon sizes (px). Kept small to avoid oversized markers on map.
+      fireIcon = await _resizeMarker('assets/icons/fire.png', 44);
+      policeIcon = await _resizeMarker('assets/icons/polic.png', 44);
+      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 50);
+      iceIcon = await _resizeMarker('assets/icons/siren.png', 40);
     } catch (_) {
       // Fallback to default markers if assets fail to load.
     }
@@ -219,7 +199,7 @@ class LocationController extends GetxController {
     final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final Uint8List resizedData = (await frameInfo.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-    return BitmapDescriptor.fromBytes(resizedData);
+    return BitmapDescriptor.bytes(resizedData);
   }
 
   BitmapDescriptor _getMarkerIcon(String type) {
@@ -238,7 +218,7 @@ class LocationController extends GetxController {
   }
 
   Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
-    const size = 40.0;
+    const size = 20.0;
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
@@ -255,7 +235,7 @@ class LocationController extends GetxController {
     final img = await picture.toImage(size.toInt(), size.toInt());
     final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
 
-    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
   }
 
   Future<void> fetchReportMarker() async {
@@ -281,7 +261,7 @@ class LocationController extends GetxController {
 
         markers.add(
           Marker(
-            markerId: MarkerId("${type}_${latValue}_${lngValue}"),
+            markerId: MarkerId('${type}_${latValue}_$lngValue'),
             position: LatLng(latValue, lngValue),
             icon: _getMarkerIcon(type),
             infoWindow: const InfoWindow(title: ''),
@@ -304,10 +284,10 @@ class LocationController extends GetxController {
       markers.refresh();
 
       if (markers.isNotEmpty && mapController != null) {
-        mapController!.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 16));
+        mapController!.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 14));
       }
     } catch (e) {
-      print("Error fetching report markers: $e");
+      debugPrint("Error fetching report markers: $e");
     } finally {
       isLoading.value = false;
     }

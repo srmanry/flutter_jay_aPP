@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+/* import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:spotem/feature/report/domain/entities/report_coordinate.dart';
 import 'package:spotem/feature/report/domain/repo/repo.dart';
@@ -61,3 +61,4 @@ class ViewReportByMapController extends GetxController {
   }
 }
 
+ */

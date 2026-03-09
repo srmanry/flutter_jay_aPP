@@ -326,24 +326,32 @@ class AuthController extends GetxController {
   // ──────────────────────────────────────────────
   //                  CHANGE PASSWORD
   // ──────────────────────────────────────────────
-  Future<void> changePassword(String oldPassword, String newPassword) async {
-    if (oldPassword.isEmpty) {
-      Get.snackbar("Error", "Old password is required", colorText: Colors.red);
+  Future<void> changePassword(String currentPassword, String newPassword, String confirmPassword) async {
+    if (currentPassword.isEmpty) {
+      Get.snackbar("Error", "Current password is required", colorText: Colors.red);
       return;
     }
     if (newPassword.isEmpty) {
       Get.snackbar("Error", "New password is required", colorText: Colors.red);
       return;
     }
+    if (confirmPassword.isEmpty) {
+      Get.snackbar("Error", "Confirm password is required", colorText: Colors.red);
+      return;
+    }
     if (newPassword.length < 6) {
       Get.snackbar("Error", "New password must be at least 6 characters", colorText: Colors.red);
+      return;
+    }
+    if (newPassword != confirmPassword) {
+      Get.snackbar("Error", "New password and confirm password do not match", colorText: Colors.red);
       return;
     }
 
     try {
       isLoading.value = true;
 
-      final result = await _authRepository.changePassword(oldPassword, newPassword);
+      final result = await _authRepository.changePassword(currentPassword, newPassword, confirmPassword);
 
       if (result["success"] == true) {
         Get.snackbar("Success", result["message"] ?? "Password changed successfully", colorText: AppColors.appColor);

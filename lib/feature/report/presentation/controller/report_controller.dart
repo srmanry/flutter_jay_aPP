@@ -1,6 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/utils/app_colors.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/feature/report/domain/repo/repo.dart';
 
 class ReportController extends GetxController {
@@ -21,36 +22,30 @@ class ReportController extends GetxController {
     {"label": "Ambulance", "color": Colors.amber},
   ];
 
+  String _errorMessage(Object error) {
+    if (error is DioException) {
+      final data = error.response?.data;
+      if (data is Map<String, dynamic>) {
+        final message = data["message"] ?? data["error"] ?? data["detail"];
+        if (message != null) return message.toString();
+      }
+      return error.message ?? "Network error";
+    }
+    return error.toString().replaceFirst("Exception: ", "");
+  }
+
   Future<bool> createReport(double lat, double lng) async {
     try {
       isCreateingReport.value = true;
-      await repository.createReport(
-        title: titleController.text.trim(),
-        type: selectedOption.value,
-        description: descriptionController.text.trim(),
-        latitude: lat,
-        longitude: lng,
-      );
+      await repository.createReport(title: titleController.text.trim(), type: selectedOption.value, description: descriptionController.text.trim(), latitude: lat, longitude: lng);
 
-      Get.snackbar(
-        "Success",
-        "Report created successfully",
-        colorText: AppColors.appColor,
-        backgroundColor: Colors.black12,
-        snackPosition: SnackPosition.TOP,
-      );
+      CustomShowMessage.success(message: "Report created successfully");
 
       titleController.clear();
       descriptionController.clear();
       return true;
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong",
-        backgroundColor: Colors.black12,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-      );
+      CustomShowMessage.error(message: _errorMessage(e));
       return false;
     } finally {
       isCreateingReport.value = false;

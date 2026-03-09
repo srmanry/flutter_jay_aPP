@@ -71,7 +71,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
             return GoogleMap(
               // padding: const EdgeInsets.only(bottom: 220),
-              initialCameraPosition: CameraPosition(target: LatLng(displayLat, displayLng), zoom: 13),
+              initialCameraPosition: CameraPosition(target: LatLng(displayLat, displayLng), zoom: 14),
               markers: Set<Marker>.from(locationController.markers),
               polylines: Set<Polyline>.from(locationController.polylines),
               myLocationEnabled: true,

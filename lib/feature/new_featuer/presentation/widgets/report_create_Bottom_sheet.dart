@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:spotem/app_ground.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 
 import '../controller/new_feature_controller.dart';
@@ -37,23 +37,18 @@ class ReportCreateBottomSheet extends StatelessWidget {
                   children: [
                     // Center Text
                     Center(
-                      child: Obx(
-                        () => Text(
-                          "Create ${controller.selectedType.value} Report",
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                        ),
-                      ),
+                      child: Obx(() => Text("Create ${controller.selectedType.value} Report", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600))),
                     ),
 
                     // Top-right Cancel Icon
-                    Positioned(
+                    /*      Positioned(
                       bottom: 15,
                       //left: 20,
                       right: 0,
                       //right: 8,
                       child: InkWell(
                         onTap: () {
-                          Get.to(() => AppGroundView(currentIndex: 2));
+                          Navigator.of(context).pop();
                         },
                         child: Container(
                           padding: EdgeInsets.all(0),
@@ -63,7 +58,7 @@ class ReportCreateBottomSheet extends StatelessWidget {
                           child: Center(child: const Icon(Icons.cancel_outlined, color: Colors.red, size: 35)),
                         ),
                       ),
-                    ),
+                    ), */
                   ],
                 ),
                 // const SizedBox(height: 20),
@@ -123,10 +118,32 @@ class ReportCreateBottomSheet extends StatelessWidget {
                       onPressed: controller.isCreating.value
                           ? null
                           : () async {
+                              final title = controller.titleController.text.trim();
+                              final description = controller.descriptionController.text.trim();
+
+                              if (title.isEmpty) {
+                                CustomShowMessage.error(message: "Title is required");
+                                return;
+                              }
+                              final titleWords = title.split(RegExp(r'\s+')).where((w) => w.trim().isNotEmpty).length;
+                              if (titleWords < 4) {
+                                CustomShowMessage.error(message: "Title must be at least 4 words");
+                                return;
+                              }
+                              if (description.isEmpty) {
+                                CustomShowMessage.error(message: "Description is required");
+                                return;
+                              }
+                              final descriptionWords = description.split(RegExp(r'\s+')).where((w) => w.trim().isNotEmpty).length;
+                              if (descriptionWords < 6) {
+                                CustomShowMessage.error(message: "Description must be at least 6 words");
+                                return;
+                              }
+
                               final report = await controller.createReport(position.latitude, position.longitude);
 
                               if (report != null && context.mounted) {
-                                Get.snackbar(
+                                /*      Get.snackbar(
                                   "Success",
                                   "Report created successfully!",
                                   backgroundColor: Colors.green.shade600,
@@ -136,10 +153,13 @@ class ReportCreateBottomSheet extends StatelessWidget {
                                   borderRadius: 12,
                                   icon: const Icon(Icons.check_circle, color: Colors.white),
                                   duration: const Duration(seconds: 2),
-                                );
+                                ); */
 
-                                //  Close Bottom Sheet
-                                Get.to(() => AppGroundView(currentIndex: 2));
+                                CustomShowMessage.success(message: "Report created successfully");
+                                // Close Bottom Sheet on success
+                                Navigator.of(context).pop();
+                              } else {
+                                CustomShowMessage.error(message: "Failed to create report");
                               }
                             },
                       child: controller.isCreating.value

@@ -106,30 +106,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                     // ── Fields ───────────────────────────────────────
                     Text(
                       "Full Name",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
                     ),
                     const SizedBox(height: 8),
-                    _buildField("Full Name", nameCtrl),
-                    const SizedBox(height: 16),
-                    Text(
+                    _buildField("Name", nameCtrl),
+                    const SizedBox(height: 10),
+
+                    /*   Text(
                       "Phone Number",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-                      ),
-                    ),
-
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+                    ), */
                     const SizedBox(height: 8),
 
-                    _buildField("Phone Number", phoneCtrl, keyboard: TextInputType.phone),
-
+                    //   _buildField("Phone Number", phoneCtrl, keyboard: TextInputType.phone),
                     const SizedBox(height: 16),
-                    Text(
+                    /*     Text(
                       "Address",
                       style: TextStyle(
                         fontSize: 14,
@@ -138,9 +129,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _buildField("Address", addressCtrl, maxLines: 2),
+                    _buildField("Address", addressCtrl, maxLines: 2), */
 
-                    const SizedBox(height: 48),
+                    //const SizedBox(height: 48),
 
                     // ── Save Button ──────────────────────────────────
                     /*   Obx(
@@ -178,11 +169,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                           child: controller.isUpdating.value
-                              ? const SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-                                )
+                              ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
                               : const Text("Save", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
                         ),
                       ),

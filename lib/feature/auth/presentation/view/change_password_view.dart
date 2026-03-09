@@ -6,13 +6,27 @@ import '../../../../core/utils/app_colors.dart';
 
 import '../widget/change_password_field.dart';
 
-class ChangePasswordView extends StatelessWidget {
-  ChangePasswordView({super.key});
-  //final AuthController authController = Get.put(AuthController());
+class ChangePasswordView extends StatefulWidget {
+  const ChangePasswordView({super.key});
+
+  @override
+  State<ChangePasswordView> createState() => _ChangePasswordViewState();
+}
+
+class _ChangePasswordViewState extends State<ChangePasswordView> {
   final authController = Get.find<AuthController>();
-  TextEditingController currentPasswordController = TextEditingController();
-  TextEditingController newPasswordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+
+  final TextEditingController currentPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +75,7 @@ class ChangePasswordView extends StatelessWidget {
                           authController.changePassword(
                             currentPasswordController.text.trim(),
                             newPasswordController.text.trim(),
-                            // confirmPasswordController.text.trim(),
+                            confirmPasswordController.text.trim(),
                           );
                         },
 

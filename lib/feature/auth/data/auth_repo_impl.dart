@@ -45,9 +45,22 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> changePassword(String oldPassword, String newPassword) async {
-    final response = await apiClient.post(AuthEndpoints.changePassword, data: {'oldPassword': oldPassword, 'newPassword': newPassword});
+  Future<Map<String, dynamic>> changePassword(String currentPassword, String newPassword, String confirmPassword) async {
+    final response = await apiClient.post(
+      AuthEndpoints.changePassword,
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      },
+    );
 
+    return response.data;
+  }
+
+  @override
+  Future<Map<String, dynamic>> deleteAccount() async {
+    final response = await apiClient.delete(UserEndpoints.deleteAccount);
     return response.data;
   }
 }

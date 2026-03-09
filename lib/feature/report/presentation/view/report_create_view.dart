@@ -153,9 +153,27 @@ class ReportScreenView extends StatelessWidget {
                       return;
                     }
 
-                    // await locationController.loadLocation();
+                    await locationController.checkPermissionAndLoadLocation();
+                    if (!locationController.hasPermission.value) {
+                      Get.snackbar(
+                        "Error",
+                        "Location permission required",
+                        snackPosition: SnackPosition.TOP,
+                        colorText: Colors.red,
+                      );
+                      return;
+                    }
                     final lat = locationController.lat.value;
                     final lng = locationController.lng.value;
+                    if (lat == 0.0 && lng == 0.0) {
+                      Get.snackbar(
+                        "Error",
+                        "Location not available",
+                        snackPosition: SnackPosition.TOP,
+                        colorText: Colors.red,
+                      );
+                      return;
+                    }
                     await reportController.createReport(lat, lng);
                   },
           ),

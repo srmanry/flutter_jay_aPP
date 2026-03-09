@@ -24,7 +24,7 @@ class PersonalInfoScreenView extends StatelessWidget {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Get.to(() => AppGroundView(currentIndex: 3));
+            Get.to(() => AppGroundView(currentIndex: 4));
           },
           child: Icon(Icons.arrow_back_ios_rounded),
         ),
@@ -99,7 +99,7 @@ class PersonalInfoScreenView extends StatelessWidget {
                   ),
 
                   SizedBox(height: 20),
-                  ProfileCardWidget(data: "${profileController.userData.value?.name}", typeName: "First Name"),
+                  ProfileCardWidget(data: "${profileController.userData.value?.name}", typeName: "Name"),
 
                   /* ProfileCardWidget(
                     data: "${authController.profileData.value?.data.phone}",

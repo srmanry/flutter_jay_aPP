@@ -98,6 +98,29 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      isLoading.value = true;
+      final result = await _authRepository.deleteAccount();
+
+      if (result["success"] == true) {
+        await TokenManager.clearToken();
+        CustomShowMessage.success(message: result["message"]?.toString() ?? "Account deleted");
+        Get.offAll(() => SignInScreen());
+      } else {
+        CustomShowMessage.error(message: result["message"]?.toString() ?? "Failed to delete account");
+      }
+    } catch (e) {
+      CustomShowMessage.error(message: e.toString().replaceFirst("Exception: ", ""));
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // ─── SIGNUP ──────────────────────
   Future<void> signup() async {
     final name = nameController.text.trim();
@@ -123,7 +146,7 @@ class AuthController extends GetxController {
         CustomShowMessage.error(message: result["message"] ?? "Signup failed");
       }
     } catch (e) {
-      print("Signup error: $e");
+      debugPrint("Signup error: $e");
       CustomShowMessage.error(message: "Something went wrong: $e");
     } finally {
       isSignup.value = false;
@@ -200,22 +223,32 @@ class AuthController extends GetxController {
   }
 
   // ─── CHANGE PASSWORD ─────────────
-  Future<void> changePassword(String oldPassword, String newPassword) async {
-    if (oldPassword.isEmpty) return CustomShowMessage.error(message: "Old password required");
+  Future<void> changePassword(String currentPassword, String newPassword, String confirmPassword) async {
+    if (currentPassword.isEmpty) return CustomShowMessage.error(message: "Current password required");
     if (newPassword.isEmpty) return CustomShowMessage.error(message: "New password required");
+    if (confirmPassword.isEmpty) return CustomShowMessage.error(message: "Confirm password required");
     if (newPassword.length < 6) return CustomShowMessage.error(message: "Password min 6 chars");
+    if (newPassword != confirmPassword) {
+      return CustomShowMessage.error(message: "New password and confirm password do not match");
+    }
 
     try {
       isChangepassword.value = true;
-      final result = await _authRepository.changePassword(oldPassword, newPassword);
+      final result = await _authRepository.changePassword(currentPassword, newPassword, confirmPassword);
+
+      final errorSources = result["errorSources"];
+      final errorSourceMessage = (errorSources is List && errorSources.isNotEmpty && errorSources.first is Map)
+          ? (errorSources.first["message"]?.toString())
+          : null;
+      final message = result["message"]?.toString() ?? errorSourceMessage;
 
       if (result["success"] == true) {
-        CustomShowMessage.success(message: result["message"] ?? "Password changed");
+        CustomShowMessage.success(message: message ?? "Password changed");
       } else {
-        CustomShowMessage.error(message: result["message"] ?? "Failed to change password");
+        CustomShowMessage.error(message: message ?? "Failed to change password");
       }
     } catch (e) {
-      CustomShowMessage.error(message: "Something went wrong");
+      CustomShowMessage.error(message: "Something went wrong: $e");
     } finally {
       isChangepassword.value = false;
     }

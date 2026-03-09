@@ -195,7 +195,7 @@ class ProfileScreenView extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              //  authController.deleteAccount();
+                               authController.deleteAccount();
                             },
                             child: Container(
                               width: 100,

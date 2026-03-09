@@ -1,6 +1,5 @@
 import 'package:spotem/core/network/api_service/api_client.dart';
 import 'package:spotem/core/network/api_service/api_endpoints.dart';
-import 'package:spotem/feature/home/data/model/reports_model.dart';
 import 'package:spotem/feature/report/domain/entities/report_coordinate.dart';
 import 'package:spotem/feature/report/domain/repo/repo.dart';
 
@@ -10,7 +9,7 @@ class ReportRepositoryImpl implements ReportRepository {
   ReportRepositoryImpl(this.apiClient);
 
   @override
-  Future<ReportModel> createReport({
+  Future<void> createReport({
     required String title,
     required String type,
     required String description,
@@ -31,16 +30,6 @@ class ReportRepositoryImpl implements ReportRepository {
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception("Failed to create report (status: ${response.statusCode})");
     }
-
-    final data = response.data;
-    if (data is! Map<String, dynamic>) {
-      throw Exception("Invalid response body (expected JSON object)");
-    }
-    final reportJson = data["data"];
-    if (reportJson is! Map<String, dynamic>) {
-      throw Exception("Invalid response body (expected 'data' as object)");
-    }
-    return ReportModel.fromJson(reportJson);
   }
 
   @override

@@ -26,7 +26,8 @@ class HomeController extends GetxController {
     try {
       isLoading.value = true;
       final result = await repository.getReports();
-      reports.assignAll(result);
+      final sorted = [...result]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      reports.assignAll(sorted);
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {

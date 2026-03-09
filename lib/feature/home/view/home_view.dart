@@ -227,7 +227,7 @@ class HomeScreenView extends StatelessWidget {
                                                                 ),
 
                                                                 Text(
-                                                                  DateFormat('yyyy-MM-dd – hh:mm a').format(report.createdAt),
+                                                                  DateFormat('yyyy-MM-dd – hh:mm a').format(report.createdAt.toLocal()),
                                                                   style: TextStyle(
                                                                     fontSize: 12,
                                                                     fontWeight: FontWeight.w400,
