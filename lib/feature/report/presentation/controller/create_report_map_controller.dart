@@ -1,68 +1,41 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/network/api_service/token_meneger.dart';
 import 'package:spotem/core/utils/app_colors.dart';
+import 'package:spotem/feature/report/domain/repo/repo.dart';
 
 class ReportControllerByMap extends GetxController {
+  ReportControllerByMap(this.repository);
+
+  final ReportRepository repository;
+
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
   var selectedOption = "ICE".obs;
   var isCreateingReport = false.obs;
 
-  final Dio dioClient = Dio(
-    BaseOptions(
-      //baseUrl: "https://api.spotem365.com/api/v1",
-      baseUrl: "http://localhost:8001/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
-
   Future<bool> createReport(double lat, double lng) async {
     try {
       isCreateingReport.value = true;
-      final token = await TokenManager.getToken();
-
-      final body = {
-        "type": selectedOption.value,
-        "title": titleController.text.trim(),
-        "description": descriptionController.text.trim(),
-        "location": {
-          "type": "Point",
-          "coordinates": [lng, lat],
-        },
-      };
-
-      final response = await dioClient.post(
-        "/report/",
-        data: body,
-        options: Options(
-          headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
+      await repository.createReport(
+        title: titleController.text.trim(),
+        type: selectedOption.value,
+        description: descriptionController.text.trim(),
+        latitude: lat,
+        longitude: lng,
       );
 
-      isCreateingReport.value = false;
+      Get.snackbar("Success", "Report created successfully", colorText: AppColors.appColor, backgroundColor: Colors.black12);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar("Success", "Report created successfully", colorText: AppColors.appColor, backgroundColor: Colors.black12);
+      titleController.clear();
+      descriptionController.clear();
 
-        titleController.clear();
-        descriptionController.clear();
-
-        return true;
-      } else {
-        print("================$response");
-        Get.snackbar("Failed", "Try again", colorText: Colors.white, backgroundColor: Colors.black12);
-        return false;
-      }
+      return true;
     } catch (e) {
-      print("---------------------- $e");
-      isCreateingReport.value = false;
-      Get.snackbar("Error", "Something went wrong", colorText: Colors.white, backgroundColor: Colors.black12);
+     // Get.snackbar("Error", "Something went wrong", colorText: Colors.white, backgroundColor: Colors.black12);
       return false;
+    } finally {
+      isCreateingReport.value = false;
     }
   }
 }

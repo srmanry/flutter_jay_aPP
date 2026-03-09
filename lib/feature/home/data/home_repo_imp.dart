@@ -11,38 +11,26 @@ class HomeRepositoryImpl implements HomeRepo {
   @override
   Future<List<ReportModel>> getReports() async {
     try {
-     
-
       final response = await apiClient.get(ReportEndpoints.getAll);
 
-      
-      if (response.data == null) {
-        throw Exception("API (response.data null)");
+      if (response.statusCode != 200) {
+        throw Exception("Failed to fetch reports (status: ${response.statusCode})");
       }
 
-      final data = response.data as Map<String, dynamic>?;
-      if (data == null) {
-        throw Exception("response.data ");
+      final data = response.data;
+      if (data is! Map<String, dynamic>) {
+        throw Exception("Invalid response body (expected JSON object)");
       }
 
       final list = data['data'];
-      if (list == null) {
-        throw Exception("'data' Data not found in API response → ${response.data}");
-      }
       if (list is! List) {
-        throw Exception("'data' ফিল্ড লিস্ট নয় → ${list.runtimeType}");
+        throw Exception("Invalid response body (expected 'data' as List)");
       }
 
-      print("API থেকে ${list.length} টি আইটেম পাওয়া গেছে");
       return list.map((e) => ReportModel.fromJson(e as Map<String, dynamic>)).toList();
-
-      //return list.map((e) => ReportModel.fromJson(e as Map<String, dynamic>)).toList();
     } catch (e, stackTrace) {
-   
-      print("Error: $e");
-      print("Stack trace: $stackTrace");
-
-      rethrow; 
+      // Keep stack trace for higher layers/loggers.
+      Error.throwWithStackTrace(e, stackTrace);
     }
   }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/utils/app_colors.dart';
 import '../../../home/data/model/reports_model.dart';
+import '../../../subscription/view/subscription_view.dart';
 
 Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCallback? onGoPressed}) {
   final formattedTime = DateFormat('dd MMM yyyy, hh:mm a').format(report.createdAt);
@@ -33,11 +33,7 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
                 ],
               ),
 
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQH27gW63-UiRIoWc47Syd9CleQ5dNtO1kLLA&s",
-                ),
-              ),
+              CircleAvatar(backgroundImage: NetworkImage(report.user.avatar.url), radius: 20),
             ],
           ),
           const SizedBox(height: 20),
@@ -73,17 +69,14 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
                   // Image.asset("assets/icons/run.png", height: 30, color: Colors.red),
                 ],
               ), */
-              /*         Row(
+              /*   Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [Icon(Icons.directions_walk), SizedBox(width: 8), Icon(Icons.moving)]),
 
                   SizedBox(width: 20),
-                  Text(
-  distance ?? "Calculating...",
-  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-),
-               //   Text(distance ?? "0 K.M", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  // Text(distance ?? "Calculating...", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  Text(distance ?? "0.00 KM / 0 m", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ],
               ), */
             ],
@@ -95,10 +88,11 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
             width: double.maxFinite,
             child: ElevatedButton(
               onPressed: () {
-                Get.back(); // Close bottom sheet
+                // Get.back(); // Close bottom sheet
                 onGoPressed?.call();
+                //Get.to(() => SubscriptionView());
               },
-              child: const Text("Start", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              child: const Text("Start Tracking", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
           ),
         ],

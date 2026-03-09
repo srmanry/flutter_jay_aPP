@@ -10,7 +10,8 @@ import '../widgets/type_selector_widget.dart';
 
 class CleancodeNewFeatureScreenView extends StatelessWidget {
   final controller = Get.find<NewFeatureController>();
-  final LatLng userLocation = const LatLng(23.8103, 90.4125);
+  final LatLng defaultLocation = const LatLng(23.8103, 90.4125);
+  final LocationController locationController = Get.find<LocationController>();
 
   CleancodeNewFeatureScreenView({super.key}) {
     // Only once when widget is created
@@ -20,8 +21,11 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 1.5, title: const Text(""), backgroundColor: Colors.black.withOpacity(0.9), elevation: 0),
+      appBar: AppBar(toolbarHeight: 1.5, title: const Text(""), backgroundColor: Colors.black.withValues(alpha: 0.9), elevation: 0),
       body: Obx(() {
+        final LatLng userLocation = (locationController.lat.value != 0.0 && locationController.lng.value != 0.0)
+            ? LatLng(locationController.lat.value, locationController.lng.value)
+            : defaultLocation;
         final markers = controller.generateMarkers(userLocation);
 
         return Stack(
@@ -31,10 +35,15 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
               markers: markers,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
-              polylines: Get.find<LocationController>().polylines.value,
+              polylines: Set<Polyline>.from(locationController.polylines),
               /* onMapCreated: (GoogleMapController googleController) {
                 controller.setMapController(googleController); 
               }, */
+              onMapCreated: (GoogleMapController googleController) async {
+                controller.setMapController(googleController);
+                locationController.setMapController(googleController);
+                await locationController.checkPermissionAndLoadLocation();
+              },
               onTap: (pos) {
                 showModalBottomSheet(
                   context: context,
@@ -50,7 +59,7 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
               right: 16,
               top: 100,
               child: Container(
-                decoration: BoxDecoration(color: Colors.white.withOpacity(.9), borderRadius: BorderRadius.circular(4)),
+                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.9), borderRadius: BorderRadius.circular(4)),
                 child: TypeSelector(controller: controller),
               ),
             ),

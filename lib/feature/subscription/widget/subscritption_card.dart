@@ -74,8 +74,12 @@ class SubscritptionCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   child: Text(
-                    "Subscribe",
+                    (monthly != null && yearly != null)
+                        ? "Subscribe (\$$monthly/mo • \$$yearly/yr)"
+                        : "Subscribe",
                     style: TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w500, fontSize: 16),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import 'app_dependenci copy.dart';
+import 'app_dependencies.dart';
 import 'core/utils/app_colors.dart';
 
 import 'feature/profile/presentation/controller/theme_controller.dart';

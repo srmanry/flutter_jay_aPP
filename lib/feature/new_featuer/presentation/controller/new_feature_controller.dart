@@ -374,8 +374,7 @@ class NewFeatureController extends GetxController {
     }
   }
 
-  // ==============================
-  // Calculate distance (Geolocator ব্যবহার করে)
+
   // ==============================
   double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
     return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
@@ -415,7 +414,7 @@ class NewFeatureController extends GetxController {
 
             // Current location লোড করা
             if (locationController.lat.value == 0.0 && locationController.lng.value == 0.0) {
-              await locationController.loadLocation();
+              await locationController.checkPermissionAndLoadLocation();
             }
 
             final distance = locationController.calculateDistance(

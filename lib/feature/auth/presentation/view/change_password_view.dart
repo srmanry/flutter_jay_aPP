@@ -49,7 +49,7 @@ class ChangePasswordView extends StatelessWidget {
                   ChangePasswordField(fieldName: "Confirm Password", hinText: "Confirm Password", controller: confirmPasswordController),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    padding: EdgeInsets.symmetric(vertical: 30),
                     child: Obx(
                       () => ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -61,14 +61,16 @@ class ChangePasswordView extends StatelessWidget {
                           authController.changePassword(
                             currentPasswordController.text.trim(),
                             newPasswordController.text.trim(),
-                           // confirmPasswordController.text.trim(),
+                            // confirmPasswordController.text.trim(),
                           );
                         },
 
-                        child: Text(
-                          authController.isLoading.value ? "Please wait..." : "Save",
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-                        ),
+                        child: authController.isChangepassword.value
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                              ),
                         //label: Icon(Icons.arrow_forward, color: Colors.white,size: 20,),
                       ),
                     ),

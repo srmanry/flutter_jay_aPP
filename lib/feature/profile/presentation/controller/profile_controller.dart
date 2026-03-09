@@ -35,7 +35,7 @@ class ProfileController extends GetxController {
       final data = await _repository.getUserProfile();
       userData.value = data.isNotEmpty ? data.first : null;
     } catch (e) {
-      Get.snackbar("Error", "Failed to load profile", snackPosition: SnackPosition.BOTTOM);
+      // Get.snackbar("Error", "Failed to load profile", snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }
@@ -67,7 +67,7 @@ class ProfileController extends GetxController {
       refresh();
       Get.to(() => PersonalInfoScreenView()); // Close the edit screen
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      // Get.snackbar("Error", e.toString());
     } finally {
       isUpdating.value = false;
     }

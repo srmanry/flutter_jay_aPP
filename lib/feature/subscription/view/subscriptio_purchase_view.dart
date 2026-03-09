@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/common/widgets/custom_text_field.dart';
 import 'package:spotem/core/utils/app_colors.dart';
+import 'package:spotem/feature/new_featuer/presentation/view/cleancode_new_feature_screen_view.dart';
 
 import '../controller/subscription_controller.dart';
-import '../widget/drop_down.dart';
 
 class SubscriptionPurchaseView extends StatefulWidget {
   const SubscriptionPurchaseView({super.key});
@@ -19,14 +18,51 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
   String selectedPayment = '';
   final arg = Get.arguments;
 
+  late final SubscriptionController subscriptionController;
+  late final Map<dynamic, dynamic> argsMap;
+  late final double monthlyPrice;
+  late final double yearlyPrice;
+
   late TextEditingController emailController;
   late TextEditingController phoneController;
   late TextEditingController countryController;
   late TextEditingController couponController;
 
+  double _parsePrice(dynamic value, {required double fallback}) {
+    if (value == null) return fallback;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString()) ?? fallback;
+  }
+
+  double _selectedTotal() {
+    return subscriptionController.selectedPlan.value == 'Monthly' ? monthlyPrice : yearlyPrice;
+  }
+
+  String _selectedTotalLabel() {
+    if (subscriptionController.selectedPlan.value == 'Monthly') {
+      return '\$${monthlyPrice.toStringAsFixed(2)}/month';
+    }
+    return '\$${yearlyPrice.toStringAsFixed(2)}/year';
+  }
+
   @override
   void initState() {
     super.initState();
+    subscriptionController = Get.isRegistered<SubscriptionController>()
+        ? Get.find<SubscriptionController>()
+        : Get.put(SubscriptionController());
+
+    argsMap = arg is Map ? (arg as Map) : <dynamic, dynamic>{};
+    double fallbackMonthly = 0.0;
+    double fallbackYearly = 0.0;
+    if (subscriptionController.subscriptionPlans.isNotEmpty) {
+      final plan = subscriptionController.subscriptionPlans[subscriptionController.selectedIndex.value];
+      fallbackMonthly = plan.priceMonthly;
+      fallbackYearly = plan.priceYearly;
+    }
+    monthlyPrice = _parsePrice(argsMap['monthly'], fallback: fallbackMonthly);
+    yearlyPrice = _parsePrice(argsMap['yearly'], fallback: fallbackYearly);
+
     emailController = TextEditingController();
     phoneController = TextEditingController();
     countryController = TextEditingController();
@@ -73,7 +109,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
             _buildPlanSelector(),
             const SizedBox(height: 24),
 
-            // Billing Information
+      /*       // Billing Information
             _buildSectionTitle("Billing Information"),
             const SizedBox(height: 12),
             _buildBillingSection(),
@@ -84,7 +120,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
             const SizedBox(height: 12),
             _buildCouponSection(),
             const SizedBox(height: 24),
-
+ */
             // Payment Method
             _buildSectionTitle("Payment Method"),
             const SizedBox(height: 12),
@@ -107,16 +143,16 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.appColor, AppColors.appColor.withOpacity(0.7)],
+          colors: [AppColors.appColor, AppColors.appColor.withValues(alpha: 0.7)],
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: AppColors.appColor.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: AppColors.appColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
             child: const Icon(Icons.workspace_premium, color: Colors.white, size: 32),
           ),
           const SizedBox(width: 16),
@@ -130,19 +166,18 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  arg['planName']?.toString() ?? "Premium Subscription",
-                  style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.9)),
+                  argsMap['planName']?.toString() ?? "Premium Subscription",
+                  style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.9)),
                 ),
               ],
             ),
           ),
           Obx(() {
-            final controller = Get.put(SubscriptionController());
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
               child: Text(
-                '\$${controller.currentPrice.toStringAsFixed(2)}',
+                '\$${_selectedTotal().toStringAsFixed(2)}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.appColor),
               ),
             );
@@ -161,16 +196,12 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
 
   Widget _buildPlanSelector() {
     return Obx(() {
-      final controller = Get.put(SubscriptionController());
-      final monthly = arg['monthly']?.toString() ?? '9.99';
-      final yearly = arg['yearly']?.toString() ?? '99.99';
-
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
         ),
         child: Column(
           children: [
@@ -179,18 +210,18 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
                 Expanded(
                   child: _buildPlanOption(
                     title: 'Monthly',
-                    price: '\$$monthly/month',
-                    isSelected: controller.selectedPlan.value == 'Monthly',
-                    onTap: () => controller.changePlan('Monthly'),
+                    price: '\$${monthlyPrice.toStringAsFixed(2)}/month',
+                    isSelected: subscriptionController.selectedPlan.value == 'Monthly',
+                    onTap: () => subscriptionController.changePlan('Monthly'),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildPlanOption(
                     title: 'Yearly',
-                    price: '\$$yearly/year',
-                    isSelected: controller.selectedPlan.value == 'Yearly',
-                    onTap: () => controller.changePlan('Yearly'),
+                    price: '\$${yearlyPrice.toStringAsFixed(2)}/year',
+                    isSelected: subscriptionController.selectedPlan.value == 'Yearly',
+                    onTap: () => subscriptionController.changePlan('Yearly'),
                     isPopular: true,
                   ),
                 ),
@@ -199,7 +230,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: AppColors.appColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: AppColors.appColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -208,7 +239,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF3D3E40)),
                   ),
                   Text(
-                    '\$${controller.currentPrice.toStringAsFixed(2)}',
+                    '\$${_selectedTotal().toStringAsFixed(2)}',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.appColor),
                   ),
                 ],
@@ -232,7 +263,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.appColor.withOpacity(0.1) : AppColors.fieldColor,
+          color: isSelected ? AppColors.appColor.withValues(alpha: 0.1) : AppColors.fieldColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: isSelected ? AppColors.appColor : Colors.transparent, width: 2),
         ),
@@ -266,7 +297,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Column(
         children: [
@@ -342,7 +373,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Row(
         children: [
@@ -388,7 +419,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Column(
         children: [
@@ -404,7 +435,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
             },
           ),
           const Divider(height: 1),
-          _buildPaymentOption(
+         /*  _buildPaymentOption(
             title: 'PayPal',
             icon: Icons.account_balance_wallet,
             isSelected: selectedPayment == 'paypal',
@@ -414,7 +445,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
                 isPaymentSelected = true;
               });
             },
-          ),
+          ), */
         ],
       ),
     );
@@ -429,7 +460,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: AppColors.appColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: AppColors.appColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
               child: Icon(icon, color: AppColors.appColor),
             ),
             const SizedBox(width: 16),
@@ -466,34 +497,42 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton(
-        onPressed: () {
-          if (!isPaymentSelected) {
+      child: Obx(() {
+        return ElevatedButton(
+          onPressed: () {
+            if (!isPaymentSelected) {
+              Get.snackbar(
+                'Error',
+                'Please select a payment method',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+              );
+              return;
+            }
+            Get.to(() => CleancodeNewFeatureScreenView());
             Get.snackbar(
-              'Error',
-              'Please select a payment method',
+              'Success',
+              'Subscription submitted successfully!',
               snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.green,
               colorText: Colors.white,
             );
-            return;
-          }
-          Get.snackbar(
-            'Success',
-            'Subscription submitted successfully!',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.appColor,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 4,
-        ),
-        child: const Text('Subscribe Now', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      ),
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.appColor,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 4,
+          ),
+          child: Text(
+            'Subscribe Now (${_selectedTotalLabel()})',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }),
     );
   }
 }

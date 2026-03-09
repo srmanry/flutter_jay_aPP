@@ -1,17 +1,17 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/network/api_service/token_meneger.dart';
 import 'package:spotem/core/utils/app_colors.dart';
-
-
+import 'package:spotem/feature/report/domain/repo/repo.dart';
 
 class ReportController extends GetxController {
+  ReportController(this.repository);
+
+  final ReportRepository repository;
+
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
   var selectedOption = "ICE".obs;
-  var isLoading = false.obs;
   var isCreateingReport = false.obs;
 
   final List<Map<String, dynamic>> options = [
@@ -21,51 +21,39 @@ class ReportController extends GetxController {
     {"label": "Ambulance", "color": Colors.amber},
   ];
 
-  final Dio dioClient = Dio(
-    BaseOptions(
-      baseUrl: "https://api.spotem365.com/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
-
-  Future<void> createReport(double lat, double lng) async {
+  Future<bool> createReport(double lat, double lng) async {
     try {
       isCreateingReport.value = true;
-      final token = await TokenManager.getToken();
-
-      final body = {
-        "type": selectedOption.value,
-        "title": titleController.text.trim(),
-        "description": descriptionController.text.trim(),
-        "location": {
-          "type": "Point",
-          "coordinates": [lng, lat],
-        },
-      };
-      await Future.delayed(const Duration(seconds: 3));
-
-      final response = await dioClient.post(
-        "/report/",
-        data: body,
-        options: Options(
-          headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
+      await repository.createReport(
+        title: titleController.text.trim(),
+        type: selectedOption.value,
+        description: descriptionController.text.trim(),
+        latitude: lat,
+        longitude: lng,
       );
 
-      isCreateingReport.value = false;
+      Get.snackbar(
+        "Success",
+        "Report created successfully",
+        colorText: AppColors.appColor,
+        backgroundColor: Colors.black12,
+        snackPosition: SnackPosition.TOP,
+      );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar(" Success", "Report created successfully", colorText: AppColors.appColor, backgroundColor: Colors.black12);
-        titleController.clear();
-        descriptionController.clear();
-      } else {
-        Get.snackbar(backgroundColor: Colors.black12, "Failed to create report", "Try again", colorText: Colors.white);
-      }
+      titleController.clear();
+      descriptionController.clear();
+      return true;
     } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Something went wrong",
+        backgroundColor: Colors.black12,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+      return false;
+    } finally {
       isCreateingReport.value = false;
-      Get.snackbar("", "Something went wrong", backgroundColor: Colors.black12, colorText: Colors.white);
     }
   }
 }

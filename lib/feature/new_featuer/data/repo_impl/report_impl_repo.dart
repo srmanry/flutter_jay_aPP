@@ -1,5 +1,3 @@
-import 'package:get/get.dart';
-import 'package:spotem/app_ground.dart';
 import 'package:spotem/core/network/api_service/api_endpoints.dart';
 import 'package:spotem/feature/home/data/model/reports_model.dart';
 import 'package:spotem/feature/new_featuer/domain/repo/report_repo.dart';
@@ -31,7 +29,6 @@ class ReportRepoImpl implements ReportRepo {
     final response = await apiClient.post(ReportEndpoints.create, data: body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      Get.to(() => AppGroundView(currentIndex: 3));
       return ReportModel.fromJson(response.data['data']);
     } else {
       throw Exception("Failed to create report");

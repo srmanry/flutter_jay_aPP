@@ -1,27 +1,26 @@
-
-
 import 'dart:ui' as ui;
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:spotem/core/network/api_service/token_meneger.dart';
+import 'package:flutter/services.dart';
+import 'package:spotem/feature/report/domain/repo/repo.dart';
 
 class LocationController extends GetxController {
+  LocationController(this.reportRepository);
+
+  final ReportRepository reportRepository;
+
   var lat = 0.0.obs;
   var lng = 0.0.obs;
   var markers = <Marker>{}.obs;
   var polylines = <Polyline>{}.obs; // RxSet<Polyline>
 
- 
   static const String googleApiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI";
 
-  final PolylinePoints polylinePoints = PolylinePoints(
-    apiKey: googleApiKey,
-  );
+  final PolylinePoints polylinePoints = PolylinePoints(apiKey: googleApiKey);
 
   var isLoading = false.obs;
   var hasPermission = false.obs;
@@ -29,25 +28,32 @@ class LocationController extends GetxController {
   var selectedMarkerData = Rx<Map<String, dynamic>?>(null);
   GoogleMapController? mapController;
 
+  BitmapDescriptor? fireIcon;
+  BitmapDescriptor? policeIcon;
+  BitmapDescriptor? ambulanceIcon;
+  BitmapDescriptor? iceIcon;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadMarkerIcons();
+  }
+
   Future<void> drawRoute(double destLat, double destLng) async {
     if (lat.value == 0.0 || lng.value == 0.0) {
       await loadLocation();
       if (lat.value == 0.0) {
-        // Get.snackbar("লোকেশন", "বর্তমান লোকেশন পাওয়া যায়নি");
         return;
       }
     }
 
-    
     polylines.clear();
 
     try {
-      // নতুন ভার্সনের জন্য PolylineRequest তৈরি করো
       final request = PolylineRequest(
         origin: PointLatLng(lat.value, lng.value),
         destination: PointLatLng(destLat, destLng),
         mode: TravelMode.driving, // driving / walking / bicycling
-        // অপশনাল: যদি চাও
         // wayPoints: [PointLatLng(...), ...],
         // avoidHighways: false,
         // avoidTolls: false,
@@ -73,24 +79,22 @@ class LocationController extends GetxController {
         polylines.add(routePolyline);
         polylines.refresh();
 
-        // রুট ফিট করার জন্য ক্যামেরা অ্যাডজাস্ট (অপশনাল কিন্তু ভালো)
         if (mapController != null) {
           final bounds = _getBounds(polylineCoordinates);
           mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
         }
       } else {
         print("================  map  No route found: ${result.errorMessage}");
-        // Get.snackbar("রুট", "রুট পাওয়া যায়নি: ${result.errorMessage ?? 'অজানা সমস্যা'}");
+
         _drawStraightLine(destLat, destLng);
       }
     } catch (e) {
       print("===================== map       Route draw error: $e");
-      //Get.snackbar("রুট", "রুট আঁকতে সমস্যা হয়েছে");
+
       _drawStraightLine(destLat, destLng);
     }
   }
 
-  // সোজা লাইন ফলব্যাক
   void _drawStraightLine(double destLat, double destLng) {
     final Polyline straightLine = Polyline(
       polylineId: const PolylineId('fallback_route'),
@@ -102,7 +106,6 @@ class LocationController extends GetxController {
     polylines.refresh();
   }
 
-  // Bounds ক্যালকুলেট (রুট ফিট করার জন্য)
   LatLngBounds _getBounds(List<LatLng> points) {
     double south = points[0].latitude;
     double north = points[0].latitude;
@@ -119,7 +122,6 @@ class LocationController extends GetxController {
     return LatLngBounds(southwest: LatLng(south, west), northeast: LatLng(north, east));
   }
 
-  // পুরানো decode ফাংশন (যদি কখনো দরকার হয়)
   List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
     int index = 0, lat = 0, lng = 0;
@@ -148,14 +150,6 @@ class LocationController extends GetxController {
     }
     return points;
   }
-
-  final Dio dioClient = Dio(
-    BaseOptions(
-      baseUrl: "https://backend-jay-xeye.onrender.com/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
 
   void setMapController(GoogleMapController controller) {
     mapController = controller;
@@ -209,22 +203,40 @@ class LocationController extends GetxController {
     }
   }
 
+  Future<void> loadMarkerIcons() async {
+    try {
+      fireIcon = await _resizeMarker('assets/icons/fire.png', 95);
+      policeIcon = await _resizeMarker('assets/icons/polic.png', 95);
+      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 110);
+      iceIcon = await _resizeMarker('assets/icons/siren.png', 90);
+    } catch (_) {
+      // Fallback to default markers if assets fail to load.
+    }
+  }
+
+  Future<BitmapDescriptor> _resizeMarker(String path, int width) async {
+    final ByteData data = await rootBundle.load(path);
+    final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+    final Uint8List resizedData = (await frameInfo.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+    return BitmapDescriptor.fromBytes(resizedData);
+  }
+
   BitmapDescriptor _getMarkerIcon(String type) {
     switch (type) {
       case "Fire":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+        return fireIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
       case "Police":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+        return policeIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
       case "Ambulance":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
+        return ambulanceIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
       case "ICE":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+        return iceIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
       default:
         return BitmapDescriptor.defaultMarker;
     }
   }
 
-  // কাস্টম আইকন ফাংশন (যদি ইউজ করো)
   Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
     const size = 40.0;
     final recorder = ui.PictureRecorder();
@@ -250,51 +262,49 @@ class LocationController extends GetxController {
     isLoading.value = true;
 
     try {
-      final token = await TokenManager.getToken();
-      final response = await dioClient.get(
-        "/report/coordinates",
-        options: Options(headers: {"Authorization": "Bearer $token"}, validateStatus: (status) => status != null && status < 500),
-      );
+      // Ensure marker icons are ready.
+      if (fireIcon == null && policeIcon == null && ambulanceIcon == null && iceIcon == null) {
+        await loadMarkerIcons();
+      }
 
-      if (response.statusCode == 200) {
-        final data = response.data['data'] as List;
-        markers.clear();
+      final data = await reportRepository.getReportCoordinates();
 
-        for (var report in data) {
-          final coords = report['coordinates'];
-          final latValue = coords[1];
-          final lngValue = coords[0];
-          final type = report['type'] ?? "Report";
-          final title = report['title'] ?? "Report";
-          final description = report['description'] ?? "Report";
-          final time = report['timestamp'] ?? "Report";
+      markers.clear();
+      for (final report in data) {
+        final type = report.type.isEmpty ? "Report" : report.type;
+        final title = report.title.isEmpty ? "Report" : report.title;
+        final description = report.description.isEmpty ? "Report" : report.description;
+        final time = report.createdAt?.toIso8601String() ?? "";
 
-          markers.add(
-            Marker(
-              markerId: MarkerId("${type}_${latValue}_${lngValue}"),
-              position: LatLng(latValue, lngValue),
-              icon: _getMarkerIcon(type),
-              infoWindow: const InfoWindow(title: ''),
-              onTap: () {
-                final distance = calculateDistance(lat.value, lng.value, latValue, lngValue);
-                selectedMarkerData.value = {
-                  "title": title,
-                  "type": type,
-                  "description": description,
-                  "time": time,
-                  "lat": latValue,
-                  "lng": lngValue,
-                  "distance": formatDistance(distance),
-                  "distanceMeters": distance,
-                };
-              },
-            ),
-          );
-        }
+        final latValue = report.latitude;
+        final lngValue = report.longitude;
 
-        if (markers.isNotEmpty && mapController != null) {
-          mapController!.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 16));
-        }
+        markers.add(
+          Marker(
+            markerId: MarkerId("${type}_${latValue}_${lngValue}"),
+            position: LatLng(latValue, lngValue),
+            icon: _getMarkerIcon(type),
+            infoWindow: const InfoWindow(title: ''),
+            onTap: () {
+              final distance = calculateDistance(lat.value, lng.value, latValue, lngValue);
+              selectedMarkerData.value = {
+                "title": title,
+                "type": type,
+                "description": description,
+                "time": time,
+                "lat": latValue,
+                "lng": lngValue,
+                "distance": formatDistance(distance),
+                "distanceMeters": distance,
+              };
+            },
+          ),
+        );
+      }
+      markers.refresh();
+
+      if (markers.isNotEmpty && mapController != null) {
+        mapController!.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 16));
       }
     } catch (e) {
       print("Error fetching report markers: $e");
@@ -310,10 +320,8 @@ class LocationController extends GetxController {
 
   String formatDistance(double distanceInMeters) {
     if (distanceInMeters == 0.0) return "Calculating...";
-    if (distanceInMeters < 1000) {
-      return "${distanceInMeters.toStringAsFixed(0)} মি";
-    } else {
-      return "${(distanceInMeters / 1000).toStringAsFixed(1)} কি.মি";
-    }
+    final meters = distanceInMeters.round();
+    final km = distanceInMeters / 1000.0;
+    return "${km.toStringAsFixed(2)} KM / $meters m";
   }
 }

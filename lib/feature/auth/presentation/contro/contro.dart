@@ -21,6 +21,7 @@ class AuthController extends GetxController {
   // ─── States ──────────────────────
   var isLogin = false.obs;
   var isSignup = false.obs;
+  var isChangepassword = false.obs;
   var sentOtp = false.obs;
   var isVerifyOtp = false.obs;
   var isResetPassword = false.obs;
@@ -205,7 +206,7 @@ class AuthController extends GetxController {
     if (newPassword.length < 6) return CustomShowMessage.error(message: "Password min 6 chars");
 
     try {
-      isLoading.value = true;
+      isChangepassword.value = true;
       final result = await _authRepository.changePassword(oldPassword, newPassword);
 
       if (result["success"] == true) {
@@ -216,7 +217,7 @@ class AuthController extends GetxController {
     } catch (e) {
       CustomShowMessage.error(message: "Something went wrong");
     } finally {
-      isLoading.value = false;
+      isChangepassword.value = false;
     }
   }
 

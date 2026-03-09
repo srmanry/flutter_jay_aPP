@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:spotem/feature/home/controller/home_controller.dart';
 
 import '../controller/map_controller.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,11 +16,15 @@ String formatTimestamp(String? timestamp) {
   }
 }
 
-class GoogleMapScreen extends StatelessWidget {
-  GoogleMapScreen({super.key});
+class GoogleMapScreen extends StatefulWidget {
+  const GoogleMapScreen({super.key});
 
-  final LocationController locationController = Get.put(LocationController());
-  final HomeController homeController = Get.put(HomeController());
+  @override
+  State<GoogleMapScreen> createState() => _GoogleMapScreenState();
+}
+
+class _GoogleMapScreenState extends State<GoogleMapScreen> {
+  final LocationController locationController = Get.find<LocationController>();
 
   Future<void> _checkPermissionAndLoadLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -36,9 +39,13 @@ class GoogleMapScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _checkPermissionAndLoadLocation(); // permission check and load location at build
+  void initState() {
+    super.initState();
+    _checkPermissionAndLoadLocation();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -59,15 +66,11 @@ class GoogleMapScreen extends StatelessWidget {
             }
 
             // Use default location (Bangladesh - Dhaka) if location not loaded yet
-            final double displayLat = locationController.lat.value != 0.0
-                ? locationController.lat.value
-                : 23.8103; // Default: Dhaka, Bangladesh
-            final double displayLng = locationController.lng.value != 0.0
-                ? locationController.lng.value
-                : 90.4125; // Default: Dhaka, Bangladesh
+            final double displayLat = locationController.lat.value != 0.0 ? locationController.lat.value : 23.8103; // Default: Dhaka, Bangladesh
+            final double displayLng = locationController.lng.value != 0.0 ? locationController.lng.value : 90.4125; // Default: Dhaka, Bangladesh
 
             return GoogleMap(
-              padding: const EdgeInsets.only(bottom: 220),
+              // padding: const EdgeInsets.only(bottom: 220),
               initialCameraPosition: CameraPosition(target: LatLng(displayLat, displayLng), zoom: 13),
               markers: Set<Marker>.from(locationController.markers),
               polylines: Set<Polyline>.from(locationController.polylines),
@@ -77,13 +80,13 @@ class GoogleMapScreen extends StatelessWidget {
               onMapCreated: (controller) async {
                 locationController.setMapController(controller);
                 await locationController.fetchReportMarker();
-               // await locationController.fetchNearbyPlaces();
+                // await locationController.fetchNearbyPlaces();
               },
             );
           }),
 
           // My Location Button
-          Positioned(
+          /*    Positioned(
             right: 16,
             bottom: 240,
             child: FloatingActionButton(
@@ -95,7 +98,7 @@ class GoogleMapScreen extends StatelessWidget {
               },
               child: const Icon(Icons.my_location, color: Colors.blue, size: 28),
             ),
-          ),
+          ), */
         ],
       ),
     );

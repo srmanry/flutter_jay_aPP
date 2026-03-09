@@ -6,15 +6,13 @@ import '../../../../core/utils/app_colors.dart';
 import '../../../map/controller/map_controller.dart';
 import '../../../profile/presentation/controller/theme_controller.dart';
 import '../controller/report_controller.dart';
-import 'create_report_by_map_view.dart';
 
 class ReportScreenView extends StatelessWidget {
   ReportScreenView({super.key});
 
-  final ReportController reportController = Get.put(ReportController());
-  final LocationController locationController = Get.put(LocationController());
+  final ReportController reportController = Get.find<ReportController>();
+  final LocationController locationController = Get.find<LocationController>();
   final ThemeController themeController = Get.put(ThemeController());
-  bool isSnackBarVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,52 +54,53 @@ class ReportScreenView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8),
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                itemCount: reportController.options.length,
-                itemBuilder: (context, index) {
-                  final item = reportController.options[index];
-                  final label = item["label"] as String;
-                  final color = item["color"] as Color;
+              Obx(
+                () => RadioGroup<String>(
+                  groupValue: reportController.selectedOption.value,
+                  onChanged: (value) {
+                    if (value != null) {
+                      reportController.selectedOption.value = value;
+                    }
+                  },
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: reportController.options.length,
+                    itemBuilder: (context, index) {
+                      final item = reportController.options[index];
+                      final label = item["label"] as String;
+                      final color = item["color"] as Color;
 
-                  return Obx(() {
-                    return InkWell(
-                      onTap: () {
-                        reportController.selectedOption.value = label;
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Radio<String>(
-                            value: label,
-                            //activeColor: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,
-                            fillColor: WidgetStateProperty.all(themeController.isDarkMode.value ? Colors.white : Colors.black),
-                            groupValue: reportController.selectedOption.value,
-                            onChanged: (value) {
-                              if (value != null) {
-                                reportController.selectedOption.value = value;
-                              }
-                            },
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            label,
-                            style: TextStyle(
-                              color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
+                      return InkWell(
+                        onTap: () {
+                          reportController.selectedOption.value = label;
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Radio<String>(
+                              value: label,
+                              fillColor: WidgetStateProperty.all(themeController.isDarkMode.value ? Colors.white : Colors.black),
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Icon(Icons.location_on, color: color),
-                        ],
-                      ),
-                    );
-                  });
-                },
+                            const SizedBox(width: 10),
+                            Text(
+                              label,
+                              style: TextStyle(
+                                color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(Icons.location_on, color: color),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
 
               /*     Align(
@@ -154,15 +153,10 @@ class ReportScreenView extends StatelessWidget {
                       return;
                     }
 
-                    reportController.isCreateingReport.value = true;
-                    try {
-                      // await locationController.loadLocation();
-                      final lat = locationController.lat.value;
-                      final lng = locationController.lng.value;
-                      await reportController.createReport(lat, lng);
-                    } finally {
-                      reportController.isCreateingReport.value = false;
-                    }
+                    // await locationController.loadLocation();
+                    final lat = locationController.lat.value;
+                    final lng = locationController.lng.value;
+                    await reportController.createReport(lat, lng);
                   },
           ),
         ),

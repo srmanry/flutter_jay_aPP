@@ -18,7 +18,7 @@ class AuthEndpoints {
   static String forgotPassword = "$baseApiUrl/auth/forget";
   static String verifyOtp = "$baseApiUrl/auth/verify-otp";
   static String resetPassword = "$baseApiUrl/auth/reset-password";
-  static String changePassword = "$baseApiUrl/auth/change-password";
+  static String changePassword = "$baseApiUrl/user/change-password";
   static String refreshToken = "$baseApiUrl/auth/refresh-token";
   static String logout = "$baseApiUrl/auth/logout";
 }
