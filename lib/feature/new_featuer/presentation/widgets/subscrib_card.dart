@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 
 class SubscriptionScreen extends StatelessWidget {
   const SubscriptionScreen({super.key});
@@ -72,7 +73,8 @@ class SubscriptionScreen extends StatelessWidget {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.snackbar("Success", "Subscription Activated!", backgroundColor: Colors.green, colorText: Colors.white);
+                 // Get.snackbar("Success", "Subscription Activated!", backgroundColor: Colors.green, colorText: Colors.white);
+                  CustomShowMessage.success(message: "Subscription Activated!");
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4A6CF7),

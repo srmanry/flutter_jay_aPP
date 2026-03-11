@@ -4,6 +4,7 @@ import 'package:pinput/pinput.dart';
 import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../../../core/common/widgets/save_botton.dart';
+import '../../../../core/common/custom_massage.dart';
 import '../../../../core/utils/app_colors.dart';
 
 import 'forget_password_view.dart';
@@ -86,7 +87,8 @@ class OtpCodeScreenView extends StatelessWidget {
                         onTap: () {
                           final otp = otpController.text.trim();
                           if (otp.isEmpty) {
-                            Get.snackbar("Error", "Please enter OTP");
+                          //  Get.snackbar("Error", "Please enter OTP");
+                            CustomShowMessage.error(message: "Please enter OTP");
                             return;
                           }
 

@@ -10,14 +10,28 @@ import '../../../../core/utils/app_colors.dart';
 import 'edit_profile_view.dart';
 import '../controller/theme_controller.dart';
 import '../widgets/profile_card.dart';
-import 'profile_view.dart';
 
-class PersonalInfoScreenView extends StatelessWidget {
-  PersonalInfoScreenView({super.key});
+class PersonalInfoScreenView extends StatefulWidget {
+  const PersonalInfoScreenView({super.key});
 
-  ProfileController profileController = Get.find<ProfileController>();
+  @override
+  State<PersonalInfoScreenView> createState() => _PersonalInfoScreenViewState();
+}
 
-  ThemeController themeController = Get.put(ThemeController());
+class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
+  late final ProfileController profileController;
+  late final ThemeController themeController;
+
+  @override
+  void initState() {
+    super.initState();
+    profileController = Get.find<ProfileController>();
+    themeController = Get.put(ThemeController());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      profileController.fetchProfile();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:spotem/feature/subscription/view/subscription_view.dart';
 
 import '../../../home/data/model/reports_model.dart';
-import '../../../subscription/view/subscription_view.dart';
 
 Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCallback? onGoPressed}) {
   final formattedTime = DateFormat('dd MMM yyyy, hh:mm a').format(report.createdAt);
+  final isSubscribed = report.subscription?.isTrueOrFalse == true;
 
   return Container(
     padding: const EdgeInsets.all(16),
@@ -83,14 +84,34 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
           ),
 
           SizedBox(height: 20),
+
+          /* SizedBox(
+            height: 48,
+            width: double.maxFinite,
+            child: ElevatedButton(
+              onPressed: () {
+       
+                if (isSubscribed) {
+                  onGoPressed?.call();
+                  return;
+                }
+             
+              },
+              child: const Text("Start Tracking", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            ),
+          ), */
           SizedBox(
             height: 48,
             width: double.maxFinite,
             child: ElevatedButton(
               onPressed: () {
-                // Get.back(); // Close bottom sheet
-                onGoPressed?.call();
-                //Get.to(() => SubscriptionView());
+                Get.back();
+
+                if (isSubscribed) {
+                  onGoPressed?.call();
+                } else {
+                  Get.to(() => const SubscriptionView());
+                }
               },
               child: const Text("Start Tracking", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),

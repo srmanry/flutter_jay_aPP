@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 
 import '../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -47,11 +48,7 @@ class ReportScreenView extends StatelessWidget {
 
               Text(
                 'Report Type',
-                style: TextStyle(
-                  color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
               ),
               SizedBox(height: 8),
               Obx(
@@ -87,11 +84,7 @@ class ReportScreenView extends StatelessWidget {
                             const SizedBox(width: 10),
                             Text(
                               label,
-                              style: TextStyle(
-                                color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
                             ),
                             const SizedBox(width: 10),
                             Icon(Icons.location_on, color: color),
@@ -132,46 +125,44 @@ class ReportScreenView extends StatelessWidget {
                 ? null
                 : () async {
                     if (reportController.titleController.text.isEmpty && reportController.descriptionController.text.isEmpty) {
-                      Get.snackbar(
+                      /*     Get.snackbar(
                         "Error",
                         "Title is required",
                         snackPosition: SnackPosition.TOP,
                         colorText: Colors.red,
                         //duration: const Duration(seconds: 2),
-                      );
+                      ); */
+                      CustomShowMessage.error(message: "Title is required");
                       return;
                     }
 
                     if (reportController.descriptionController.text.isEmpty) {
-                      Get.snackbar(
+                      /*       Get.snackbar(
                         "Error",
                         "Description is required",
                         snackPosition: SnackPosition.TOP,
                         colorText: Colors.red,
                         duration: const Duration(seconds: 2),
-                      );
+                      ); */
+                      CustomShowMessage.error(message: "Description is required");
                       return;
                     }
 
                     await locationController.checkPermissionAndLoadLocation();
                     if (!locationController.hasPermission.value) {
-                      Get.snackbar(
-                        "Error",
-                        "Location permission required",
-                        snackPosition: SnackPosition.TOP,
-                        colorText: Colors.red,
-                      );
+                      /* Get.snackbar(
+                              "Error",
+                              "Location permission required",
+                              snackPosition: SnackPosition.TOP,
+                              colorText: Colors.red,
+                            ); */
+                      CustomShowMessage.error(message: "Location permission required");
                       return;
                     }
                     final lat = locationController.lat.value;
                     final lng = locationController.lng.value;
                     if (lat == 0.0 && lng == 0.0) {
-                      Get.snackbar(
-                        "Error",
-                        "Location not available",
-                        snackPosition: SnackPosition.TOP,
-                        colorText: Colors.red,
-                      );
+                      CustomShowMessage.error(message: "Location not available");
                       return;
                     }
                     await reportController.createReport(lat, lng);
@@ -188,11 +179,7 @@ class ReportScreenView extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
-            color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
+          style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
         ),
         const SizedBox(height: 10),
         TextField(

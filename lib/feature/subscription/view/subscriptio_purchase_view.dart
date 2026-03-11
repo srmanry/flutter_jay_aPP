@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:spotem/core/config/stripe_config.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/new_featuer/presentation/view/cleancode_new_feature_screen_view.dart';
+import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 
 import '../controller/subscription_controller.dart';
 
@@ -22,6 +26,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
   late final Map<dynamic, dynamic> argsMap;
   late final double monthlyPrice;
   late final double yearlyPrice;
+  late final String subscriptionId;
 
   late TextEditingController emailController;
   late TextEditingController phoneController;
@@ -62,6 +67,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
     }
     monthlyPrice = _parsePrice(argsMap['monthly'], fallback: fallbackMonthly);
     yearlyPrice = _parsePrice(argsMap['yearly'], fallback: fallbackYearly);
+    subscriptionId = argsMap['subscriptionId']?.toString() ?? '';
 
     emailController = TextEditingController();
     phoneController = TextEditingController();
@@ -394,13 +400,7 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
             decoration: BoxDecoration(color: AppColors.appColor, borderRadius: BorderRadius.circular(12)),
             child: TextButton(
               onPressed: () {
-                Get.snackbar(
-                  'Coupon',
-                  'Coupon applied successfully!',
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                );
+           CustomShowMessage.success(message: "Coupon applied successfully!");
               },
               child: const Text(
                 'Apply',
@@ -499,25 +499,83 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
       height: 56,
       child: Obx(() {
         return ElevatedButton(
-          onPressed: () {
+          onPressed: subscriptionController.isPaying.value
+              ? null
+              : () async {
             if (!isPaymentSelected) {
-              Get.snackbar(
+           /*    Get.snackbar(
                 'Error',
                 'Please select a payment method',
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.red,
                 colorText: Colors.white,
-              );
+              ); */
+CustomShowMessage.error(message: "Please select a payment method");
+
               return;
             }
-            Get.to(() => CleancodeNewFeatureScreenView());
-            Get.snackbar(
-              'Success',
-              'Subscription submitted successfully!',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
+            if (selectedPayment != 'stripe') {
+              CustomShowMessage.error(message: "Only Stripe is supported right now");
+              return;
+            }
+            if (!hasValidStripePublishableKey) {
+              CustomShowMessage.error(message: "Stripe publishable key missing/invalid. Use pk_test_ or pk_live_.");
+              return;
+            }
+            if (subscriptionId.isEmpty) {
+              CustomShowMessage.error(message: "Missing subscription plan id");
+              return;
+            }
+
+            final billingPeriod = subscriptionController.selectedPlan.value == 'Yearly' ? 'yearly' : 'monthly';
+            final price = _selectedTotal();
+
+            final profileController = Get.find<ProfileController>();
+            String? userId = profileController.userData.value?.id;
+            if (userId == null || userId.isEmpty) {
+              await profileController.fetchProfile();
+              userId = profileController.userData.value?.id;
+            }
+            if (userId == null || userId.isEmpty) {
+              CustomShowMessage.error(message: "User id not found. Please login again.");
+              return;
+            }
+
+            final payment = await subscriptionController.createPayment(
+              userId: userId,
+              subscriptionId: subscriptionId,
+              price: price,
+              billingPeriod: billingPeriod,
             );
+            if (payment == null) return;
+
+            subscriptionController.isPaying.value = true;
+            try {
+              await Stripe.instance.initPaymentSheet(
+                paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: payment.clientSecret,
+                  merchantDisplayName: 'Spotem',
+                  style: ThemeMode.system,
+                ),
+              );
+
+              await Stripe.instance.presentPaymentSheet();
+            } on StripeException catch (e) {
+              final message = e.error.localizedMessage ?? e.error.message ?? "Payment cancelled";
+              CustomShowMessage.error(message: message);
+              return;
+            } catch (e) {
+              CustomShowMessage.error(message: e.toString());
+              return;
+            } finally {
+              subscriptionController.isPaying.value = false;
+            }
+
+            final ok = await subscriptionController.confirmPayment(paymentIntentId: payment.paymentIntentId);
+            if (!ok) return;
+
+            CustomShowMessage.success(message: "Subscription payment successful!");
+            Get.off(() => CleancodeNewFeatureScreenView());
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.appColor,
@@ -525,12 +583,14 @@ class _SubscriptionPurchaseViewState extends State<SubscriptionPurchaseView> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 4,
           ),
-          child: Text(
-            'Subscribe Now (${_selectedTotalLabel()})',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: subscriptionController.isPaying.value
+              ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
+              : Text(
+                  'Subscribe Now (${_selectedTotalLabel()})',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
         );
       }),
     );

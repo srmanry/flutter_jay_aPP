@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'app_dependencies.dart';
+import 'core/config/stripe_config.dart';
 import 'core/utils/app_colors.dart';
 
 import 'feature/profile/presentation/controller/theme_controller.dart';
@@ -10,6 +12,15 @@ import 'feature/splash/view/splash_screen_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (hasValidStripePublishableKey) {
+    Stripe.publishableKey = stripePublishableKey;
+    Stripe.merchantIdentifier = stripeMerchantIdentifier;
+    Stripe.urlScheme = stripeUrlScheme;
+    await Stripe.instance.applySettings();
+  } else {
+    debugPrint("Stripe is not initialized: STRIPE_PUBLISHABLE_KEY missing or invalid.");
+  }
 
   //Get.put(AlertController(), permanent: true);
   Get.put(ThemeController(), permanent: true);

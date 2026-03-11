@@ -15,7 +15,9 @@ class ProfileRepoImpl implements ProfileRepo {
     final response = await apiClient.get(UserEndpoints.getProfile);
     if (response.statusCode == 200 && response.data["success"] == true) {
       print("----------------- getUserProfile response: ${response.data}");
+      
       return [UserData.fromJson(response.data["data"])];
+      
     } else {
       print("============= getUserProfile error: ${response.data}");
       throw Exception(response.data["message"] ?? "Failed to fetch profile");
@@ -34,6 +36,7 @@ class ProfileRepoImpl implements ProfileRepo {
       final response = await apiClient.patch(UserEndpoints.updateProfile, data: formData);
 
       if (response.statusCode == 200 && response.data["success"] == true) {
+        
         return UserProfileModel.fromJson(response.data);
       } else {
         throw Exception(response.data["message"] ?? "Update failed");

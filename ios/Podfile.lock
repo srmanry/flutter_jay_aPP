@@ -78,6 +78,66 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - Stripe (25.6.0):
+    - StripeApplePay (= 25.6.0)
+    - StripeCore (= 25.6.0)
+    - StripeIssuing (= 25.6.0)
+    - StripePayments (= 25.6.0)
+    - StripePaymentsUI (= 25.6.0)
+    - StripeUICore (= 25.6.0)
+  - stripe_ios (0.0.1):
+    - Flutter
+    - Stripe (~> 25.6.0)
+    - stripe_ios/stripe_ios (= 0.0.1)
+    - stripe_ios/stripe_objc (= 0.0.1)
+    - StripeApplePay (~> 25.6.0)
+    - StripeFinancialConnections (~> 25.6.0)
+    - StripePayments (~> 25.6.0)
+    - StripePaymentSheet (~> 25.6.0)
+    - StripePaymentsUI (~> 25.6.0)
+  - stripe_ios/stripe_ios (0.0.1):
+    - Flutter
+    - Stripe (~> 25.6.0)
+    - stripe_ios/stripe_objc
+    - StripeApplePay (~> 25.6.0)
+    - StripeFinancialConnections (~> 25.6.0)
+    - StripePayments (~> 25.6.0)
+    - StripePaymentSheet (~> 25.6.0)
+    - StripePaymentsUI (~> 25.6.0)
+  - stripe_ios/stripe_objc (0.0.1):
+    - Flutter
+    - Stripe (~> 25.6.0)
+    - StripeApplePay (~> 25.6.0)
+    - StripeFinancialConnections (~> 25.6.0)
+    - StripePayments (~> 25.6.0)
+    - StripePaymentSheet (~> 25.6.0)
+    - StripePaymentsUI (~> 25.6.0)
+  - StripeApplePay (25.6.0):
+    - StripeCore (= 25.6.0)
+  - StripeCore (25.6.0)
+  - StripeFinancialConnections (25.6.0):
+    - StripeCore (= 25.6.0)
+    - StripeUICore (= 25.6.0)
+  - StripeIssuing (25.6.0):
+    - StripeCore (= 25.6.0)
+    - StripePayments (= 25.6.0)
+    - StripePaymentsUI (= 25.6.0)
+  - StripePayments (25.6.0):
+    - StripeCore (= 25.6.0)
+    - StripePayments/Stripe3DS2 (= 25.6.0)
+  - StripePayments/Stripe3DS2 (25.6.0):
+    - StripeCore (= 25.6.0)
+  - StripePaymentSheet (25.6.0):
+    - StripeApplePay (= 25.6.0)
+    - StripeCore (= 25.6.0)
+    - StripePayments (= 25.6.0)
+    - StripePaymentsUI (= 25.6.0)
+  - StripePaymentsUI (25.6.0):
+    - StripeCore (= 25.6.0)
+    - StripePayments (= 25.6.0)
+    - StripeUICore (= 25.6.0)
+  - StripeUICore (25.6.0):
+    - StripeCore (= 25.6.0)
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -96,6 +156,7 @@ DEPENDENCIES:
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -110,6 +171,15 @@ SPEC REPOS:
     - GTMSessionFetcher
     - ObjectBox
     - PromisesObjC
+    - Stripe
+    - StripeApplePay
+    - StripeCore
+    - StripeFinancialConnections
+    - StripeIssuing
+    - StripePayments
+    - StripePaymentSheet
+    - StripePaymentsUI
+    - StripeUICore
 
 EXTERNAL SOURCES:
   connectivity_plus:
@@ -140,6 +210,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  stripe_ios:
+    :path: ".symlinks/plugins/stripe_ios/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -168,6 +240,16 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  Stripe: 972031d58e807f086d7abfd5ca1cc5c807023257
+  stripe_ios: eebee52319de946cc0da2d6ddc98a89b04cec95e
+  StripeApplePay: 3eee619b7332ab5de545dc70eb20c44a5259c0db
+  StripeCore: 2c8be132466d6eb445cd63d792d9eca9f43e86d2
+  StripeFinancialConnections: c9c269c39930b7fe6f03f5e58a61ca23897a1072
+  StripeIssuing: 6c9a6024b25fdde3a3d8a267293c153df91b7c41
+  StripePayments: 80a90e9e37f92082929869e5043a6f23f68d7483
+  StripePaymentSheet: 5cce6e291554b467764e0715f27f11a48c5e7e48
+  StripePaymentsUI: 79789f1de71b7fecb414fabffe441ceec3b2a13c
+  StripeUICore: 7f5d6e1c2d29f3946877e3986079adbf680ec096
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
 PODFILE CHECKSUM: e40c3913a81867a2ca44213bb3e9a8e80f739950

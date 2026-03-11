@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/feature/profile/domain/repo/profile_repo.dart';
 import 'package:spotem/feature/profile/presentation/view/personal_info_view.dart';
-import 'package:spotem/feature/profile/presentation/view/profile_view.dart';
 
 import '../../data/model/profile.dart';
 
@@ -34,6 +33,7 @@ class ProfileController extends GetxController {
       isLoading.value = true;
       final data = await _repository.getUserProfile();
       userData.value = data.isNotEmpty ? data.first : null;
+      userData.refresh();
     } catch (e) {
       // Get.snackbar("Error", "Failed to load profile", snackPosition: SnackPosition.BOTTOM);
     } finally {
@@ -51,7 +51,8 @@ class ProfileController extends GetxController {
         selectedAvatar.value = File(file.path);
       }
     } catch (e) {
-      Get.snackbar("Error", "Couldn't pick image", snackPosition: SnackPosition.BOTTOM);
+      // Get.snackbar("Error", "Couldn't pick image", snackPosition: SnackPosition.BOTTOM);
+      CustomShowMessage.error(message: "Couldn't pick image");
     }
   }
 
@@ -64,10 +65,11 @@ class ProfileController extends GetxController {
       userData.value = response.data;
       CustomShowMessage.success(message: response.message);
       //Get.snackbar("Success", response.message);
-      refresh();
+      userData.refresh();
       Get.to(() => PersonalInfoScreenView()); // Close the edit screen
     } catch (e) {
       // Get.snackbar("Error", e.toString());
+      CustomShowMessage.error(message: e.toString());
     } finally {
       isUpdating.value = false;
     }

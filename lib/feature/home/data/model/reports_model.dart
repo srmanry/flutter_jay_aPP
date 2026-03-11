@@ -6,6 +6,7 @@ class ReportModel {
   final String description;
   final LocationModel location;
   final DateTime createdAt;
+  final ReportSubscriptionStatus? subscription;
 
   String? placeName;
 
@@ -17,24 +18,42 @@ class ReportModel {
     required this.description,
     required this.location,
     required this.createdAt,
+    this.subscription,
     this.placeName,
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
+    final subscriptionJson = json["isSubsribed"] ?? json["isSubscribed"];
     return ReportModel(
       id: json["_id"]?.toString() ?? "",
       user: UserModel.fromJson(json["user"]),
-      type: json["type"],
+      type: json["type"]?.toString() ?? "",
       title: json["title"]?.toString() ?? "",
       description: json["description"]?.toString() ?? "",
       location: LocationModel.fromJson(json["location"]),
       createdAt: DateTime.parse(json["createdAt"]),
+      subscription: subscriptionJson is Map<String, dynamic> ? ReportSubscriptionStatus.fromJson(subscriptionJson) : null,
     );
   }
 
   //  Helper to set placeName after reverse geocoding
   void setPlaceName(String name) {
     placeName = name;
+  }
+}
+
+class ReportSubscriptionStatus {
+  final bool isTrueOrFalse;
+  final DateTime? date;
+
+  const ReportSubscriptionStatus({required this.isTrueOrFalse, required this.date});
+
+  factory ReportSubscriptionStatus.fromJson(Map<String, dynamic> json) {
+    final rawDate = json["date"]?.toString();
+    return ReportSubscriptionStatus(
+      isTrueOrFalse: json["isTrueOrFalse"] == true,
+      date: rawDate == null || rawDate.isEmpty ? null : DateTime.tryParse(rawDate),
+    );
   }
 }
 

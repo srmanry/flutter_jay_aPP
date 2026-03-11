@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/feature/report/domain/repo/repo.dart';
 
 class LocationController extends GetxController {
@@ -33,6 +34,7 @@ class LocationController extends GetxController {
   BitmapDescriptor? policeIcon;
   BitmapDescriptor? ambulanceIcon;
   BitmapDescriptor? iceIcon;
+  BitmapDescriptor? reportIcon;
 
   @override
   void onInit() {
@@ -178,17 +180,18 @@ class LocationController extends GetxController {
     if (hasPermission.value) {
       await loadLocation();
     } else {
-      Get.snackbar("পারমিশন", "লোকেশন পারমিশন দরকার");
+      CustomShowMessage.error(message: "Location permission required");
     }
   }
 
   Future<void> loadMarkerIcons() async {
     try {
-      // Marker icon sizes (px). Kept small to avoid oversized markers on map.
-      fireIcon = await _resizeMarker('assets/icons/fire.png', 44);
-      policeIcon = await _resizeMarker('assets/icons/polic.png', 44);
-      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 50);
-      iceIcon = await _resizeMarker('assets/icons/siren.png', 40);
+      // Same marker sizing as CleancodeNewFeatureScreenView.
+      fireIcon = await _resizeMarker('assets/icons/fire.png', 95);
+      policeIcon = await _resizeMarker('assets/icons/polic.png', 95);
+      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 110);
+      iceIcon = await _resizeMarker('assets/icons/siren.png', 90);
+      reportIcon = await _resizeMarker('assets/icons/mapIcon.png', 95);
     } catch (_) {
       // Fallback to default markers if assets fail to load.
     }
@@ -199,26 +202,31 @@ class LocationController extends GetxController {
     final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final Uint8List resizedData = (await frameInfo.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-    return BitmapDescriptor.bytes(resizedData);
+    // Keep behavior consistent with NewFeatureController marker rendering.
+    return BitmapDescriptor.fromBytes(resizedData);
   }
 
+  String _normalizeReportType(String type) => type.trim().toLowerCase();
+
   BitmapDescriptor _getMarkerIcon(String type) {
-    switch (type) {
-      case "Fire":
+    switch (_normalizeReportType(type)) {
+      case "fire":
         return fireIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-      case "Police":
+      case "police":
+      case "polic":
         return policeIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-      case "Ambulance":
+      case "ambulance":
+      case "ambulence":
         return ambulanceIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
-      case "ICE":
+      case "ice":
         return iceIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
       default:
-        return BitmapDescriptor.defaultMarker;
+        return reportIcon ?? iceIcon ?? BitmapDescriptor.defaultMarker;
     }
   }
 
   Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
-    const size = 20.0;
+    const size = 10.0;
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
@@ -243,7 +251,7 @@ class LocationController extends GetxController {
 
     try {
       // Ensure marker icons are ready.
-      if (fireIcon == null && policeIcon == null && ambulanceIcon == null && iceIcon == null) {
+      if (fireIcon == null || policeIcon == null || ambulanceIcon == null || iceIcon == null) {
         await loadMarkerIcons();
       }
 
@@ -251,7 +259,7 @@ class LocationController extends GetxController {
 
       markers.clear();
       for (final report in data) {
-        final type = report.type.isEmpty ? "Report" : report.type;
+        final type = report.type.trim().isEmpty ? "Report" : report.type.trim();
         final title = report.title.isEmpty ? "Report" : report.title;
         final description = report.description.isEmpty ? "Report" : report.description;
         final time = report.createdAt?.toIso8601String() ?? "";
@@ -264,6 +272,7 @@ class LocationController extends GetxController {
             markerId: MarkerId('${type}_${latValue}_$lngValue'),
             position: LatLng(latValue, lngValue),
             icon: _getMarkerIcon(type),
+            //anchor: const Offset(0.5, 0.5),
             infoWindow: const InfoWindow(title: ''),
             onTap: () {
               final distance = calculateDistance(lat.value, lng.value, latValue, lngValue);

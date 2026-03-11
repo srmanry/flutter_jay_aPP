@@ -364,7 +364,7 @@ class NewFeatureController extends GetxController {
       final result = await reportRepo.getReports();
       reports.assignAll(result);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+     // Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }

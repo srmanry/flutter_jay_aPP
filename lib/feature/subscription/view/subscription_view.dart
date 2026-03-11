@@ -16,13 +16,16 @@ class SubscriptionView extends StatefulWidget {
 class _SubscriptionViewState extends State<SubscriptionView> {
   late final SubscriptionController subscriptionController;
 
-  // incoming data আলাদা list এ রাখলাম
+
   final List<SubscriptionPlan> _planList = [];
 
   @override
   void initState() {
     super.initState();
     subscriptionController = Get.isRegistered<SubscriptionController>() ? Get.find<SubscriptionController>() : Get.put(SubscriptionController());
+    if (subscriptionController.subscriptionPlans.isEmpty) {
+      subscriptionController.fetchPlans(activeOnly: true);
+    }
   }
 
   @override
@@ -53,7 +56,6 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   );
                 }
 
-                // শুধু একটা item/card দেখাবে
                 final SubscriptionPlan plan = _planList.first;
 
                 return Padding(padding: const EdgeInsets.only(bottom: 10), child: _buildSubscriptionCard(context, plan));
@@ -115,6 +117,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   () => const SubscriptionPurchaseView(),
                   arguments: {
                     "planName": plan.name,
+                    "subscriptionId": plan.id,
                     "planData": "\$${plan.priceMonthly.toStringAsFixed(2)} /Month or \$${plan.priceYearly.toStringAsFixed(2)} /Year",
                     "monthly": plan.priceMonthly.toStringAsFixed(2),
                     "yearly": plan.priceYearly.toStringAsFixed(2),
@@ -134,7 +137,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   const SizedBox(height: 2),
                   Text(
                     "\$${plan.priceMonthly.toStringAsFixed(2)}/mo • \$${plan.priceYearly.toStringAsFixed(2)}/yr",
-                    style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.92)),
+                    style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.92)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

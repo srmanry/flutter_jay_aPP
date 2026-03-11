@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
@@ -31,10 +32,7 @@ class SetResetPasswordView extends StatelessWidget {
               const SizedBox(height: 80),
               AppIconWidget(),
 
-              const Text(
-                'Reset Password',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
+              const Text('Reset Password', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               Text(
                 'Enter a new password for $email',
@@ -61,27 +59,19 @@ class SetResetPasswordView extends StatelessWidget {
               SizedBox(height: 30),
               Obx(
                 () => buttonWidget(
-                  text: authController.isResetPassword.value
-                      ? "Loading..."
-                      : "Reset Password",
+                  text: authController.isResetPassword.value ? "Loading..." : "Reset Password",
                   onTap: () async {
                     final newPass = newPasswordController.text.trim();
                     final confirmPass = confirmPasswordController.text.trim();
 
                     if (newPass.isEmpty || confirmPass.isEmpty) {
-                      Get.snackbar(
-                        "Error",
-                        "All fields are required",
-                        colorText: Colors.red,
-                      );
+                    //  Get.snackbar("Error", "All fields are required", colorText: Colors.red);
+                      CustomShowMessage.error(message: "All fields are required");
                       return;
                     }
                     if (newPass != confirmPass) {
-                      Get.snackbar(
-                        "Error",
-                        "Passwords do not match",
-                        colorText: Colors.red,
-                      );
+                    //  Get.snackbar("Error", "Passwords do not match", colorText: Colors.red);
+                      CustomShowMessage.error(message: "Passwords do not match"); 
                       return;
                     }
 
@@ -91,11 +81,12 @@ class SetResetPasswordView extends StatelessWidget {
                       email: email,
                       newPassword: newPass,
                       onSuccess: () {
-                        Get.snackbar(
+                        /*    Get.snackbar(
                           "Success",
                           "Password reset successfully",
                           colorText: AppColors.appColor,
-                        );
+                        ); */
+                        CustomShowMessage.success(message: "Password reset successfully");
                         Get.off(() => SignInScreen());
                       },
                     );

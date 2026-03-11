@@ -4,8 +4,8 @@
 
 const String apiVersion = "api/v1";
 
-//const String baseUrl = "http://localhost:8001";
-const String baseUrl = "https://backend-jay-xeye.onrender.com";
+//const String baseUrl = "http://10.10.5.119:8001";
+ const String baseUrl = "https://backend-jay-xeye.onrender.com";
 
 String get baseApiUrl => "$baseUrl/$apiVersion";
 
@@ -70,7 +70,7 @@ class TripEndpoints {
   static String activeTrip = "$baseApiUrl/trip/me/active";
 
   static String markReached(String tripRouteId) => "$baseApiUrl/trip/$tripRouteId/reach";
-}
+} //
 
 // ================= OCCURRENCE POINTS =================
 

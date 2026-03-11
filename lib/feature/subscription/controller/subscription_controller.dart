@@ -1,64 +1,115 @@
-/* import 'package:get/get.dart';
 
-class SubscriptionController extends GetxController {
-  var selectedPlan = 'Monthly'.obs;
-  var isLoading = false.obs;
-  var subscriptionPlans = [].obs;
-  double get currentPrice {
-    final args = Get.arguments ?? {};
-    final monthly = double.tryParse(args['monthly']?.toString() ?? '0') ?? 0.0;
-    final yearly = double.tryParse(args['yearly']?.toString() ?? '0') ?? 0.0;
-
-    return selectedPlan.value == 'Monthly' ? monthly : yearly;
-  }
-
-  void changePlan(String plan) {
-    selectedPlan.value = plan;
-  }
-}
- */
 import 'package:get/get.dart';
+import 'package:spotem/core/common/custom_massage.dart';
+import 'package:spotem/core/network/api_service/api_client.dart';
+import 'package:spotem/core/network/api_service/api_endpoints.dart';
 import '../model/subsicription_model.dart';
 
 class SubscriptionController extends GetxController {
   var selectedPlan = 'Monthly'.obs;
   var isLoading = false.obs;
+  var isPaying = false.obs;
 
-  // ✅ Correctly typed RxList
+  //  Correctly typed RxList
   var subscriptionPlans = <SubscriptionPlan>[].obs;
 
-  // ✅ PageView এর index track করতে
+  //  PageView এর index track করতে
   var selectedIndex = 0.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadDummyPlans();
+  Future<void> fetchPlans({required bool activeOnly}) async {
+    final apiClient = Get.find<ApiClient>();
+    try {
+      isLoading.value = true;
+      final response = await apiClient.get(SubscriptionEndpoints.getAll, query: {"activeOnly": activeOnly});
+
+      if (response.statusCode == 200 && response.data is Map && response.data["success"] == true) {
+        final raw = response.data["data"];
+        if (raw is List) {
+          subscriptionPlans.assignAll(
+            raw
+                .whereType<Map>()
+                .map((e) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(e))),
+          );
+        } else {
+          subscriptionPlans.clear();
+        }
+        return;
+      }
+
+      final message = (response.data is Map ? response.data["message"] : null)?.toString() ?? "Failed to load subscriptions";
+      CustomShowMessage.error(message: message);
+      subscriptionPlans.clear();
+    } catch (e) {
+      CustomShowMessage.error(message: e.toString());
+      subscriptionPlans.clear();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  /// --- Dummy data load
-  void loadDummyPlans() {
-    isLoading.value = true;
+  Future<({String clientSecret, String paymentIntentId})?> createPayment({
+    required String userId,
+    required String subscriptionId,
+    required double price,
+    required String billingPeriod, // monthly/yearly
+  }) async {
+    final apiClient = Get.find<ApiClient>();
+    try {
+      isPaying.value = true;
+      final response = await apiClient.post(
+        PaymentEndpoints.createPayment,
+        data: {
+          "userId": userId,
+          "price": price,
+          "subscriptionId": subscriptionId,
+          "billingPeriod": billingPeriod,
+        },
+      );
 
-    // Simulate loading delay
-    Future.delayed(const Duration(seconds: 1), () {
-      subscriptionPlans.value = [
-        SubscriptionPlan(
-          name: "Pro Plan",
-          priceMonthly: 9.99,
-          priceYearly: 99.99,
-          benefits: ["All Features", "No Ads", "Unlimited Reports", "Priority Support"],
-        ),
-        SubscriptionPlan(
-          name: "Enterprise Plan",
-          priceMonthly: 19.99,
-          priceYearly: 199.99,
-          benefits: ["All Pro Features", "Dedicated Support", "Advanced Analytics", "Custom Branding"],
-        ),
-      ];
+      if (response.statusCode == 200 && response.data is Map && response.data["success"] == true) {
+        final clientSecret = response.data["clientSecret"]?.toString() ?? "";
+        final paymentIntentId = response.data["paymentIntentId"]?.toString() ?? "";
+        if (clientSecret.isEmpty || paymentIntentId.isEmpty) {
+          CustomShowMessage.error(message: "Invalid payment response");
+          return null;
+        }
+        return (clientSecret: clientSecret, paymentIntentId: paymentIntentId);
+      }
 
-      isLoading.value = false;
-    });
+      final message = (response.data is Map ? response.data["error"] ?? response.data["message"] : null)?.toString() ?? "Failed to create payment";
+      CustomShowMessage.error(message: message);
+      return null;
+    } catch (e) {
+      CustomShowMessage.error(message: e.toString());
+      return null;
+    } finally {
+      isPaying.value = false;
+    }
+  }
+
+  Future<bool> confirmPayment({required String paymentIntentId}) async {
+    final apiClient = Get.find<ApiClient>();
+    try {
+      isPaying.value = true;
+      final response = await apiClient.post(
+        PaymentEndpoints.confirmPayment,
+        data: {"paymentIntentId": paymentIntentId},
+      );
+
+      if (response.statusCode == 200 && response.data is Map && response.data["success"] == true) {
+        return true;
+      }
+
+      final status = (response.data is Map ? response.data["status"] : null)?.toString();
+      final error = (response.data is Map ? response.data["error"] ?? response.data["message"] : null)?.toString() ?? "Payment did not succeed";
+      CustomShowMessage.error(message: status == null ? error : "$error ($status)");
+      return false;
+    } catch (e) {
+      CustomShowMessage.error(message: e.toString());
+      return false;
+    } finally {
+      isPaying.value = false;
+    }
   }
 
   /// --- Current price based on selected plan & selected page

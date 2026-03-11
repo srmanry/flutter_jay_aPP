@@ -29,7 +29,7 @@ class HomeController extends GetxController {
       final sorted = [...result]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
       reports.assignAll(sorted);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+     // Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
