@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 
-
 import '../../../../core/common/widgets/app_icon.dart';
 import '../../../../core/utils/app_colors.dart';
 
@@ -70,10 +69,10 @@ class ProfileScreenView extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: avatarUrl,
                       fit: BoxFit.cover,
-                      height: 60,
-                      width: 60,
+                      height: 50,
+                      width: 50,
                       placeholder: (context, url) => CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) => Icon(Icons.image),
                     ),
                   ),
                 ),
@@ -85,20 +84,12 @@ class ProfileScreenView extends StatelessWidget {
                     children: [
                       Text(
                         profile.name,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,
-                        ),
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         profile.email,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: themeController.isDarkMode.value ? Colors.white : Colors.black,
-                        ),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -132,9 +123,7 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(ChangePasswordView());
               },
-              bottomIcon: Obx(
-                () => Icon(Icons.lock_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
-              ),
+              bottomIcon: Obx(() => Icon(Icons.lock_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
 
               name: "Change Password",
             ),
@@ -156,9 +145,7 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(AboutAppScreen());
               },
-              bottomIcon: Obx(
-                () => Icon(Icons.help_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
-              ),
+              bottomIcon: Obx(() => Icon(Icons.help_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
               name: "About",
             ),
 
@@ -166,9 +153,7 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(PrivacyPolicyView());
               },
-              bottomIcon: Obx(
-                () => Icon(Icons.privacy_tip_outlined, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
-              ),
+              bottomIcon: Obx(() => Icon(Icons.privacy_tip_outlined, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
               name: "Privacy Policy",
             ),
 
@@ -195,7 +180,7 @@ class ProfileScreenView extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                               authController.deleteAccount();
+                              authController.deleteAccount();
                             },
                             child: Container(
                               width: 100,

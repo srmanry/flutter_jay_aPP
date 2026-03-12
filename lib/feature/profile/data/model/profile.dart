@@ -28,6 +28,7 @@ class UserProfileModel {
 
 class UserData {
   final Avatar avatar;
+  final ProfileSubscriptionStatus? isSubsribed;
   final String id;
   final String name;
   final String email;
@@ -46,6 +47,7 @@ class UserData {
 
   UserData({
     required this.avatar,
+    this.isSubsribed,
     required this.id,
     required this.name,
     required this.email,
@@ -64,8 +66,10 @@ class UserData {
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
+    final subscriptionJson = json['isSubsribed'] ?? json['isSubscribed'];
     return UserData(
       avatar: Avatar.fromJson(json['avatar'] ?? {}),
+      isSubsribed: ProfileSubscriptionStatus.fromDynamic(subscriptionJson),
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
@@ -87,6 +91,7 @@ class UserData {
   Map<String, dynamic> toJson() {
     return {
       'avatar': avatar.toJson(),
+      'isSubsribed': isSubsribed?.toJson(),
       '_id': id,
       'name': name,
       'email': email,
@@ -103,6 +108,50 @@ class UserData {
       '__v': v,
       'gender': gender,
     };
+  }
+}
+
+class ProfileSubscriptionStatus {
+  final bool isTrueOrFalse;
+  final DateTime? date;
+
+  const ProfileSubscriptionStatus({required this.isTrueOrFalse, required this.date});
+
+  factory ProfileSubscriptionStatus.fromJson(Map<String, dynamic> json) {
+    final rawDate = json['date']?.toString();
+    return ProfileSubscriptionStatus(
+      isTrueOrFalse: _readBool(json['isTrueOrFalse']),
+      date: rawDate == null || rawDate.isEmpty ? null : DateTime.tryParse(rawDate),
+    );
+  }
+
+  static ProfileSubscriptionStatus? fromDynamic(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return ProfileSubscriptionStatus.fromJson(value);
+    }
+    if (value == null) return null;
+
+    return ProfileSubscriptionStatus(
+      isTrueOrFalse: _readBool(value),
+      date: null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'isTrueOrFalse': isTrueOrFalse,
+      'date': date?.toIso8601String(),
+    };
+  }
+
+  static bool _readBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      return normalized == 'true' || normalized == '1' || normalized == 'yes';
+    }
+    return false;
   }
 }
 

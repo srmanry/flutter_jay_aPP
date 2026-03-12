@@ -257,7 +257,7 @@ class AuthController extends GetxController {
   // ─── LOGOUT ──────────────────────
   Future<void> logout() async {
     await TokenManager.clearToken();
-    CustomShowMessage.success(message: "Logged out");
+    CustomShowMessage.success(message: "Log Out");
     Get.offAll(() => SplashScreen());
   }
 

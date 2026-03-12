@@ -42,10 +42,10 @@ class AppDependencies {
     // ───── Controllers ─────
     Get.put<AuthController>(AuthController(Get.find<AuthRepository>()));
 
-    Get.put<ProfileController>(ProfileController(Get.find<ProfileRepo>()));
+    Get.lazyPut<ProfileController>(() => ProfileController(Get.find<ProfileRepo>()), fenix: true);
 
-    Get.put<HomeController>(HomeController(Get.find<HomeRepo>()));
-    Get.put<NewFeatureController>(NewFeatureController(Get.find<ReportRepo>()));
+    Get.lazyPut<HomeController>(() => HomeController(Get.find<HomeRepo>()), fenix: true);
+    Get.lazyPut<NewFeatureController>(() => NewFeatureController(Get.find<ReportRepo>()), fenix: true);
     Get.put<ReportController>(ReportController(Get.find<ReportRepository>()));
     Get.put<ReportControllerByMap>(ReportControllerByMap(Get.find<ReportRepository>()));
     // Get.put<ViewReportByMapController>(ViewReportByMapController(Get.find<ReportRepository>()));

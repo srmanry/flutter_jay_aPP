@@ -16,7 +16,6 @@ class SubscriptionView extends StatefulWidget {
 class _SubscriptionViewState extends State<SubscriptionView> {
   late final SubscriptionController subscriptionController;
 
-
   final List<SubscriptionPlan> _planList = [];
 
   @override
@@ -41,12 +40,11 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 if (subscriptionController.isLoading.value) {
                   return const Center(child: CircularProgressIndicator(color: Color(0xFF476BD3)));
                 }
-
-                // controller থেকে আসা data আলাদা list এ রাখলাম
+        
                 _planList
                   ..clear()
                   ..addAll(subscriptionController.subscriptionPlans);
-
+        
                 if (_planList.isEmpty) {
                   return Center(
                     child: Text(
@@ -55,9 +53,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     ),
                   );
                 }
-
+        
                 final SubscriptionPlan plan = _planList.first;
-
+        
                 return Padding(padding: const EdgeInsets.only(bottom: 10), child: _buildSubscriptionCard(context, plan));
               }),
             ),
@@ -209,21 +207,22 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         ...plan.benefits.map(
                           (b) => Padding(
                             padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 3),
-                                  child: Icon(Icons.check_circle, size: 18, color: Color(0xFF476BD3)),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
+                            child: Center(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 3),
+                                    child: Icon(Icons.check_circle, size: 18, color: Color(0xFF476BD3)),
+                                  ),
+                                  SizedBox(width: 10),
+
+                                  Text(
                                     b,
                                     style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF374151)),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

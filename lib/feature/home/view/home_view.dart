@@ -128,7 +128,7 @@ class HomeScreenView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(50),
-                        border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? Colors.white : Color(0xFF777777)),
+                        border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? AppColors.appColor : Color(0xFF777777)),
                       ),
                       child: Obx(
                         () => TextField(
@@ -191,7 +191,7 @@ class HomeScreenView extends StatelessWidget {
                                                         decoration: BoxDecoration(
                                                           color: Colors.white,
                                                           borderRadius: BorderRadius.circular(45),
-                                                          border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor),
+                                                          border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? AppColors.appColor : AppColors.appColor),
                                                         ),
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(45),

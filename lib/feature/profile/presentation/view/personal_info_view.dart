@@ -101,13 +101,13 @@ class _PersonalInfoScreenViewState extends State<PersonalInfoScreenView> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(80),
                       child: CachedNetworkImage(
-                        height: 80,
-                        width: 80,
+                        height: 70,
+                        width: 70,
                         fit: BoxFit.cover,
 
                         imageUrl: "${profileController.userData.value?.avatar.url}",
                         placeholder: (context, url) => CircularProgressIndicator(strokeWidth: 2, color: AppColors.appColor),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) => Icon(Icons.image),
                       ),
                     ),
                   ),

@@ -5,10 +5,13 @@ import 'package:spotem/feature/home/view/home_view.dart';
 
 import 'core/utils/app_colors.dart';
 import 'feature/alert/controller/alert_controller.dart';
+import 'feature/home/controller/home_controller.dart';
 
 import 'feature/map/view/map_view.dart';
+import 'feature/new_featuer/presentation/controller/new_feature_controller.dart';
 import 'feature/new_featuer/presentation/view/cleancode_new_feature_screen_view.dart';
 
+import 'feature/profile/presentation/controller/profile_controller.dart';
 import 'feature/profile/presentation/view/profile_view.dart';
 import 'feature/report/presentation/view/report_create_view.dart';
 
@@ -23,10 +26,24 @@ class AppGroundView extends StatefulWidget {
 class _AppGroundViewState extends State<AppGroundView> {
   @override
   void initState() {
-    Get.put(AlertController(), permanent: true);
-    // TODO: implement initState
-    _currentIndex = widget.currentIndex;
     super.initState();
+
+    Get.put(AlertController(), permanent: true);
+    _currentIndex = widget.currentIndex;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      if (Get.isRegistered<HomeController>()) {
+        await Get.find<HomeController>().fetchReports();
+      }
+      if (Get.isRegistered<ProfileController>()) {
+        await Get.find<ProfileController>().fetchProfile();
+      }
+      if (Get.isRegistered<NewFeatureController>()) {
+        await Get.find<NewFeatureController>().fetchReports();
+      }
+    });
   }
 
   int _currentIndex = 0;

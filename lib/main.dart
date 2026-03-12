@@ -49,27 +49,29 @@ class MyApp extends StatelessWidget {
     return Obx(() {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: '',
+         title: '',
         themeMode: themeController.isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
         theme: ThemeData(
+          fontFamily: 'Roboto',
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: false,
           appBarTheme: AppBarTheme(
             // systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark,),
             backgroundColor: Colors.white,
             iconTheme: IconThemeData(color: AppColors.appColor),
-            titleTextStyle: TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24),
+            titleTextStyle: TextStyle(fontFamily: 'Roboto', color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24),
           ),
         ),
 
         darkTheme: ThemeData(
+          fontFamily: 'Roboto',
           scaffoldBackgroundColor: Colors.black,
           useMaterial3: false,
           appBarTheme: AppBarTheme(
             systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light),
             backgroundColor: Colors.black,
             iconTheme: IconThemeData(color: AppColors.appColor),
-            titleTextStyle: TextStyle(color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24),
+            titleTextStyle: TextStyle(fontFamily: 'Roboto', color: AppColors.appColor, fontWeight: FontWeight.w700, fontSize: 24),
           ),
         ),
 

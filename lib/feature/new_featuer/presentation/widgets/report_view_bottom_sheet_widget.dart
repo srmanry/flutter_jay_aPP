@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:spotem/feature/profile/presentation/controller/profile_controller.dart';
 import 'package:spotem/feature/subscription/view/subscription_view.dart';
 
 import '../../../home/data/model/reports_model.dart';
 
 Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCallback? onGoPressed}) {
   final formattedTime = DateFormat('dd MMM yyyy, hh:mm a').format(report.createdAt);
-  final isSubscribed = report.subscription?.isTrueOrFalse == true;
+  final profileController = Get.isRegistered<ProfileController>() ? Get.find<ProfileController>() : null;
 
   return Container(
     padding: const EdgeInsets.all(16),
@@ -104,9 +105,13 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
             height: 48,
             width: double.maxFinite,
             child: ElevatedButton(
-              onPressed: () {
-                Get.back();
+              onPressed: () async {
+                if (profileController != null) {
+                  await profileController.fetchProfile();
+                }
+                final isSubscribed = profileController?.userData.value?.isSubsribed?.isTrueOrFalse == true;
 
+                Get.back();
                 if (isSubscribed) {
                   onGoPressed?.call();
                 } else {

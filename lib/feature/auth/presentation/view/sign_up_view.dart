@@ -25,15 +25,13 @@ class SignupScreen extends StatelessWidget {
             SizedBox(height: 50),
             Center(child: AppIconWidget()),
             const SizedBox(height: 30),
-            const Text("Create Your Account", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Center(
+              child: const Text("Create Your Account", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            ),
             const SizedBox(height: 20),
 
             // fieldName("Name"),
-            CustomTextField(
-              controller: authController.nameController,
-              hintText: "Enter your Full Name",
-              prefixIcon: Icons.person_outline_outlined,
-            ),
+            CustomTextField(controller: authController.nameController, hintText: "Enter your Full Name", prefixIcon: Icons.person_outline_outlined),
             const SizedBox(height: 15),
 
             //fieldName("Email"),

@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 import 'package:spotem/core/common/custom_massage.dart';
 import 'package:spotem/core/network/api_service/api_client.dart';
@@ -13,7 +12,7 @@ class SubscriptionController extends GetxController {
   //  Correctly typed RxList
   var subscriptionPlans = <SubscriptionPlan>[].obs;
 
-  //  PageView এর index track করতে
+ 
   var selectedIndex = 0.obs;
 
   Future<void> fetchPlans({required bool activeOnly}) async {
@@ -25,11 +24,7 @@ class SubscriptionController extends GetxController {
       if (response.statusCode == 200 && response.data is Map && response.data["success"] == true) {
         final raw = response.data["data"];
         if (raw is List) {
-          subscriptionPlans.assignAll(
-            raw
-                .whereType<Map>()
-                .map((e) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(e))),
-          );
+          subscriptionPlans.assignAll(raw.whereType<Map>().map((e) => SubscriptionPlan.fromJson(Map<String, dynamic>.from(e))));
         } else {
           subscriptionPlans.clear();
         }
@@ -58,12 +53,7 @@ class SubscriptionController extends GetxController {
       isPaying.value = true;
       final response = await apiClient.post(
         PaymentEndpoints.createPayment,
-        data: {
-          "userId": userId,
-          "price": price,
-          "subscriptionId": subscriptionId,
-          "billingPeriod": billingPeriod,
-        },
+        data: {"userId": userId, "price": price, "subscriptionId": subscriptionId, "billingPeriod": billingPeriod},
       );
 
       if (response.statusCode == 200 && response.data is Map && response.data["success"] == true) {
@@ -91,13 +81,27 @@ class SubscriptionController extends GetxController {
     final apiClient = Get.find<ApiClient>();
     try {
       isPaying.value = true;
-      final response = await apiClient.post(
-        PaymentEndpoints.confirmPayment,
-        data: {"paymentIntentId": paymentIntentId},
-      );
+      final response = await apiClient.post(PaymentEndpoints.confirmPayment, data: {"paymentIntentId": paymentIntentId});
 
-      if (response.statusCode == 200 && response.data is Map && response.data["success"] == true) {
-        return true;
+      if (response.statusCode == 200 && response.data is Map) {
+        final body = Map<String, dynamic>.from(response.data as Map);
+        final isApiSuccess = body["success"] == true;
+        final status = _extractPaymentStatus(body);
+
+        if (isApiSuccess && _isSuccessfulPaymentStatus(status)) {
+          return true;
+        }
+
+        final errorFromApi = (body["error"] ?? body["message"])?.toString();
+        final reason = (errorFromApi == null || errorFromApi.isEmpty)
+            ? "Payment did not succeed"
+            : errorFromApi;
+        if (status != null && status.isNotEmpty) {
+          CustomShowMessage.error(message: "$reason ($status)");
+        } else {
+          CustomShowMessage.error(message: reason);
+        }
+        return false;
       }
 
       final status = (response.data is Map ? response.data["status"] : null)?.toString();
@@ -110,6 +114,34 @@ class SubscriptionController extends GetxController {
     } finally {
       isPaying.value = false;
     }
+  }
+
+  String? _extractPaymentStatus(Map<String, dynamic> body) {
+    final directStatus = body["status"]?.toString();
+    if (directStatus != null && directStatus.isNotEmpty) {
+      return directStatus;
+    }
+
+    final data = body["data"];
+    if (data is Map && data["status"] != null) {
+      return data["status"]?.toString();
+    }
+
+    final paymentIntent = body["paymentIntent"];
+    if (paymentIntent is Map && paymentIntent["status"] != null) {
+      return paymentIntent["status"]?.toString();
+    }
+
+    return null;
+  }
+
+  bool _isSuccessfulPaymentStatus(String? status) {
+    if (status == null || status.trim().isEmpty) {
+      // Keep backward compatibility for older API responses that don't return status.
+      return true;
+    }
+    final value = status.trim().toLowerCase();
+    return value == "succeeded" || value == "success" || value == "paid" || value == "completed";
   }
 
   /// --- Current price based on selected plan & selected page

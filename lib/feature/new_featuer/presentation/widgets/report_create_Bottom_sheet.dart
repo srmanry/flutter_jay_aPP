@@ -30,7 +30,7 @@ class ReportCreateBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, // Important: wrap content, not full screen
+              mainAxisSize: MainAxisSize.min, 
               children: [
                 Stack(
                   clipBehavior: Clip.none,
@@ -39,34 +39,9 @@ class ReportCreateBottomSheet extends StatelessWidget {
                     Center(
                       child: Obx(() => Text("Create ${controller.selectedType.value} Report", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600))),
                     ),
-
-                    // Top-right Cancel Icon
-                    /*      Positioned(
-                      bottom: 15,
-                      //left: 20,
-                      right: 0,
-                      //right: 8,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(0),
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
-                          child: Center(child: const Icon(Icons.cancel_outlined, color: Colors.red, size: 35)),
-                        ),
-                      ),
-                    ), */
                   ],
                 ),
-                // const SizedBox(height: 20),
-                /*  Row(
-                  children: [
-                    
-                  ],
-                ), */
+              
                 const SizedBox(height: 20),
                 TextField(
                   controller: controller.titleController,
@@ -90,25 +65,6 @@ class ReportCreateBottomSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
 
-                /*      Obx(
-                  () => SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: controller.isCreating.value
-                          ? null
-                          : () async {
-                              final report = await controller.createReport(position.latitude, position.longitude);
-                              if (report != null && context.mounted) {
-                                Navigator.pop(context);
-                              }
-                            },
-                      child: controller.isCreating.value
-                          ? SizedBox(child: const CircularProgressIndicator(color: Colors.white))
-                          : const Text("Submit Report", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                ), */
                 Obx(
                   () => SizedBox(
                     width: double.infinity,
@@ -143,20 +99,10 @@ class ReportCreateBottomSheet extends StatelessWidget {
                               final report = await controller.createReport(position.latitude, position.longitude);
 
                               if (report != null && context.mounted) {
-                                /*      Get.snackbar(
-                                  "Success",
-                                  "Report created successfully!",
-                                  backgroundColor: Colors.green.shade600,
-                                  colorText: Colors.white,
-                                  snackPosition: SnackPosition.TOP,
-                                  margin: const EdgeInsets.all(16),
-                                  borderRadius: 12,
-                                  icon: const Icon(Icons.check_circle, color: Colors.white),
-                                  duration: const Duration(seconds: 2),
-                                ); */
+                 
 
                                 CustomShowMessage.success(message: "Report created successfully");
-                                // Close Bottom Sheet on success
+              
                                 Navigator.of(context).pop();
                               } else {
                                 CustomShowMessage.error(message: "Failed to create report");
