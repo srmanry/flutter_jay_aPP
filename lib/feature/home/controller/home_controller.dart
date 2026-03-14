@@ -13,14 +13,28 @@ class HomeController extends GetxController {
   var reports = <ReportModel>[].obs;
   var filteredReports = <ReportModel>[].obs;
 
-  @override
+ /*  @override
   void onInit() {
     super.onInit();
     fetchReports();
     ever(reports, (_) {
       filteredReports.assignAll(reports);
     });
-  }
+  } */
+
+ @override
+void onInit() {
+  super.onInit();
+  ever(reports, (_) {
+    filteredReports.assignAll(reports);
+  });
+}
+
+@override
+void onReady() {
+  super.onReady();
+  fetchReports();
+}
 
   Future<void> fetchReports() async {
     try {

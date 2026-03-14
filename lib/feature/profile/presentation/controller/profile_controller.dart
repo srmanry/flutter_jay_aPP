@@ -23,7 +23,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print("🔥 ProfileController INIT");
+    //print("🔥 ProfileController INIT");
     fetchProfile();
   }
 

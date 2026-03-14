@@ -14,12 +14,12 @@ class ProfileRepoImpl implements ProfileRepo {
   Future<List<UserData>> getUserProfile() async {
     final response = await apiClient.get(UserEndpoints.getProfile);
     if (response.statusCode == 200 && response.data["success"] == true) {
-      print("----------------- getUserProfile response: ${response.data}");
+      //print("----------------- getUserProfile response: ${response.data}");
       
       return [UserData.fromJson(response.data["data"])];
       
     } else {
-      print("============= getUserProfile error: ${response.data}");
+     // print("============= getUserProfile error: ${response.data}");
       throw Exception(response.data["message"] ?? "Failed to fetch profile");
     }
   }

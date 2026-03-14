@@ -55,11 +55,11 @@ class CustomShowMessage {
                 if (title != null)
                   Text(
                     title,
-                    style: TextStyle(fontWeight: FontWeight.w700, color: color, fontSize: 16),
+                    style: TextStyle(fontWeight: FontWeight.w700, color: color, fontSize: 18),
                   ),
                 Text(
                   message,
-                  style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w500, fontSize: 14),
+                  style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 16),
                   textAlign: TextAlign.start,
                 ),
               ],

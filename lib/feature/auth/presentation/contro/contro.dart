@@ -9,6 +9,7 @@ import 'package:spotem/feature/auth/domain/auth_repo.dart';
 import 'package:spotem/feature/auth/presentation/view/sign_in_view.dart';
 import 'package:spotem/feature/profile/presentation/view/about_app_screen.dart';
 import 'package:spotem/feature/profile/presentation/view/pricacy_screen.dart';
+import '../../../home/controller/home_controller.dart';
 import '../../../splash/view/splash_screen_view.dart';
 
 import '../view/otp_code_screen.dart';
@@ -88,6 +89,10 @@ class AuthController extends GetxController {
         CustomShowMessage.success(message: "Login Successful");
         clearLoginFields();
         Get.offAll(() => AppGroundView(currentIndex: 0));
+        //Get.find<HomeController>().fetchReports();
+        Future.delayed(Duration(milliseconds: 200), () {
+          Get.find<HomeController>().fetchReports();
+        });
       } else {
         CustomShowMessage.error(message: result["message"] ?? "Login failed");
       }
@@ -197,12 +202,7 @@ class AuthController extends GetxController {
   }
 
   // ─── RESET PASSWORD ──────────────
-  Future<void> resetPassword({
-    required String email,
-    required String otp,
-    required String newPassword,
-    required VoidCallback onSuccess,
-  }) async {
+  Future<void> resetPassword({required String email, required String otp, required String newPassword, required VoidCallback onSuccess}) async {
     if (newPassword.length < 6) return CustomShowMessage.error(message: "Password min 6 chars");
 
     try {
@@ -237,9 +237,7 @@ class AuthController extends GetxController {
       final result = await _authRepository.changePassword(currentPassword, newPassword, confirmPassword);
 
       final errorSources = result["errorSources"];
-      final errorSourceMessage = (errorSources is List && errorSources.isNotEmpty && errorSources.first is Map)
-          ? (errorSources.first["message"]?.toString())
-          : null;
+      final errorSourceMessage = (errorSources is List && errorSources.isNotEmpty && errorSources.first is Map) ? (errorSources.first["message"]?.toString()) : null;
       final message = result["message"]?.toString() ?? errorSourceMessage;
 
       if (result["success"] == true) {
