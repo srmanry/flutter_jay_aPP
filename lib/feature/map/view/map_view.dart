@@ -50,28 +50,29 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       body: Stack(
         children: [
           Obx(() {
-            if (!locationController.hasPermission.value) {
-              return const Center(
+            if (!locationController.hasPermission.value || locationController.lat.value == 0.0 || locationController.lng.value == 0.0) {
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.location_off, size: 64, color: Colors.grey),
-                    SizedBox(height: 16),
-                    Text('Location permission required', style: TextStyle(fontSize: 16)),
-                    SizedBox(height: 8),
-                    Text('Please enable location access to view the map'),
+                    const Icon(Icons.location_off, size: 64, color: Colors.grey),
+                    const SizedBox(height: 16),
+                    const Text('Location permission required', style: TextStyle(fontSize: 16)),
+                    const SizedBox(height: 8),
+                    const Text('Please allow location permission and enable GPS'),
+                    const SizedBox(height: 14),
+                    ElevatedButton(
+                      onPressed: _checkPermissionAndLoadLocation,
+                      child: const Text('Allow Location'),
+                    ),
                   ],
                 ),
               );
             }
 
-            // Use default location (Bangladesh - Dhaka) if location not loaded yet
-            final double displayLat = locationController.lat.value != 0.0 ? locationController.lat.value : 23.8103; // Default: Dhaka, Bangladesh
-            final double displayLng = locationController.lng.value != 0.0 ? locationController.lng.value : 90.4125; // Default: Dhaka, Bangladesh
-
             return GoogleMap(
               // padding: const EdgeInsets.only(bottom: 220),
-              initialCameraPosition: CameraPosition(target: LatLng(displayLat, displayLng), zoom: 14),
+              initialCameraPosition: CameraPosition(target: LatLng(locationController.lat.value, locationController.lng.value), zoom: 14),
               markers: Set<Marker>.from(locationController.markers),
               polylines: Set<Polyline>.from(locationController.polylines),
               myLocationEnabled: true,

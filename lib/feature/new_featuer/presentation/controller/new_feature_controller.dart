@@ -1,7 +1,7 @@
 
-
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,6 +39,13 @@ class NewFeatureController extends GetxController {
   BitmapDescriptor? ambulanceIcon;
   BitmapDescriptor? iceIcon;
 
+  int _markerWidthForPlatform(int baseWidth) {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return (baseWidth * 0.6).round();
+    }
+    return baseWidth;
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -70,10 +77,10 @@ class NewFeatureController extends GetxController {
   // ===============================
   Future<void> loadMarkerIcons() async {
     try {
-      fireIcon = await _resizeMarker('assets/icons/fire.png', 95);
-      policeIcon = await _resizeMarker('assets/icons/polic.png', 95);
-      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 110);
-      iceIcon = await _resizeMarker('assets/icons/siren.png', 90);
+      fireIcon = await _resizeMarker('assets/icons/fire.png', _markerWidthForPlatform(95));
+      policeIcon = await _resizeMarker('assets/icons/polic.png', _markerWidthForPlatform(95));
+      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', _markerWidthForPlatform(110));
+      iceIcon = await _resizeMarker('assets/icons/siren.png', _markerWidthForPlatform(90));
     } catch (e) {
       print("Marker load error ===== $e");
     }

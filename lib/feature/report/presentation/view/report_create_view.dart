@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spotem/core/common/custom_massage.dart';
 
 import '../../../../core/common/widgets/save_botton.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -19,7 +18,7 @@ class ReportScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //leading: GestureDetector(onTap: () {Get.to(AppGroundView());}, child: Icon(Icons.arrow_back_ios_rounded)),
+        leading: IconButton(icon: const Icon(Icons.arrow_back_ios_rounded), onPressed: () => Get.back()),
         elevation: 0,
         centerTitle: true,
         title: Row(
@@ -35,68 +34,76 @@ class ReportScreenView extends StatelessWidget {
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextField("Event", "Title", reportController.titleController),
-              const SizedBox(height: 15),
-              _buildTextField("Description", "Write description here", reportController.descriptionController, maxLines: 5),
-              const SizedBox(height: 20),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTextField("Event", "Title", reportController.titleController),
+                const SizedBox(height: 15),
+                _buildTextField("Description", "Write description here", reportController.descriptionController, maxLines: 5),
+                const SizedBox(height: 20),
 
-              Text(
-                'Report Type',
-                style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 8),
-              Obx(
-                () => RadioGroup<String>(
-                  groupValue: reportController.selectedOption.value,
-                  onChanged: (value) {
-                    if (value != null) {
-                      reportController.selectedOption.value = value;
-                    }
-                  },
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: reportController.options.length,
-                    itemBuilder: (context, index) {
-                      final item = reportController.options[index];
-                      final label = item["label"] as String;
-                      final color = item["color"] as Color;
-
-                      return InkWell(
-                        onTap: () {
-                          reportController.selectedOption.value = label;
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Radio<String>(
-                              value: label,
-                              fillColor: WidgetStateProperty.all(themeController.isDarkMode.value ? Colors.white : Colors.black),
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              label,
-                              style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(Icons.location_on, color: color),
-                          ],
-                        ),
-                      );
+                Text(
+                  'Report Type',
+                  style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
+                ),
+                SizedBox(height: 8),
+                Obx(
+                  () => RadioGroup<String>(
+                    groupValue: reportController.selectedOption.value,
+                    onChanged: (value) {
+                      if (value != null) {
+                        reportController.selectedOption.value = value;
+                      }
                     },
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: reportController.options.length,
+                      itemBuilder: (context, index) {
+                        final item = reportController.options[index];
+                        final label = item["label"] as String;
+                        final color = item["color"] as Color;
+
+                        return InkWell(
+                          onTap: () {
+                            reportController.selectedOption.value = label;
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Radio<String>(
+                                value: label,
+                                fillColor: WidgetStateProperty.all(themeController.isDarkMode.value ? Colors.white : Colors.black),
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                label,
+                                style: TextStyle(
+                                  color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(Icons.location_on, color: color),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
 
-              /*     Align(
+                /*     Align(
                 alignment: AlignmentGeometry.bottomRight,
                 child: InkWell(
                   onTap: () {
@@ -104,8 +111,9 @@ class ReportScreenView extends StatelessWidget {
                   },
                   child: Text("Create Report by Map "),
                 ),
-              ), */
-            ],
+                ), */
+              ],
+            ),
           ),
         ),
       ),
@@ -124,47 +132,13 @@ class ReportScreenView extends StatelessWidget {
             onTap: reportController.isCreateingReport.value
                 ? null
                 : () async {
-                    if (reportController.titleController.text.isEmpty && reportController.descriptionController.text.isEmpty) {
-                      /*     Get.snackbar(
-                        "Error",
-                        "Title is required",
-                        snackPosition: SnackPosition.TOP,
-                        colorText: Colors.red,
-                        //duration: const Duration(seconds: 2),
-                      ); */
-                      CustomShowMessage.error(message: "Title is required");
-                      return;
-                    }
-
-                    if (reportController.descriptionController.text.isEmpty) {
-                      /*       Get.snackbar(
-                        "Error",
-                        "Description is required",
-                        snackPosition: SnackPosition.TOP,
-                        colorText: Colors.red,
-                        duration: const Duration(seconds: 2),
-                      ); */
-                      CustomShowMessage.error(message: "Description is required");
-                      return;
-                    }
-
+                    FocusManager.instance.primaryFocus?.unfocus();
                     await locationController.checkPermissionAndLoadLocation();
                     if (!locationController.hasPermission.value) {
-                      /* Get.snackbar(
-                              "Error",
-                              "Location permission required",
-                              snackPosition: SnackPosition.TOP,
-                              colorText: Colors.red,
-                            ); */
-                      CustomShowMessage.error(message: "Location permission required");
                       return;
                     }
                     final lat = locationController.lat.value;
                     final lng = locationController.lng.value;
-                    if (lat == 0.0 && lng == 0.0) {
-                      CustomShowMessage.error(message: "Location not available");
-                      return;
-                    }
                     await reportController.createReport(lat, lng);
                   },
           ),
@@ -186,6 +160,7 @@ class ReportScreenView extends StatelessWidget {
           textCapitalization: TextCapitalization.words,
           controller: controller,
           maxLines: maxLines,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),

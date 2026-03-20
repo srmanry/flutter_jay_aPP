@@ -10,12 +10,12 @@ import '../widgets/type_selector_widget.dart';
 
 class CleancodeNewFeatureScreenView extends StatelessWidget {
   final controller = Get.find<NewFeatureController>();
-  final LatLng defaultLocation = const LatLng(23.8103, 90.4125);
   final LocationController locationController = Get.find<LocationController>();
 
   CleancodeNewFeatureScreenView({super.key}) {
     // Only once when widget is created
     controller.fetchReports();
+    locationController.checkPermissionAndLoadLocation();
   }
 
   @override
@@ -23,9 +23,27 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(toolbarHeight: 1.5, title: const Text(""), backgroundColor: Colors.black.withValues(alpha: 0.9), elevation: 0),
       body: Obx(() {
-        final LatLng userLocation = (locationController.lat.value != 0.0 && locationController.lng.value != 0.0)
-            ? LatLng(locationController.lat.value, locationController.lng.value)
-            : defaultLocation;
+        if (!locationController.hasPermission.value || locationController.lat.value == 0.0 || locationController.lng.value == 0.0) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.location_off, size: 64, color: Colors.grey),
+                const SizedBox(height: 16),
+                const Text('Location permission required', style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 8),
+                const Text('Please allow location permission and enable GPS'),
+                const SizedBox(height: 14),
+                ElevatedButton(
+                  onPressed: locationController.checkPermissionAndLoadLocation,
+                  child: const Text('Allow Location'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final LatLng userLocation = LatLng(locationController.lat.value, locationController.lng.value);
         final markers = controller.generateMarkers(userLocation);
 
         return Stack(

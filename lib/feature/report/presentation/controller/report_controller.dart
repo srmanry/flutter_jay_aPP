@@ -12,7 +12,7 @@ class ReportController extends GetxController {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  var selectedOption = "ICE".obs;
+  var selectedOption = "".obs;
   var isCreateingReport = false.obs;
 
   final List<Map<String, dynamic>> options = [
@@ -35,14 +35,36 @@ class ReportController extends GetxController {
   }
 
   Future<bool> createReport(double lat, double lng) async {
+    final title = titleController.text.trim();
+    final description = descriptionController.text.trim();
+    final type = selectedOption.value.trim();
+
+    if (title.isEmpty) {
+      CustomShowMessage.error(message: "Title is required");
+      return false;
+    }
+    if (description.isEmpty) {
+      CustomShowMessage.error(message: "Description is required");
+      return false;
+    }
+    if (type.isEmpty) {
+      CustomShowMessage.error(message: "Report type is required");
+      return false;
+    }
+    if (lat == 0.0 || lng == 0.0) {
+      CustomShowMessage.error(message: "Location not available");
+      return false;
+    }
+
     try {
       isCreateingReport.value = true;
-      await repository.createReport(title: titleController.text.trim(), type: selectedOption.value, description: descriptionController.text.trim(), latitude: lat, longitude: lng);
+      await repository.createReport(title: title, type: type, description: description, latitude: lat, longitude: lng);
 
       CustomShowMessage.success(message: "Report created successfully");
 
       titleController.clear();
       descriptionController.clear();
+      selectedOption.value = "";
       return true;
     } catch (e) {
       CustomShowMessage.error(message: _errorMessage(e));
