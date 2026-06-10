@@ -42,7 +42,7 @@ Widget profileButtonWidget({
                         fontWeight: FontWeight.w400,
                         color: themeController.isDarkMode.value
                             ? Colors.white
-                            : Color(0xFFF4E4E4E),
+                            : Color(0xfff4e4e4e),
                       ),
                     ),
                     Icon(

@@ -74,17 +74,16 @@ class OtpCodeScreenView extends StatelessWidget {
                       length: 6,
                       controller: otpController,
                       defaultPinTheme: defaultPinTheme,
-                      onCompleted: (pin) => print("Entered OTP: $pin"),
+                      onCompleted: (_) {},
                     ),
 
                     const SizedBox(height: 30),
                     // Verify OTP button
                     Obx(
                       () => buttonWidget(
-                              text: authController.isVerifyOtp.value
-                            ? "Loading..."
-                            : "Verify OTP",
-                        onTap: () {
+                        text: "Verify OTP",
+                        isLoading: authController.isVerifyOtp.value,
+                        onTap: authController.isVerifyOtp.value ? null : () {
                           final otp = otpController.text.trim();
                           if (otp.isEmpty) {
                           //  Get.snackbar("Error", "Please enter OTP");
@@ -122,7 +121,6 @@ class OtpCodeScreenView extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               Get.to(() => ForgetPasswordView());
-                              print("*************RESEND OTP");
                               //authController.sendOtp(); // resend OTP
                             },
                             child: Text(

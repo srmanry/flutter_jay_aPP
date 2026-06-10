@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spotem/core/common/custom_massage.dart';
-import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/auth/presentation/contro/contro.dart';
 
 import '../../../../../../core/common/widgets/custom_text_field.dart';
@@ -59,8 +58,9 @@ class SetResetPasswordView extends StatelessWidget {
               SizedBox(height: 30),
               Obx(
                 () => buttonWidget(
-                  text: authController.isResetPassword.value ? "Loading..." : "Reset Password",
-                  onTap: () async {
+                  text: "Reset Password",
+                  isLoading: authController.isResetPassword.value,
+                  onTap: authController.isResetPassword.value ? null : () async {
                     final newPass = newPasswordController.text.trim();
                     final confirmPass = confirmPasswordController.text.trim();
 

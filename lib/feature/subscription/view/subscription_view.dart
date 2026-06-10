@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:spotem/core/utils/app_colors.dart';
 import 'package:spotem/feature/subscription/controller/subscription_controller.dart';
 
 import '../model/subsicription_model.dart';
@@ -16,8 +16,6 @@ class SubscriptionView extends StatefulWidget {
 class _SubscriptionViewState extends State<SubscriptionView> {
   late final SubscriptionController subscriptionController;
 
-  final List<SubscriptionPlan> _planList = [];
-
   @override
   void initState() {
     super.initState();
@@ -30,37 +28,48 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD8E6F0),
+      backgroundColor: const Color(0xFFF5F8FC),
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            Expanded(
-              child: Obx(() {
-                if (subscriptionController.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator(color: Color(0xFF476BD3)));
-                }
-        
-                _planList
-                  ..clear()
-                  ..addAll(subscriptionController.subscriptionPlans);
-        
-                if (_planList.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "No subscription plans found",
-                      style: GoogleFonts.manrope(color: const Color(0xFF1F2937), fontSize: 17, fontWeight: FontWeight.w600),
-                    ),
-                  );
-                }
-        
-                final SubscriptionPlan plan = _planList.first;
-        
-                return Padding(padding: const EdgeInsets.only(bottom: 10), child: _buildSubscriptionCard(context, plan));
-              }),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.appColor.withValues(alpha: 0.12), const Color(0xFFF5F8FC), const Color(0xFFF5F8FC)],
+              stops: const [0.0, 0.22, 1.0],
             ),
-            _buildBottomSubscribeBar(),
-          ],
+          ),
+          child: Column(
+            children: [
+              _buildHeader(),
+              Expanded(
+                child: Obx(() {
+                  if (subscriptionController.isLoading.value) {
+                    return Center(child: CircularProgressIndicator(color: AppColors.appColor));
+                  }
+
+                  final plans = subscriptionController.subscriptionPlans;
+
+                  if (plans.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No subscription plans found",
+                        style: const TextStyle(color: Color(0xFF1F2937), fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    );
+                  }
+
+                  final SubscriptionPlan plan = plans.first;
+
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _buildSubscriptionCard(context, plan),
+                  );
+                }),
+              ),
+              _buildBottomSubscribeBar(),
+            ],
+          ),
         ),
       ),
     );
@@ -68,21 +77,22 @@ class _SubscriptionViewState extends State<SubscriptionView> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF1F2937)),
+            style: IconButton.styleFrom(backgroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF1F2937), size: 18),
             onPressed: () => Get.back(),
           ),
           Expanded(
             child: Text(
               "Subscription Plans",
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(color: const Color(0xFF111827), fontSize: 22, fontWeight: FontWeight.w800),
+              style: const TextStyle(color: Color(0xFF111827), fontSize: 21, fontWeight: FontWeight.w700),
             ),
           ),
-          const SizedBox(width: 48),
+          const SizedBox(width: 44),
         ],
       ),
     );
@@ -94,13 +104,11 @@ class _SubscriptionViewState extends State<SubscriptionView> {
         return const SizedBox(height: 20);
       }
 
-      _planList
-        ..clear()
-        ..addAll(subscriptionController.subscriptionPlans);
+      final plans = subscriptionController.subscriptionPlans;
 
-      if (_planList.isEmpty) return const SizedBox.shrink();
+      if (plans.isEmpty) return const SizedBox.shrink();
 
-      final SubscriptionPlan plan = _planList.first;
+      final SubscriptionPlan plan = plans.first;
 
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -123,19 +131,20 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF476BD3),
+                backgroundColor: AppColors.appColor,
                 foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                elevation: 2,
+                shadowColor: AppColors.appColor.withValues(alpha: 0.35),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Subscribe Now", style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w800)),
+                  const Text("Subscribe Now", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
                   Text(
                     "\$${plan.priceMonthly.toStringAsFixed(2)}/mo • \$${plan.priceYearly.toStringAsFixed(2)}/yr",
-                    style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.92)),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white.withValues(alpha: 0.92)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -156,78 +165,77 @@ class _SubscriptionViewState extends State<SubscriptionView> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(6, 8, 6, 4),
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFF6F7F9),
-              borderRadius: BorderRadius.circular(22),
-              boxShadow: const [BoxShadow(color: Color(0x26000000), blurRadius: 22, offset: Offset(0, 10))],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.appColor.withValues(alpha: 0.14)),
+              boxShadow: const [BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 8))],
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(22), bottom: Radius.circular(12)),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(12)),
                     child: Image.asset("assets/icons/mapt1.png", height: 280, fit: BoxFit.cover),
                   ),
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Center(
-                          child: Text(
-                            cardTitle.isEmpty ? plan.name : cardTitle,
-                            style: GoogleFonts.manrope(fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: -0.6, color: const Color(0xFF111827)),
-                          ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Text(
+                          cardTitle.isEmpty ? plan.name : cardTitle,
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: -0.3, color: Color(0xFF111827)),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          _descriptionFromBenefits(plan),
-                          style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w500, height: 1.45, color: const Color(0xFF4B5563)),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        _descriptionFromBenefits(plan),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, height: 1.45, color: Color(0xFF4B5563)),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Text(
+                          "\$${plan.priceMonthly.toStringAsFixed(2)}/month  •  \$${plan.priceYearly.toStringAsFixed(2)}/year",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -0.2, color: AppColors.appColor),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
-                        Center(
-                          child: Text(
-                            "\$${plan.priceMonthly.toStringAsFixed(2)}/month  •  \$${plan.priceYearly.toStringAsFixed(2)}/year",
-                            style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w600, letterSpacing: -0.6, color: const Color(0xFF111827)),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const SizedBox(height: 18),
-                        Text(
-                          "What you get",
-                          style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w800, color: const Color(0xFF111827)),
-                        ),
-                        const SizedBox(height: 10),
-                        ...plan.benefits.map(
-                          (b) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Center(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 3),
-                                    child: Icon(Icons.check_circle, size: 18, color: Color(0xFF476BD3)),
-                                  ),
-                                  SizedBox(width: 10),
-
-                                  Text(
-                                    b,
-                                    style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF374151)),
-                                  ),
-                                ],
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
+                        "What you get",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF111827)),
+                      ),
+                      const SizedBox(height: 10),
+                      ...plan.benefits.map(
+                        (b) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Icon(Icons.check_circle, size: 18, color: AppColors.appColor),
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  b,
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF374151)),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],

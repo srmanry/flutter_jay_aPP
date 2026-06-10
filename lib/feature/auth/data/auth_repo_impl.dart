@@ -27,7 +27,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Map<String, dynamic>> sendOtp(String email) async {
-    final response = await apiClient.post(AuthEndpoints.resetPassword, data: {'email': email});
+    final response = await apiClient.post(AuthEndpoints.forgotPassword, data: {'email': email});
     return response.data;
   }
 

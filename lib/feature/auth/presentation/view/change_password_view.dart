@@ -71,16 +71,22 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                           minimumSize: Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        onPressed: () {
-                          authController.changePassword(
-                            currentPasswordController.text.trim(),
-                            newPasswordController.text.trim(),
-                            confirmPasswordController.text.trim(),
-                          );
-                        },
+                        onPressed: authController.isChangepassword.value
+                            ? null
+                            : () {
+                                authController.changePassword(
+                                  currentPasswordController.text.trim(),
+                                  newPasswordController.text.trim(),
+                                  confirmPasswordController.text.trim(),
+                                );
+                              },
 
                         child: authController.isChangepassword.value
-                            ? CircularProgressIndicator(color: Colors.white)
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.2),
+                              )
                             : Text(
                                 "Save",
                                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),

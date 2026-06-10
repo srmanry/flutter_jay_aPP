@@ -221,6 +221,7 @@ class AuthController extends GetxController {
 
     try {
       sentOtp.value = true;
+      isSentOtp.value = true;
 
       final result = await _authRepository.sendOtp(email);
 
@@ -247,6 +248,7 @@ class AuthController extends GetxController {
       Get.snackbar("Error", "Something went wrong", colorText: Colors.red);
     } finally {
       sentOtp.value = false;
+      isSentOtp.value = false;
     }
   }
 

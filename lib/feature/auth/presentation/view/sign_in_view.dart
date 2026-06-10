@@ -89,17 +89,13 @@ class SignInScreen extends StatelessWidget {
 
             Obx(() {
               return buttonWidget(
-                child: authController.isLogin.value
-                    ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text(
-                        "Sign In",
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                // text: authController.isLogin.value ? "Please wait..." : "Sign In",
-                onTap: () {
-                  authController.login();
-                },
-                text: 'kjkj',
+                text: "Sign In",
+                isLoading: authController.isLogin.value,
+                onTap: authController.isLogin.value
+                    ? null
+                    : () {
+                        authController.login();
+                      },
               );
             }),
 

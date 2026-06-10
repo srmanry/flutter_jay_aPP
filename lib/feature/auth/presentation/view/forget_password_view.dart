@@ -35,20 +35,12 @@ class ForgetPasswordView extends StatelessWidget {
               CustomTextField(controller: authController.emailController, hintText: "Enter your email", prefixIcon: Icons.email_outlined),
 
               const SizedBox(height: 30),
-              buttonWidget(
-                child: Obx(
-                  () => authController.isSentOtp.value
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          "Send OTP",
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
+              Obx(
+                () => buttonWidget(
+                  text: "Send OTP",
+                  isLoading: authController.isSentOtp.value,
+                  onTap: authController.isSentOtp.value ? null : () => authController.sendOtp(authController.emailController.text.trim()),
                 ),
-                //  text: authController.isSentOtp.value ? "Sending OTP..." : "Send OTP",
-                onTap: () {
-                  authController.sendOtp(authController.emailController.text.trim());
-                },
-                text: '',
               ),
 
               /* Obx(() => authController.isLoading.value

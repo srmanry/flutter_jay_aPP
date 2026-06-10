@@ -30,9 +30,9 @@ class ReportCreateBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, 
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Stack(
+                /*   Stack(
                   clipBehavior: Clip.none,
                   children: [
                     // Center Text
@@ -40,8 +40,20 @@ class ReportCreateBottomSheet extends StatelessWidget {
                       child: Obx(() => Text("Create ${controller.selectedType.value} Report", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600))),
                     ),
                   ],
+                ) */
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(
+                      () => Text(
+                        "Create ${controller.selectedType.value} Report",
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
+                  ],
                 ),
-              
+
                 const SizedBox(height: 20),
                 TextField(
                   controller: controller.titleController,
@@ -99,10 +111,8 @@ class ReportCreateBottomSheet extends StatelessWidget {
                               final report = await controller.createReport(position.latitude, position.longitude);
 
                               if (report != null && context.mounted) {
-                 
-
                                 CustomShowMessage.success(message: "Report created successfully");
-              
+
                                 Navigator.of(context).pop();
                               } else {
                                 CustomShowMessage.error(message: "Failed to create report");

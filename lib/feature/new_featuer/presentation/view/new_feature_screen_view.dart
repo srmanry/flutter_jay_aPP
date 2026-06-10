@@ -8,12 +8,22 @@ import '../controller/new_feature_controller.dart';
 import '../widgets/report_create_Bottom_sheet.dart';
 import '../widgets/type_selector_widget.dart';
 
-class CleancodeNewFeatureScreenView extends StatelessWidget {
-  final controller = Get.find<NewFeatureController>();
-  final LocationController locationController = Get.find<LocationController>();
+class CleancodeNewFeatureScreenView extends StatefulWidget {
+  const CleancodeNewFeatureScreenView({super.key});
 
-  CleancodeNewFeatureScreenView({super.key}) {
-    // Only once when widget is created
+  @override
+  State<CleancodeNewFeatureScreenView> createState() => _CleancodeNewFeatureScreenViewState();
+}
+
+class _CleancodeNewFeatureScreenViewState extends State<CleancodeNewFeatureScreenView> {
+  late final NewFeatureController controller;
+  late final LocationController locationController;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<NewFeatureController>();
+    locationController = Get.find<LocationController>();
     controller.fetchReports();
     locationController.checkPermissionAndLoadLocation();
   }
@@ -66,6 +76,8 @@ class CleancodeNewFeatureScreenView extends StatelessWidget {
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
+                  isDismissible: true,
+                  enableDrag: true,
                   backgroundColor: Colors.transparent,
                   builder: (_) => ReportCreateBottomSheet(position: pos),
                 ).whenComplete(() {

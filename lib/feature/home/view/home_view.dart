@@ -17,9 +17,9 @@ class HomeScreenView extends StatelessWidget {
   HomeScreenView({super.key});
   final AuthController authController = Get.find<AuthController>();
   final ProfileController profileController = Get.find<ProfileController>();
-  final ThemeController themeController = Get.put(ThemeController());
+  final ThemeController themeController = Get.find<ThemeController>();
   final HomeController homeController = Get.find<HomeController>();
-  final InternetController internetController = Get.put(InternetController());
+  final InternetController internetController = Get.find<InternetController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +44,11 @@ class HomeScreenView extends StatelessWidget {
                               child: Text(
                                 maxLines: 1,
                                 profileController.userData.value?.name ?? " ",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+                                ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -52,14 +56,18 @@ class HomeScreenView extends StatelessWidget {
                               children: [
                                 Text(
                                   "Welcome to",
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800]),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
+                                  ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
                                   " Spotem365",
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     // color: AppColors.appColor,
                                     //color: themeController.isDarkMode.value ? Colors.white : Colors.grey[800],
                                   ),
@@ -86,7 +94,10 @@ class HomeScreenView extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius: BorderRadius.circular(45),
-                                                border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor),
+                                                border: Border.all(
+                                                  width: 1.5,
+                                                  color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,
+                                                ),
                                               ),
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(45),
@@ -94,7 +105,8 @@ class HomeScreenView extends StatelessWidget {
                                                   imageUrl: profileController.userData.value!.avatar.url,
                                                   height: 45,
                                                   width: 45,
-                                                  placeholder: (context, url) => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                                  placeholder: (context, url) =>
+                                                      const Center(child: CircularProgressIndicator(strokeWidth: 2)),
                                                   errorWidget: (context, url, error) => const Icon(Icons.account_circle_outlined, size: 40),
                                                   fadeInDuration: const Duration(milliseconds: 250),
                                                   fit: BoxFit.cover,
@@ -112,7 +124,10 @@ class HomeScreenView extends StatelessWidget {
                                     child: CircleAvatar(
                                       radius: 20,
                                       backgroundColor: themeController.isDarkMode.value ? Colors.white : Colors.grey[300],
-                                      child: Icon(Icons.notifications_none_outlined, color: themeController.isDarkMode.value ? Colors.red : Colors.red),
+                                      child: Icon(
+                                        Icons.notifications_none_outlined,
+                                        color: themeController.isDarkMode.value ? Colors.red : Colors.red,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -138,7 +153,11 @@ class HomeScreenView extends StatelessWidget {
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search, color: themeController.isDarkMode.value ? Colors.black : Colors.black),
                             hintText: 'Search by category',
-                            hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: themeController.isDarkMode.value ? Colors.grey : Colors.grey),
+                            hintStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: themeController.isDarkMode.value ? Colors.grey : Colors.grey,
+                            ),
                             border: InputBorder.none,
                           ),
                         ),
@@ -166,7 +185,10 @@ class HomeScreenView extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: homeController.filteredReports.isEmpty
                                   ? Center(
-                                      child: Text("No Reports Found", style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
+                                      child: Text(
+                                        "No Reports Found",
+                                        style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+                                      ),
                                     )
                                   : ListView.builder(
                                       itemCount: homeController.filteredReports.length,
@@ -191,7 +213,12 @@ class HomeScreenView extends StatelessWidget {
                                                         decoration: BoxDecoration(
                                                           color: Colors.white,
                                                           borderRadius: BorderRadius.circular(45),
-                                                          border: Border.all(width: 1.5, color: themeController.isDarkMode.value ? AppColors.appColor : AppColors.appColor),
+                                                          border: Border.all(
+                                                            width: 1.5,
+                                                            color: themeController.isDarkMode.value
+                                                                ? AppColors.appColor
+                                                                : AppColors.appColor,
+                                                          ),
                                                         ),
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(45),
@@ -218,8 +245,8 @@ class HomeScreenView extends StatelessWidget {
                                                                   child: Text(
                                                                     report.user.name,
                                                                     style: TextStyle(
-                                                                      fontSize: 18,
-                                                                      fontWeight: FontWeight.w700,
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.w500,
                                                                       color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                                     ),
                                                                     overflow: TextOverflow.ellipsis,
@@ -238,9 +265,15 @@ class HomeScreenView extends StatelessWidget {
                                                             ),
                                                             InkWell(
                                                               onTap: () {
-                                                                Get.to(() => ViewReportScreen(report: report), transition: Transition.cupertino);
+                                                                Get.to(
+                                                                  () => ViewReportScreen(report: report),
+                                                                  transition: Transition.cupertino,
+                                                                );
                                                               },
-                                                              child: Icon(Icons.location_on_outlined, color: themeController.isDarkMode.value ? Colors.black : Colors.white),
+                                                              child: Icon(
+                                                                Icons.location_on_outlined,
+                                                                color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
@@ -249,18 +282,23 @@ class HomeScreenView extends StatelessWidget {
                                                   ),
 
                                                   Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                                    padding: const EdgeInsets.symmetric(vertical: 6.0),
                                                     child: Row(
                                                       children: [
                                                         Text(
                                                           "Category : ",
                                                           style: TextStyle(
                                                             fontSize: 16,
-                                                            fontWeight: FontWeight.w600,
+                                                            fontWeight: FontWeight.w500,
                                                             color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                           ),
                                                         ),
-                                                        Text(report.type, style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white)),
+                                                        Text(
+                                                          report.type,
+                                                          style: TextStyle(
+                                                            color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -270,7 +308,7 @@ class HomeScreenView extends StatelessWidget {
                                                         "Location :",
                                                         style: TextStyle(
                                                           fontSize: 16,
-                                                          fontWeight: FontWeight.w600,
+                                                          fontWeight: FontWeight.w500,
                                                           color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                         ),
                                                       ),
@@ -278,13 +316,20 @@ class HomeScreenView extends StatelessWidget {
                                                         future: homeController.getPlaceName(report.location.lat, report.location.lng),
                                                         builder: (context, snapshot) {
                                                           if (snapshot.connectionState == ConnectionState.waiting) {
-                                                            return Text("Loading...", style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white));
+                                                            return Text(
+                                                              "Loading...",
+                                                              style: TextStyle(
+                                                                color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                              ),
+                                                            );
                                                           } else if (snapshot.hasError) {
                                                             return const Text("Unknown location", style: TextStyle(color: Colors.red));
                                                           } else {
                                                             return Text(
                                                               snapshot.data ?? "Unknown",
-                                                              style: TextStyle(color: themeController.isDarkMode.value ? Colors.black : Colors.white),
+                                                              style: TextStyle(
+                                                                color: themeController.isDarkMode.value ? Colors.black : Colors.white,
+                                                              ),
                                                             );
                                                           }
                                                         },
@@ -297,20 +342,20 @@ class HomeScreenView extends StatelessWidget {
                                                     child: Text(
                                                       report.title,
                                                       style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w500,
                                                         color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                       ),
                                                     ),
                                                   ),
 
                                                   Padding(
-                                                    padding: const EdgeInsets.only(top: 10),
+                                                    padding: const EdgeInsets.only(top: 6.0),
                                                     child: Text(
                                                       report.description,
                                                       style: TextStyle(
                                                         fontSize: 14,
-                                                        fontWeight: FontWeight.w400,
+                                                        fontWeight: FontWeight.w500,
                                                         color: themeController.isDarkMode.value ? Colors.black : Colors.white,
                                                       ),
                                                       textAlign: TextAlign.start,
@@ -326,7 +371,10 @@ class HomeScreenView extends StatelessWidget {
                             ),
                     )
                   : Center(
-                      child: Text("Chack Your Internet Connection", style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
+                      child: Text(
+                        "Chack Your Internet Connection",
+                        style: TextStyle(color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+                      ),
                     );
             }
           },

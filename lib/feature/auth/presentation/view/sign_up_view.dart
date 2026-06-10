@@ -98,21 +98,13 @@ class SignupScreen extends StatelessWidget {
 
             Obx(() {
               return buttonWidget(
-                child: authController.isSignup.value
-                    ? Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: SizedBox(height: 25, width: 25, child: const CircularProgressIndicator(color: Colors.white)),
-                      )
-                    : const Text(
-                        "Sign Up",
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-
-                text: '',
-                onTap: () {
-                  authController.signup();
-                  print("=====Signup result: ${authController.isSignup.value}");
-                },
+                text: "Sign Up",
+                isLoading: authController.isSignup.value,
+                onTap: authController.isSignup.value
+                    ? null
+                    : () {
+                        authController.signup();
+                      },
               );
             }),
 

@@ -186,7 +186,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       return FileImage(controller.selectedAvatar.value!);
     }
     final url = widget.profile.data.avatar.url;
-    if (url != null && url.isNotEmpty && url.startsWith('http')) {
+    if (url.isNotEmpty && url.startsWith('http')) {
       return NetworkImage(url);
     }
     return null;
@@ -215,7 +215,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       maxLines: maxLines,
       decoration: InputDecoration(
         filled: true,
-        fillColor: theme.inputDecorationTheme.fillColor ?? theme.cardColor.withOpacity(0.1),
+        fillColor: theme.inputDecorationTheme.fillColor ?? theme.cardColor.withValues(alpha: 0.1),
         // labelText: label,
         //labelStyle: theme.textTheme.bodyMedium?.copyWith(color: themeController.isDarkMode.value ? Colors.white : Colors.black),
         border: OutlineInputBorder(

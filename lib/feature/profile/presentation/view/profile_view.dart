@@ -17,10 +17,10 @@ import 'pricacy_screen.dart';
 class ProfileScreenView extends StatelessWidget {
   ProfileScreenView({super.key});
 
-  ProfileController profileController = Get.find<ProfileController>();
+  final ProfileController profileController = Get.find<ProfileController>();
 
   final authController = Get.find<AuthController>();
-  final ThemeController themeController = Get.put(ThemeController());
+  final ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class ProfileScreenView extends StatelessWidget {
               ],
             );
           } else {
-            final avatarUrl = profile.avatar?.url ?? '';
+            final avatarUrl = profile.avatar.url;
             return Row(
               children: [
                 Container(
@@ -69,8 +69,8 @@ class ProfileScreenView extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: avatarUrl,
                       fit: BoxFit.cover,
-                      height: 50,
-                      width: 50,
+                      height: 48,
+                      width: 48,
                       placeholder: (context, url) => CircularProgressIndicator(),
                       errorWidget: (context, url, error) => Icon(Icons.image),
                     ),
@@ -84,12 +84,20 @@ class ProfileScreenView extends StatelessWidget {
                     children: [
                       Text(
                         profile.name,
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: themeController.isDarkMode.value ? Colors.white : AppColors.appColor,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         profile.email,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: themeController.isDarkMode.value ? Colors.white : Colors.black,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -123,7 +131,9 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(ChangePasswordView());
               },
-              bottomIcon: Obx(() => Icon(Icons.lock_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
+              bottomIcon: Obx(
+                () => Icon(Icons.lock_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+              ),
 
               name: "Change Password",
             ),
@@ -145,7 +155,9 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(AboutAppScreen());
               },
-              bottomIcon: Obx(() => Icon(Icons.help_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
+              bottomIcon: Obx(
+                () => Icon(Icons.help_outline_rounded, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+              ),
               name: "About",
             ),
 
@@ -153,7 +165,9 @@ class ProfileScreenView extends StatelessWidget {
               onTap: () {
                 Get.to(PrivacyPolicyView());
               },
-              bottomIcon: Obx(() => Icon(Icons.privacy_tip_outlined, color: themeController.isDarkMode.value ? Colors.white : Colors.black)),
+              bottomIcon: Obx(
+                () => Icon(Icons.privacy_tip_outlined, color: themeController.isDarkMode.value ? Colors.white : Colors.black),
+              ),
               name: "Privacy Policy",
             ),
 

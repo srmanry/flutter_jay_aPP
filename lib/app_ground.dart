@@ -9,7 +9,7 @@ import 'feature/home/controller/home_controller.dart';
 
 import 'feature/map/view/map_view.dart';
 import 'feature/new_featuer/presentation/controller/new_feature_controller.dart';
-import 'feature/new_featuer/presentation/view/cleancode_new_feature_screen_view.dart';
+import 'feature/new_featuer/presentation/view/new_feature_screen_view.dart';
 
 import 'feature/profile/presentation/controller/profile_controller.dart';
 import 'feature/profile/presentation/view/profile_view.dart';

@@ -122,13 +122,8 @@ class ReportScreenView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
         child: Obx(
           () => buttonWidget(
-            child: reportController.isCreateingReport.value
-                ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Text(
-                    "Submit Report",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-            text: 'kjkj',
+            text: "Submit Report",
+            isLoading: reportController.isCreateingReport.value,
             onTap: reportController.isCreateingReport.value
                 ? null
                 : () async {

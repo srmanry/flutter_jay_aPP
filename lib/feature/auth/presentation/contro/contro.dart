@@ -165,6 +165,7 @@ class AuthController extends GetxController {
 
     try {
       sentOtp.value = true;
+      isSentOtp.value = true;
       final result = await _authRepository.sendOtp(email);
 
       if (result["success"] == true) {
@@ -177,6 +178,7 @@ class AuthController extends GetxController {
       CustomShowMessage.error(message: "Something went wrong");
     } finally {
       sentOtp.value = false;
+      isSentOtp.value = false;
     }
   }
 

@@ -9,6 +9,7 @@ import '../../../home/data/model/reports_model.dart';
 Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCallback? onGoPressed}) {
   final formattedTime = DateFormat('dd MMM yyyy, hh:mm a').format(report.createdAt);
   final profileController = Get.isRegistered<ProfileController>() ? Get.find<ProfileController>() : null;
+  final avatarUrl = report.user.avatar.url;
 
   return Container(
     padding: const EdgeInsets.all(16),
@@ -26,65 +27,76 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(report.type, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(formattedTime, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
-                ],
-              ),
-
-              CircleAvatar(backgroundImage: NetworkImage(report.user.avatar.url), radius: 20),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Text(report.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Text(report.description),
-          const SizedBox(height: 16),
-
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              /*    Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Get.back(); // Close bottom sheet
-                      onGoPressed?.call();
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 150,
-                      decoration: BoxDecoration(color: AppColors.appColor, borderRadius: BorderRadius.circular(10)),
-                      child: const Center(
-                        child: Text(
-                          "Go",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
-                        ),
-                      ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(report.type, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(
+                      formattedTime,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                      overflow: TextOverflow.ellipsis,
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: () {
+                  Get.bottomSheet(_reporterDetailsSheet(report), backgroundColor: Colors.transparent, isScrollControlled: true);
+                },
+                child: ClipOval(
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: avatarUrl.isNotEmpty
+                        ? Image.network(
+                            avatarUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              color: Colors.grey.shade200,
+                              child: const Icon(Icons.person, color: Colors.grey),
+                            ),
+                          )
+                        : Container(
+                            color: Colors.grey.shade200,
+                            child: const Icon(Icons.person, color: Colors.grey),
+                          ),
                   ),
-                  const SizedBox(width: 10),
-                  // Image.asset("assets/icons/run.png", height: 30, color: Colors.red),
-                ],
-              ), */
-              /*   Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(children: [Icon(Icons.directions_walk), SizedBox(width: 8), Icon(Icons.moving)]),
-
-                  SizedBox(width: 20),
-                  // Text(distance ?? "Calculating...", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  Text(distance ?? "0.00 KM / 0 m", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                ],
-              ), */
+                ),
+              ),
             ],
           ),
-
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
+          Text(report.title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(report.description, style: const TextStyle(fontSize: 14, color: Colors.black87)),
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(10)),
+            child: Row(
+              children: [
+                const Icon(Icons.my_location_rounded, size: 18, color: Colors.black54),
+                const SizedBox(width: 8),
+                const Text(
+                  "Distance:",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    distance ?? "Calculating...",
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
 
           /* SizedBox(
             height: 48,
@@ -118,11 +130,76 @@ Widget reportViewCustomBottomSheet(ReportModel report, {String? distance, VoidCa
                   Get.to(() => const SubscriptionView());
                 }
               },
-              child: const Text("Start Tracking", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              child: const Text("Start Tracking", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             ),
           ),
         ],
       ),
+    ),
+  );
+}
+
+Widget _reporterDetailsSheet(ReportModel report) {
+  final avatarUrl = report.user.avatar.url;
+  final reportTime = DateFormat('dd MMM yyyy, hh:mm a').format(report.createdAt);
+
+  return Container(
+    padding: const EdgeInsets.fromLTRB(16, 14, 16, 22),
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            const Text("Reporter Details", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+            const Spacer(),
+            IconButton(onPressed: Get.back, icon: const Icon(Icons.close_rounded)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        CircleAvatar(
+          radius: 34,
+          backgroundColor: Colors.grey.shade200,
+          backgroundImage: avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
+          child: avatarUrl.isEmpty ? const Icon(Icons.person, size: 34, color: Colors.grey) : null,
+        ),
+        const SizedBox(height: 14),
+        _reporterInfoRow("Name", report.user.name.isEmpty ? "N/A" : report.user.name),
+        _reporterInfoRow("User ID", report.user.id.isEmpty ? "N/A" : report.user.id),
+        _reporterInfoRow("Report Type", report.type.isEmpty ? "N/A" : report.type),
+        _reporterInfoRow("Reported At", reportTime),
+      ],
+    ),
+  );
+}
+
+Widget _reporterInfoRow(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 92,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54),
+          ),
+        ),
+        const Text(
+          " : ",
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87),
+          ),
+        ),
+      ],
     ),
   );
 }

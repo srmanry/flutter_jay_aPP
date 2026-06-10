@@ -27,15 +27,7 @@ class PaginatedListWidget<T> extends StatefulWidget {
 }
 
 class _PaginatedListWidgetState<T> extends State<PaginatedListWidget<T>> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

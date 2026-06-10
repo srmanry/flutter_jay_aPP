@@ -18,7 +18,7 @@ class CustomShowMessage {
       '',
       '',
       snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.white.withOpacity(0.95),
+      backgroundColor: Colors.white.withValues(alpha: 0.95),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       padding: const EdgeInsets.all(12),
       borderRadius: 12,
@@ -29,7 +29,7 @@ class CustomShowMessage {
       // Stronger, more visible shadow
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.25), // darker shadow
+          color: Colors.black.withValues(alpha: 0.25), // darker shadow
           blurRadius: 12, // more blur
           spreadRadius: 1, // spread a bit
           offset: const Offset(0, 6), // slight vertical offset
@@ -41,7 +41,7 @@ class CustomShowMessage {
         children: [
           // Icon inside colored circle
           Container(
-            decoration: BoxDecoration(color: color.withOpacity(0.15), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.15), shape: BoxShape.circle),
             padding: const EdgeInsets.all(8),
             child: Icon(icon, color: color, size: 24),
           ),
