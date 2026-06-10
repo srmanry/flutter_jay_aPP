@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../model/reports_model.dart';
+import 'package:spotem/feature/home/data/model/reports_model.dart';
 
 class ViewReportScreen extends StatelessWidget {
   final ReportModel report;
@@ -10,10 +9,7 @@ class ViewReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LatLng reportLatLng = LatLng(
-      report.location.lat,
-      report.location.lng,
-    );
+    final LatLng reportLatLng = LatLng(report.location.lat, report.location.lng);
     final Set<Marker> markers = {
       Marker(
         markerId: MarkerId(report.id),

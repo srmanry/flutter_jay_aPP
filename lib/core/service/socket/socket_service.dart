@@ -1,26 +1,16 @@
-
 import 'dart:async';
 
 import 'package:flutter/rendering.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-
-import '../local/token_manager.dart';
-
+import 'package:spotem/core/network/api_service/token_meneger.dart';
 
 class SocketConnectParam {
   final String _token;
   final String _joinId;
   final String url;
 
-  SocketConnectParam({
-    required String token,
-    required String joinId,
-    required this.url
-  }) : 
-       _token = token,
-       _joinId = joinId;
+  SocketConnectParam({required String token, required String joinId, required this.url}) : _token = token, _joinId = joinId;
 }
-
 
 class SocketService {
   final Map<String, StreamController<dynamic>> _events = {};
@@ -28,34 +18,28 @@ class SocketService {
   final String socketUrl = 'https://backend-jay.onrender.com';
 
   SocketService();
+
   /// Socket connect param
   /// Pass this param to the `init()` method to initialize the socket
 
   bool get isConnected => _socket?.connected ?? false;
 
-  Future<void> init() async{
-    final token = await TokenManager.getAccessToken();
+  Future<void> init() async {
+    final token = await TokenManager.getToken();
     // Dispose previous socket, if exists
     _disposeSocket();
     if (_socket != null) {
       return;
     }
-    if(token == null) {
+    if (token == null) {
       return;
     }
-      _socket = io.io(
-        socketUrl,
-        io.OptionBuilder()
-            .setTransports(['websocket'])
-            .setExtraHeaders({'Authorization': 'Bearer $token'})
-            .build(),
-      );
-      _socket?.connect();
-      _socket?.onConnect((data) {
-        debugPrint("Socket connected");
-      });
+    _socket = io.io(socketUrl, io.OptionBuilder().setTransports(['websocket']).setExtraHeaders({'Authorization': 'Bearer $token'}).build());
+    _socket?.connect();
+    _socket?.onConnect((data) {
+      debugPrint("Socket connected");
+    });
   }
-
 
   void emit(String eventName, dynamic data) {
     init().then((_) {
@@ -63,11 +47,11 @@ class SocketService {
     });
   }
 
-  Stream<dynamic> listen(String eventName,) {
+  Stream<dynamic> listen(String eventName) {
     if (_events.containsKey(eventName)) {
       return _events[eventName]!.stream;
     }
-    
+
     final controller = StreamController<dynamic>.broadcast();
     _events[eventName] = controller;
 
@@ -96,4 +80,3 @@ class SocketService {
     _socket = null;
   }
 }
-

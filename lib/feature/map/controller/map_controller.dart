@@ -1,22 +1,147 @@
 import 'dart:ui' as ui;
-
-import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import '../../../core/service/local/token_manager.dart';
-import '../service/location_services.dart';
+import 'package:flutter/services.dart';
+import 'package:spotem/core/common/custom_massage.dart';
+import 'package:spotem/feature/report/domain/repo/repo.dart';
 
 class LocationController extends GetxController {
+  LocationController(this.reportRepository);
+
+  final ReportRepository reportRepository;
+
   var lat = 0.0.obs;
   var lng = 0.0.obs;
   var markers = <Marker>{}.obs;
+  var polylines = <Polyline>{}.obs; // RxSet<Polyline>
+
+  static const String googleApiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI";
+
+  final PolylinePoints polylinePoints = PolylinePoints(apiKey: googleApiKey);
+
   var isLoading = false.obs;
   var hasPermission = false.obs;
-  GoogleMapController? mapController;
+
   var selectedMarkerData = Rx<Map<String, dynamic>?>(null);
+  GoogleMapController? mapController;
+
+  BitmapDescriptor? fireIcon;
+  BitmapDescriptor? policeIcon;
+  BitmapDescriptor? ambulanceIcon;
+  BitmapDescriptor? iceIcon;
+  BitmapDescriptor? reportIcon;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadMarkerIcons();
+  }
+
+  Future<void> drawRoute(double destLat, double destLng) async {
+    if (lat.value == 0.0 || lng.value == 0.0) {
+      await loadLocation();
+      if (lat.value == 0.0) {
+        return;
+      }
+    }
+
+    polylines.clear();
+
+    try {
+      // ignore: deprecated_member_use
+      final request = PolylineRequest(
+        origin: PointLatLng(lat.value, lng.value),
+        destination: PointLatLng(destLat, destLng),
+        mode: TravelMode.driving, // driving / walking / bicycling
+        // wayPoints: [PointLatLng(...), ...],
+        // avoidHighways: false,
+        // avoidTolls: false,
+        // avoidFerries: false,
+      );
+
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        request: request,
+        // timeout: Duration(seconds: 30),
+      );
+
+      if (result.points.isNotEmpty) {
+        List<LatLng> polylineCoordinates = result.points.map((point) => LatLng(point.latitude, point.longitude)).toList();
+
+        final Polyline routePolyline = Polyline(
+          polylineId: PolylineId('route_${DateTime.now().millisecondsSinceEpoch}'),
+          color: Colors.purpleAccent,
+          width: 5,
+          points: polylineCoordinates,
+          geodesic: true,
+        );
+
+        polylines.add(routePolyline);
+        polylines.refresh();
+
+        if (mapController != null) {
+          final bounds = _getBounds(polylineCoordinates);
+          mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
+        }
+      } else {
+        debugPrint("================  map  No route found: ${result.errorMessage}");
+
+        _drawStraightLine(destLat, destLng);
+      }
+    } catch (e) {
+      debugPrint("===================== map       Route draw error: $e");
+
+      _drawStraightLine(destLat, destLng);
+    }
+  }
+
+  void clearRoute() {
+    polylines.clear();
+    polylines.refresh();
+    selectedMarkerData.value = null;
+  }
+
+  void _drawStraightLine(double destLat, double destLng) {
+    final Polyline straightLine = Polyline(
+      polylineId: const PolylineId('fallback_route'),
+      points: [LatLng(lat.value, lng.value), LatLng(destLat, destLng)],
+      color: Colors.blue,
+      width: 6,
+    );
+    polylines.add(straightLine);
+    polylines.refresh();
+  }
+
+  LatLngBounds _getBounds(List<LatLng> points) {
+    double south = points[0].latitude;
+    double north = points[0].latitude;
+    double west = points[0].longitude;
+    double east = points[0].longitude;
+
+    for (var point in points) {
+      if (point.latitude < south) south = point.latitude;
+      if (point.latitude > north) north = point.latitude;
+      if (point.longitude < west) west = point.longitude;
+      if (point.longitude > east) east = point.longitude;
+    }
+
+    return LatLngBounds(southwest: LatLng(south, west), northeast: LatLng(north, east));
+  }
+
+  void setMapController(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  @override
+  void onClose() {
+    mapController?.dispose();
+    mapController = null;
+    super.onClose();
+  }
 
   String formatTimestamp(String timestamp) {
     try {
@@ -27,134 +152,88 @@ class LocationController extends GetxController {
     }
   }
 
-  final Dio dioClient = Dio(
-    BaseOptions(
-      baseUrl: "https://api.spotem365.com/api/v1",
-      // baseUrl: "https://api.spotem365.com/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
-
-  void setMapController(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  Future<void> moveCamera() async {
-    if (mapController != null) {
-      mapController!.animateCamera(
-        CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16),
-      );
-    }
-  }
-
   Future<void> loadLocation() async {
-    final position = await LocationServices().getUserLocation();
-    if (position != null) {
-      lat.value = position.latitude;
-      lng.value = position.longitude;
-      await moveCamera();
-    }
-  }
-
-  Future<void> fetchReportMarker() async {
     try {
       isLoading.value = true;
 
-      final token = await TokenManager.getAccessToken();
+      final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+      lat.value = position.latitude;
+      lng.value = position.longitude;
 
-      final response = await dioClient.get(
-        "/report/coordinates",
-        options: Options(
-          headers: {"Authorization": "Bearer $token"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        final data = response.data['data'] as List;
-        markers.clear();
-
-        for (var report in data) {
-          final coords = report['coordinates'];
-          final latValue = coords[1];
-          final lngValue = coords[0];
-          final type = report['type'] ?? "Report";
-          final title = report['title'] ?? "Report";
-          final description = report['description'] ?? "Report";
-          final time = report['timestamp'] ?? "Report";
-
-          markers.add(
-            Marker(
-              //   consumeTapEvents: true,
-              markerId: MarkerId("${type}_${latValue}_${lngValue}"),
-              position: LatLng(latValue, lngValue),
-              icon: _getMarkerIcon(type),
-              infoWindow: const InfoWindow(title: ''),
-              onTap: () {
-                selectedMarkerData.value = {
-                  "title": title,
-                  "type": type,
-                  "description": description,
-                  "time": time,
-                  "lat": latValue,
-                  "lng": lngValue,
-                };
-              },
-            ),
-          );
-        }
-
-        if (markers.isNotEmpty) {
-          mapController?.animateCamera(
-            CameraUpdate.newLatLngZoom(markers.first.position, 16),
-          );
-        }
-      } else {
-        //Get.snackbar("Error", "Failed to fetch report markers");
+      if (mapController != null) {
+        mapController!.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat.value, lng.value), 16));
       }
     } catch (e) {
-      // Get.snackbar("Error", "Something went wrong: $e");
+      debugPrint("Error fetching current location: $e");
     } finally {
       isLoading.value = false;
     }
   }
 
-  // old=============
-  BitmapDescriptor _getMarkerIcon(String type) {
-    switch (type) {
-      case "Fire":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-      case "Police":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-      case "Ambulance":
-        return BitmapDescriptor.defaultMarkerWithHue(
-          BitmapDescriptor.hueOrange,
-        );
-      case "ICE":
-        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
-      default:
-        return BitmapDescriptor.defaultMarker;
+  Future<void> checkPermissionAndLoadLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
+    hasPermission.value = permission == LocationPermission.always || permission == LocationPermission.whileInUse;
+
+    if (hasPermission.value) {
+      await loadLocation();
+    } else {
+      CustomShowMessage.error(message: "Location permission required");
     }
   }
 
-  Future<BitmapDescriptor> getMarkerFromIcon(
-    IconData iconData,
-    Color color,
-  ) async {
-    const size = 40.0;
+  Future<void> loadMarkerIcons() async {
+    try {
+      // Same marker sizing as CleancodeNewFeatureScreenView.
+      fireIcon = await _resizeMarker('assets/icons/fire.png', 95);
+      policeIcon = await _resizeMarker('assets/icons/polic.png', 95);
+      ambulanceIcon = await _resizeMarker('assets/icons/ambulence.png', 110);
+      iceIcon = await _resizeMarker('assets/icons/siren.png', 90);
+      reportIcon = await _resizeMarker('assets/icons/mapIcon.png', 95);
+    } catch (_) {
+      // Fallback to default markers if assets fail to load.
+    }
+  }
 
+  Future<BitmapDescriptor> _resizeMarker(String path, int width) async {
+    final ByteData data = await rootBundle.load(path);
+    final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+    final Uint8List resizedData = (await frameInfo.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+    // Keep behavior consistent with NewFeatureController marker rendering.
+    return BitmapDescriptor.fromBytes(resizedData);
+  }
+
+  String _normalizeReportType(String type) => type.trim().toLowerCase();
+
+  BitmapDescriptor _getMarkerIcon(String type) {
+    switch (_normalizeReportType(type)) {
+      case "fire":
+        return fireIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      case "police":
+      case "polic":
+        return policeIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+      case "ambulance":
+      case "ambulence":
+        return ambulanceIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
+      case "ice":
+        return iceIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+      default:
+        return reportIcon ?? iceIcon ?? BitmapDescriptor.defaultMarker;
+    }
+  }
+
+  Future<BitmapDescriptor> getMarkerFromIcon(IconData iconData, Color color) async {
+    const size = 10.0;
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
 
     textPainter.text = TextSpan(
       text: String.fromCharCode(iconData.codePoint),
-      style: TextStyle(
-        fontSize: size,
-        fontFamily: iconData.fontFamily,
-        color: color,
-      ),
+      style: TextStyle(fontSize: size, fontFamily: iconData.fontFamily, color: color),
     );
 
     textPainter.layout();
@@ -164,139 +243,74 @@ class LocationController extends GetxController {
     final img = await picture.toImage(size.toInt(), size.toInt());
     final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
 
-    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
   }
 
-  /*Future<void> fetchNearbyPlaces() async {
-    const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI"; // 🔑 তোমার Google Maps Places API key বসাও
-    final types = ["hospital", "police", "fire_station"];
+  Future<void> fetchReportMarker() async {
+    isLoading.value = true;
 
-    for (var type in types) {
-      final url =
-          "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat.value},${lng.value}&radius=3000&type=$type&key=$apiKey";
-
-      try {
-        final response = await Dio().get(url);
-        if (response.statusCode == 200 && response.data["results"] != null) {
-          final results = response.data["results"] as List;
-
-          for (var place in results) {
-            final name = place["name"] ?? type.capitalizeFirst!;
-            final geometry = place["geometry"]["location"];
-            final placeLat = geometry["lat"];
-            final placeLng = geometry["lng"];
-        */ /*    final icon = await _getCustomMarkerIcon(type);
-            markers.add(
-              Marker(
-                markerId: MarkerId("${type}_${placeLat}_$placeLng"),
-                position: LatLng(placeLat, placeLng),
-                icon: icon, // 👈 এখানে custom icon ব্যবহার হচ্ছে
-                infoWindow: InfoWindow(title: name),
-              ),
-            );*/ /*
-
-            final policeIcon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
-
-            markers.add(
-              Marker(
-                markerId: MarkerId("police_1"),
-                position: LatLng(23.8103, 90.4125),
-                icon: policeIcon,
-              ),
-            );
-
-
-          }
-        }
-      } catch (e) {
-        print("Error fetching $type places: $e");
+    try {
+      // Ensure marker icons are ready.
+      if (fireIcon == null || policeIcon == null || ambulanceIcon == null || iceIcon == null) {
+        await loadMarkerIcons();
       }
-    }
 
-    markers.refresh();
-  }*/
+      final data = await reportRepository.getReportCoordinates();
 
-  Future<void> fetchNearbyPlaces() async {
-    const apiKey = "AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI"; // তোমার API key
-    final types = ["hospital", "police", "fire_station"];
+      markers.clear();
+      for (final report in data) {
+        final type = report.type.trim().isEmpty ? "Report" : report.type.trim();
+        final title = report.title.isEmpty ? "Report" : report.title;
+        final description = report.description.isEmpty ? "Report" : report.description;
+        final time = report.createdAt?.toIso8601String() ?? "";
 
-    for (var type in types) {
-      final url =
-          "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat.value},${lng.value}&radius=3000&type=$type&key=$apiKey";
+        final latValue = report.latitude;
+        final lngValue = report.longitude;
 
-      try {
-        final response = await Dio().get(url);
-        if (response.statusCode == 200 && response.data["results"] != null) {
-          final results = response.data["results"] as List;
-
-          for (var place in results) {
-            final name = place["name"] ?? type.capitalizeFirst!;
-            final geometry = place["geometry"]["location"];
-            final placeLat = geometry["lat"];
-            final placeLng = geometry["lng"];
-
-      
-            BitmapDescriptor icon;
-            switch (type) {
-              case "hospital":
-                icon = await getMarkerFromIcon(
-                  Icons.local_hospital_outlined,
-                  Colors.pink,
-                );
-                break;
-              case "police":
-                icon = await getMarkerFromIcon(Icons.local_police, Colors.blue);
-                break;
-              case "fire_station":
-                icon = await getMarkerFromIcon(
-                  Icons.local_fire_department,
-                  Colors.red,
-                );
-                break;
-              default:
-                icon = BitmapDescriptor.defaultMarker;
-            }
-
-            markers.add(
-              Marker(
-                markerId: MarkerId("${type}_${placeLat}_$placeLng"),
-                position: LatLng(placeLat, placeLng),
-                icon: icon,
-                infoWindow: InfoWindow(title: name),
-                onTap: () {
-                  selectedMarkerData.value = {
-                    "title": name,
-                    "type": type.capitalizeFirst,
-                    "lat": placeLat,
-                    "lng": placeLng,
-                    "time": DateTime.now().toString(),
-                  };
-                },
-              ),
-            );
-          }
-        }
-      } catch (e) {
-        print("Error fetching $type places: $e");
+        markers.add(
+          Marker(
+            markerId: MarkerId('${type}_${latValue}_$lngValue'),
+            position: LatLng(latValue, lngValue),
+            icon: _getMarkerIcon(type),
+            //anchor: const Offset(0.5, 0.5),
+            infoWindow: const InfoWindow(title: ''),
+            onTap: () {
+              final distance = calculateDistance(lat.value, lng.value, latValue, lngValue);
+              selectedMarkerData.value = {
+                "title": title,
+                "type": type,
+                "description": description,
+                "time": time,
+                "lat": latValue,
+                "lng": lngValue,
+                "distance": formatDistance(distance),
+                "distanceMeters": distance,
+              };
+            },
+          ),
+        );
       }
-    }
+      markers.refresh();
 
-    markers.refresh();
+      if (markers.isNotEmpty && mapController != null) {
+        mapController!.animateCamera(CameraUpdate.newLatLngZoom(markers.first.position, 14));
+      }
+    } catch (e) {
+      debugPrint("Error fetching report markers: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // 🔹 Permission check + load location
-  Future<void> checkPermissionAndLoadLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      permission = await Geolocator.requestPermission();
-    }
-    hasPermission.value =
-        permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse;
+  double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
+    if (startLat == 0.0 && startLng == 0.0) return 0.0;
+    return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
+  }
 
-    if (hasPermission.value) {
-      await loadLocation();
-    }
+  String formatDistance(double distanceInMeters) {
+    if (distanceInMeters == 0.0) return "Calculating...";
+    final meters = distanceInMeters.round();
+    final km = distanceInMeters / 1000.0;
+    return "${km.toStringAsFixed(2)} KM / $meters m";
   }
 }

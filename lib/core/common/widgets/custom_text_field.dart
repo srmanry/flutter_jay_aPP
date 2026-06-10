@@ -5,7 +5,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final IconData? prefixIcon;
   final bool isPassword;
-   final Function ?validator;
+  final Function? validator;
   final TextInputType keyboardType;
 
   const CustomTextField({
@@ -35,21 +35,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
         keyboardType: widget.keyboardType,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: const TextStyle(
-            fontSize: 14,
-            color: Color(0xFF929292),
-            fontWeight: FontWeight.w400,
-          ),
-          prefixIcon: widget.prefixIcon != null
-              ? Icon(widget.prefixIcon, size: 16, color: Color(0xFFB1B3B4))
-              : null,
+          hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF929292), fontWeight: FontWeight.w400),
+          prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon, size: 20, color: Color(0xFFB1B3B4)) : null,
           suffixIcon: widget.isPassword
               ? IconButton(
-                  icon: Icon(
-                    _obscure ? Icons.visibility_off : Icons.visibility,
-                    size: 18,
-                    color: const Color(0xFFB1B3B4),
-                  ),
+                  icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility, size: 20, color: const Color(0xFFB1B3B4)),
                   onPressed: () {
                     setState(() {
                       _obscure = !_obscure;
@@ -74,4 +64,3 @@ class _CustomTextFieldState extends State<CustomTextField> {
     );
   }
 }
-
