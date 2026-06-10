@@ -1,71 +1,49 @@
-import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:intl/intl.dart';
 
-import '../../../core/service/local/token_manager.dart';
-import '../model/reports_model.dart';
+import 'package:spotem/feature/home/data/model/reports_model.dart';
+import 'package:spotem/feature/home/domain/repo/home_repo.dart';
 
 class HomeController extends GetxController {
-  final RxInt currentIndex = 0.obs;
+  HomeController(this.repository);
+
+  final HomeRepo repository;
+
   var isLoading = false.obs;
   var reports = <ReportModel>[].obs;
   var filteredReports = <ReportModel>[].obs;
 
-  void changeIndex(int index) {
-    currentIndex.value = index;
-  }
-
-  @override
+ /*  @override
   void onInit() {
     super.onInit();
     fetchReports();
     ever(reports, (_) {
       filteredReports.assignAll(reports);
     });
-  }
+  } */
 
-  final dio.Dio dioClient = dio.Dio(
-    dio.BaseOptions(
-      //baseUrl: "https://api.spotem365.com/api/v1",
-      baseUrl: "https://api.spotem365.com/api/v1",
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-    ),
-  );
+ @override
+void onInit() {
+  super.onInit();
+  ever(reports, (_) {
+    filteredReports.assignAll(reports);
+  });
+}
+
+@override
+void onReady() {
+  super.onReady();
+  fetchReports();
+}
 
   Future<void> fetchReports() async {
     try {
       isLoading.value = true;
-      final token = await TokenManager.getAccessToken();
-      final response = await dioClient.get(
-        '/report',
-        options: dio.Options(
-          headers: {"Authorization": "Bearer $token"},
-          validateStatus: (status) => status != null && status < 500,
-        ),
-      );
-      if (response.statusCode == 200 && response.data["success"] == true) {
-        final List<dynamic> reportList = response.data["data"];
-        print('============ report  data ===============${response.data}');
-        for (final data in reportList) {
-          try {
-            final report = ReportModel.fromJson(data as Map<String, dynamic>);
-
-            reports.add(report);
-          } catch (e) {}
-        }
-
-        /*   reports.value = reportList
-            .map((x) => ReportModel.fromJson(x as Map<String, dynamic>))
-            .toList();*/
-        filteredReports.assignAll(reports);
-        print('=============================$filteredReports');
-      } else {
-        print("Reports API Error: ${response.data}");
-      }
+      final result = await repository.getReports();
+      final sorted = [...result]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      reports.assignAll(sorted);
     } catch (e) {
-      print('Reports Error: $e');
+     // Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -82,7 +60,6 @@ class HomeController extends GetxController {
         return "Unknown location";
       }
     } catch (e) {
-      print("Reverse geocoding error: $e");
       return "Unknown location";
     }
   }
@@ -111,3 +88,4 @@ class HomeController extends GetxController {
     }
   }
 }
+ 

@@ -71,5 +71,18 @@
 	<!--  Google Maps API key for iOS -->
     <key>GMSApiKey</key>
     <string>AIzaSyALWWWVRTpQHw1A8okK1Mxx6lCgFRyGRPI</string>
+
+	<!-- Stripe redirect URL scheme (must match Stripe.urlScheme) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>stripe</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

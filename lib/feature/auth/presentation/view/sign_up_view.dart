@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+import 'package:spotem/feature/auth/presentation/contro/contro.dart';
+
+import '../../../../core/common/widgets/app_icon.dart';
+import '../../../../core/common/widgets/custom_text_field.dart';
+import '../../../../core/common/widgets/save_botton.dart';
+
+import 'sign_in_view.dart';
+
+class SignupScreen extends StatelessWidget {
+  //final AuthController authController = Get.put(AuthController());  e1@gmail.com
+  final authController = Get.find<AuthController>();
+  SignupScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 50),
+            Center(child: AppIconWidget()),
+            const SizedBox(height: 30),
+            Center(
+              child: const Text("Create Your Account", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(height: 20),
+
+            // fieldName("Name"),
+            CustomTextField(controller: authController.nameController, hintText: "Enter your Full Name", prefixIcon: Icons.person_outline_outlined),
+            const SizedBox(height: 15),
+
+            //fieldName("Email"),
+            CustomTextField(
+              controller: authController.emailController,
+              hintText: "Enter your Email",
+              prefixIcon: Icons.email,
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) return "Email is required";
+                if (authController.isValidEmail(value)) {
+                  return "Invalid email format";
+                }
+                return null;
+              },
+            ),
+            // const SizedBox(height: 15),
+
+            // fieldName("Phone Number"),
+            /*  CustomTextField(
+              controller: authController.phoneController,
+              hintText: "Enter Phone Number",
+              prefixIcon: Icons.phone,
+              keyboardType: TextInputType.phone,
+            ),
+              */
+            // const SizedBox(height: 15),
+            /*     CustomTextField(
+              controller: authController.address,
+              hintText: "Enter Address",
+              prefixIcon: Icons.location_on_outlined,
+              keyboardType: TextInputType.text,
+            ),
+*/
+            const SizedBox(height: 15),
+            CustomTextField(
+              controller: authController.passwordController,
+              hintText: "Create a Password",
+              prefixIcon: Icons.lock,
+              isPassword: true,
+              validator: () {
+                if (authController.passwordController.text.isEmpty) {
+                  return "Password is required";
+                }
+              },
+            ),
+            const SizedBox(height: 15),
+            // fieldName("Password"),
+            CustomTextField(
+              controller: authController.confirmPasswordController,
+              hintText: "Confirm a Password",
+              prefixIcon: Icons.lock,
+              isPassword: true,
+              validator: () {
+                if (authController.confirmPasswordController.text.isEmpty) {
+                  return "Password is required";
+                }
+              },
+            ),
+            const SizedBox(height: 8),
+
+            // ByRegistation(),
+            const SizedBox(height: 30),
+
+            Obx(() {
+              return buttonWidget(
+                text: "Sign Up",
+                isLoading: authController.isSignup.value,
+                onTap: authController.isSignup.value
+                    ? null
+                    : () {
+                        authController.signup();
+                      },
+              );
+            }),
+
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Already have an account? ", style: TextStyle(fontSize: 14)),
+                GestureDetector(
+                  onTap: () => Get.to(() => SignInScreen()),
+                  child: const Text(
+                    "Sign In Here",
+                    style: TextStyle(color: Colors.blue, fontSize: 14, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+          ],
+        ),
+      ),
+    );
+  }
+}
